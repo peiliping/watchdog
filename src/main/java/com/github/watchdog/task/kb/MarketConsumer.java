@@ -46,10 +46,6 @@ public class MarketConsumer extends AbstractMarketConsumer {
                         .low(data.get(1)).high(data.get(2)).open(data.get(3)).close(data.get(4)).vol(data.get(5)).build();
                 handleCandle(pushMsg.getPairCode(), currentCandle);
                 break;
-            case "orderBook":
-                break;
-            case "ticker":
-                break;
         }
     }
 }

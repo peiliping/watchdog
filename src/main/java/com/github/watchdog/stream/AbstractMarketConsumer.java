@@ -30,7 +30,6 @@ public abstract class AbstractMarketConsumer extends AbstractConsumer {
 
     protected double defaultCandleChangeRatioCondition = 2D;
 
-
     protected String marketName = "Unknown";
 
 
