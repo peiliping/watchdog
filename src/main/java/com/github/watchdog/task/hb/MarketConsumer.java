@@ -3,7 +3,7 @@ package com.github.watchdog.task.hb;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.github.watchdog.dataobject.Candle;
+import com.github.hubble.ele.CandleET;
 import com.github.watchdog.stream.AbstractMarketConsumer;
 import com.github.watchdog.task.hb.dataobject.PushMsg;
 import lombok.extern.slf4j.Slf4j;
@@ -36,9 +36,12 @@ public class MarketConsumer extends AbstractMarketConsumer {
         switch (type) {
             case "kline":
                 JSONObject data = JSON.parseObject(pushMsg.getTick());
-                Candle currentCandle = Candle.builder().id(data.getLong("id"))
-                        .low(data.getDouble("low")).high(data.getDouble("high")).open(data.getDouble("open"))
-                        .close(data.getDouble("close")).vol(data.getDouble("amount")).build();
+                CandleET currentCandle = new CandleET(data.getLong("id"));
+                currentCandle.setLow(data.getDouble("low"));
+                currentCandle.setHigh(data.getDouble("high"));
+                currentCandle.setOpen(data.getDouble("open"));
+                currentCandle.setClose(data.getDouble("close"));
+                currentCandle.setAmount(data.getDouble("amount"));
                 handleCandle(pairCodeName, currentCandle);
                 break;
         }

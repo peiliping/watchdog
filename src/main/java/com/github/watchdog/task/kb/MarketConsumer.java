@@ -3,8 +3,8 @@ package com.github.watchdog.task.kb;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.github.hubble.ele.CandleET;
 import com.github.watchdog.common.Util;
-import com.github.watchdog.dataobject.Candle;
 import com.github.watchdog.stream.AbstractMarketConsumer;
 import com.github.watchdog.task.kb.dataobject.PushMsg;
 import lombok.extern.slf4j.Slf4j;
@@ -42,8 +42,12 @@ public class MarketConsumer extends AbstractMarketConsumer {
 
 
                 }).get(0);
-                Candle currentCandle = Candle.builder().id(data.get(0).longValue())
-                        .low(data.get(1)).high(data.get(2)).open(data.get(3)).close(data.get(4)).vol(data.get(5)).build();
+                CandleET currentCandle = new CandleET(data.get(0).longValue());
+                currentCandle.setLow(data.get(1));
+                currentCandle.setHigh(data.get(2));
+                currentCandle.setOpen(data.get(3));
+                currentCandle.setClose(data.get(4));
+                currentCandle.setAmount(data.get(5));
                 handleCandle(pushMsg.getPairCode(), currentCandle);
                 break;
         }

@@ -4,7 +4,7 @@ package com.github.watchdog.stream;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.watchdog.common.Util;
-import com.github.watchdog.dataobject.Candle;
+import com.github.hubble.ele.CandleET;
 import com.github.watchdog.dataobject.LastNQueue;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +22,7 @@ public abstract class AbstractMarketConsumer extends AbstractConsumer {
 
     protected long notifyInterval = 10 * 60L;
 
-    protected Map<String, LastNQueue<Candle>> lastCandles = Maps.newHashMap();
+    protected Map<String, LastNQueue<CandleET>> lastCandles = Maps.newHashMap();
 
     protected int candleQueueSize = 6;
 
@@ -72,17 +72,17 @@ public abstract class AbstractMarketConsumer extends AbstractConsumer {
     }
 
 
-    protected void handleCandle(String pairCodeName, Candle currentCandle) {
+    protected void handleCandle(String pairCodeName, CandleET currentCandle) {
 
-        LastNQueue<Candle> oldLNQ = this.lastCandles.get(pairCodeName);
+        LastNQueue<CandleET> oldLNQ = this.lastCandles.get(pairCodeName);
         if (oldLNQ == null) {
             oldLNQ = new LastNQueue<>(this.candleQueueSize);
             this.lastCandles.put(pairCodeName, oldLNQ);
         }
         oldLNQ.add(currentCandle);
 
-        Candle lowCandle = oldLNQ.getList().stream().min(Comparator.comparingDouble(Candle::getLow)).get();
-        Candle highCandle = oldLNQ.getList().stream().max(Comparator.comparingDouble(Candle::getHigh)).get();
+        CandleET lowCandle = oldLNQ.getList().stream().min(Comparator.comparingDouble(CandleET::getLow)).get();
+        CandleET highCandle = oldLNQ.getList().stream().max(Comparator.comparingDouble(CandleET::getHigh)).get();
         if (currentCandle.getId() != lowCandle.getId() && currentCandle.getId() != highCandle.getId()) {
             return;
         }
