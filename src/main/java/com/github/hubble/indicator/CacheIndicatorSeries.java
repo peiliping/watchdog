@@ -1,9 +1,7 @@
 package com.github.hubble.indicator;
 
 
-import com.github.hubble.LastNQueue;
 import com.github.hubble.ele.Element;
-import com.github.hubble.ele.SingleET;
 
 
 public abstract class CacheIndicatorSeries<R extends Element> extends IndicatorSeries<R> {
@@ -11,7 +9,7 @@ public abstract class CacheIndicatorSeries<R extends Element> extends IndicatorS
 
     protected int step;
 
-    protected LastNQueue<SingleET> cache;
+    protected LastNQueue<R> cache;
 
 
     public CacheIndicatorSeries(String name, int size, long interval, int step) {
