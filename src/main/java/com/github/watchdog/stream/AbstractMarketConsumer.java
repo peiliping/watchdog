@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.watchdog.common.Util;
 import com.github.hubble.ele.CandleET;
-import com.github.watchdog.dataobject.LastNQueue;
+import com.github.hubble.LastNQueue;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

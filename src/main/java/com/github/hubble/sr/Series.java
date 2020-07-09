@@ -11,19 +11,19 @@ import java.util.List;
 public class Series<E extends Element> {
 
 
-    private String name;
+    protected String name;
 
-    private long size;
+    protected long size;
 
-    private long mask;
+    protected long mask;
 
-    private E[] elements;
+    protected E[] elements;
 
-    private long maxId;
+    protected long maxId;
 
-    private long interval;
+    protected long interval;
 
-    private List<SeriesListener<E>> listeners;
+    protected List<SeriesListener<E>> listeners;
 
 
     public Series(String name, int size, long interval) {

@@ -1,13 +1,14 @@
-package com.github.watchdog.dataobject;
+package com.github.hubble;
 
 
+import com.github.hubble.ele.Element;
 import com.google.common.collect.Lists;
 import lombok.Getter;
 
 import java.util.LinkedList;
 
 
-public class LastNQueue<E extends Comparable> {
+public class LastNQueue<E extends Element> {
 
 
     @Getter
@@ -49,5 +50,17 @@ public class LastNQueue<E extends Comparable> {
             }
             this.list.add(e);
         }
+    }
+
+
+    public E getFirst() {
+
+        return this.list.peekFirst();
+    }
+
+
+    public E getLast() {
+
+        return this.list.peekLast();
     }
 }

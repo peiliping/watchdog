@@ -2,12 +2,10 @@ package com.github.hubble.ele;
 
 
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 
 
 @Getter
-@Setter
 @ToString(callSuper = true)
 public class SingleET extends Element {
 
@@ -15,8 +13,9 @@ public class SingleET extends Element {
     private double data;
 
 
-    public SingleET(long id) {
+    public SingleET(long id, double data) {
 
         super(id);
+        this.data = data;
     }
 }
