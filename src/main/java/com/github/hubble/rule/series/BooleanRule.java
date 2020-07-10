@@ -2,13 +2,13 @@ package com.github.hubble.rule.series;
 
 
 import com.github.hubble.Series;
-import com.github.hubble.ele.SingleBooleanET;
+import com.github.hubble.ele.BooleanET;
 
 
-public class BooleanRule extends SeriesRule<SingleBooleanET> {
+public class BooleanRule extends SeriesRule<BooleanET> {
 
 
-    public BooleanRule(String name, Series<SingleBooleanET> series) {
+    public BooleanRule(String name, Series<BooleanET> series) {
 
         super(name, series);
     }
@@ -16,7 +16,7 @@ public class BooleanRule extends SeriesRule<SingleBooleanET> {
 
     @Override public boolean isMatched() {
 
-        SingleBooleanET singleBooleanET = super.series.getLast();
+        BooleanET singleBooleanET = super.series.getLast();
         return singleBooleanET != null && singleBooleanET.isData();
     }
 }

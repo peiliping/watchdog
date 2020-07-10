@@ -4,11 +4,11 @@ package com.github.hubble.indicator.group;
 import com.github.hubble.Series;
 import com.github.hubble.ele.CustomCompare;
 import com.github.hubble.ele.Element;
-import com.github.hubble.ele.SingleBooleanET;
+import com.github.hubble.ele.BooleanET;
 import com.github.hubble.indicator.IndicatorSeries;
 
 
-public class GreaterThanIndicatorSeries<I extends Element, SR extends Element> extends PairIndicatorSeries<I, SingleBooleanET, SR> {
+public class GreaterThanIndicatorSeries<I extends Element, SR extends Element> extends PairIndicatorSeries<I, BooleanET, SR> {
 
 
     private CustomCompare<SR> customCompare;
@@ -29,7 +29,7 @@ public class GreaterThanIndicatorSeries<I extends Element, SR extends Element> e
         SR sr2 = super.second.getLast();
         if (sr1 != null && sr2 != null) {
             int r = customCompare.compareWith(sr1, sr2);
-            add(new SingleBooleanET(ele.getId(), r > 0));
+            add(new BooleanET(ele.getId(), r > 0));
         }
     }
 }

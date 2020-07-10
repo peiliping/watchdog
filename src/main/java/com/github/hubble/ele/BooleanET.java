@@ -7,13 +7,13 @@ import lombok.ToString;
 
 @Getter
 @ToString(callSuper = true)
-public class SingleNumberET extends Element {
+public class BooleanET extends Element {
 
 
-    private double data;
+    private boolean data;
 
 
-    public SingleNumberET(long id, double data) {
+    public BooleanET(long id, boolean data) {
 
         super(id);
         this.data = data;
@@ -22,6 +22,6 @@ public class SingleNumberET extends Element {
 
     @Override public boolean diff(Element other) {
 
-        return this.data != ((SingleNumberET) other).data;
+        return this.data != ((BooleanET) other).data;
     }
 }
