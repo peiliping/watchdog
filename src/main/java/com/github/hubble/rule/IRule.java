@@ -4,7 +4,7 @@ package com.github.hubble.rule;
 public abstract class IRule {
 
 
-    private String name;
+    protected String name;
 
 
     public IRule(String name) {
