@@ -2,11 +2,13 @@ package com.github.hubble.indicator;
 
 
 import com.github.hubble.ele.Element;
+import lombok.Getter;
 
 
 public abstract class CacheIndicatorSeries<R extends Element, C extends Element> extends IndicatorSeries<R> {
 
 
+    @Getter
     protected LastNQueue<C> cache;
 
 

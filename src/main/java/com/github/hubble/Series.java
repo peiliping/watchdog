@@ -3,6 +3,7 @@ package com.github.hubble;
 
 import com.github.hubble.ele.Element;
 import com.google.common.collect.Lists;
+import lombok.Getter;
 import org.apache.commons.lang3.Validate;
 
 import java.util.List;
@@ -19,8 +20,10 @@ public class Series<E extends Element> {
 
     protected E[] elements;
 
+    @Getter
     protected long maxId;
 
+    @Getter
     protected long interval;
 
     protected List<SeriesListener<E>> listeners;
@@ -61,6 +64,15 @@ public class Series<E extends Element> {
                 listener.onChange(element, replace, this);
             }
         }
+    }
+
+
+    public E get(long id) {
+
+        Validate.isTrue(id % this.interval == 0L);
+        int position = mod(id / this.interval);
+        E e = this.elements[position];
+        return e != null && e.getId() == id ? e : null;
     }
 
 
