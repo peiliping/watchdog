@@ -10,10 +10,12 @@ import com.github.hubble.rule.RulesManager;
 import com.github.hubble.rule.condition.OverTurnRule;
 import com.github.hubble.rule.logic.AndRule;
 import com.github.hubble.rule.series.BooleanRule;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.TimeUnit;
 
 
+@Slf4j
 public class T {
 
 
@@ -30,26 +32,35 @@ public class T {
         MAIndicatorSeries ma30 = new MAIndicatorSeries("A_ma30", 128, interval, 30);
 
         CustomCompare<NumberET> customCompare = (e1, e2) -> Double.compare(e1.getData(), e2.getData());
-
         GreaterThanIndicatorSeries<CandleET, NumberET> ma05VS10 =
                 new GreaterThanIndicatorSeries<>("A_ma05VS10", 128, interval, ma05, ma10, customCompare);
-        GreaterThanIndicatorSeries<CandleET, NumberET> ma05VS30 =
-                new GreaterThanIndicatorSeries<>("A_ma05VS30", 128, interval, ma05, ma30, customCompare);
+        GreaterThanIndicatorSeries<CandleET, NumberET> ma10VS30 =
+                new GreaterThanIndicatorSeries<>("A_ma10VS30", 128, interval, ma10, ma30, customCompare);
+
+        candleETSeries.regist(ma05VS10).regist(ma10VS30);
 
         BooleanRule ma05VS10BR = new BooleanRule("ma05VS10BR", ma05VS10);
-        BooleanRule ma05VS30BR = new BooleanRule("ma05VS30BR", ma05VS30);
-
-        AndRule andRule = new AndRule("AndRule", ma05VS10BR, ma05VS30BR);
-        OverTurnRule overTurnRule = new OverTurnRule("OverTurnRule", andRule, false);
+        BooleanRule ma10VS30BR = new BooleanRule("ma10VS30BR", ma10VS30);
+        AndRule andRule = new AndRule("AndRule", ma05VS10BR, ma10VS30BR);
+        OverTurnRule overTurnRule = new OverTurnRule("OverTurnRule", andRule, true);
+        overTurnRule.setMsg("买入信号");
         rulesManager.addRule(overTurnRule);
 
-        candleETSeries.regist(ma05VS10).regist(ma05VS30);
-
-        for (int i = 0; i < 100; i++) {
-            CandleET candleET = new CandleET(i * 60);
-            candleET.setClose(i * 1.5d);
+        double price = 1000d;
+        for (int i = 1; i < 500; i++) {
+            CandleET candleET = new CandleET(i * interval);
+            price -= 1d;
+            candleET.setClose(price);
             candleETSeries.add(candleET);
-            rulesManager.traverseRules();
+            rulesManager.traverseRules(candleET);
+        }
+
+        for (int i = 500; i < 1000; i++) {
+            CandleET candleET = new CandleET(i * interval);
+            price += 1d;
+            candleET.setClose(price);
+            candleETSeries.add(candleET);
+            rulesManager.traverseRules(candleET);
         }
     }
 }
