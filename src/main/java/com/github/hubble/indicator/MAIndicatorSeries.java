@@ -3,10 +3,10 @@ package com.github.hubble.indicator;
 
 import com.github.hubble.Series;
 import com.github.hubble.ele.CandleET;
-import com.github.hubble.ele.SingleET;
+import com.github.hubble.ele.SingleNumberET;
 
 
-public class MAIndicatorSeries extends CacheIndicatorSeries<SingleET, CandleET> {
+public class MAIndicatorSeries extends CacheIndicatorSeries<CandleET, SingleNumberET, CandleET> {
 
 
     private double last;
@@ -24,7 +24,7 @@ public class MAIndicatorSeries extends CacheIndicatorSeries<SingleET, CandleET> 
             super.cache.add(ele);
             if (isCacheFull()) {
                 this.last = super.cache.getList().stream().mapToDouble(value -> value.getClose()).sum();
-                add(new SingleET(ele.getId(), this.last / super.cache.getCapacity()));
+                add(new SingleNumberET(ele.getId(), this.last / super.cache.getCapacity()));
             }
             return;
         }
@@ -32,6 +32,6 @@ public class MAIndicatorSeries extends CacheIndicatorSeries<SingleET, CandleET> 
         this.last -= (replace ? super.cache.getLast().getClose() : super.cache.getFirst().getClose());
         this.last += ele.getClose();
         super.cache.add(ele);
-        add(new SingleET(ele.getId(), this.last / super.cache.getCapacity()));
+        add(new SingleNumberET(ele.getId(), this.last / super.cache.getCapacity()));
     }
 }

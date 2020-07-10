@@ -67,6 +67,12 @@ public class Series<E extends Element> {
     }
 
 
+    public E getLast() {
+
+        return get(this.maxId);
+    }
+
+
     public E get(long id) {
 
         Validate.isTrue(id % this.interval == 0L);

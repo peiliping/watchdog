@@ -11,7 +11,7 @@ import java.util.List;
 
 
 @Slf4j
-public class ShockSeriesRule extends SeriesRule<CandleET> {
+public class CandleShockRule extends SeriesRule<CandleET> {
 
 
     private double ratio;
@@ -19,7 +19,7 @@ public class ShockSeriesRule extends SeriesRule<CandleET> {
     private int count;
 
 
-    public ShockSeriesRule(String name, Series<CandleET> series, double ratio, int count) {
+    public CandleShockRule(String name, Series<CandleET> series, double ratio, int count) {
 
         super(name, series);
         this.ratio = ratio;

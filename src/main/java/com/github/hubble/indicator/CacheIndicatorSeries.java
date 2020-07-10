@@ -5,7 +5,7 @@ import com.github.hubble.ele.Element;
 import lombok.Getter;
 
 
-public abstract class CacheIndicatorSeries<R extends Element, C extends Element> extends IndicatorSeries<R> {
+public abstract class CacheIndicatorSeries<I extends Element, R extends Element, C extends Element> extends IndicatorSeries<I, R> {
 
 
     @Getter

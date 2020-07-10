@@ -4,7 +4,7 @@ package com.github.hubble;
 import com.github.hubble.ele.CandleET;
 import com.github.hubble.rule.RulesManager;
 import com.github.hubble.rule.condition.OverTurnRule;
-import com.github.hubble.rule.series.ShockSeriesRule;
+import com.github.hubble.rule.series.CandleShockRule;
 
 import java.util.concurrent.TimeUnit;
 
@@ -17,7 +17,7 @@ public class T {
         RulesManager rulesManager = new RulesManager();
 
         Series<CandleET> candleETSeries = new Series<>("A", 1024, TimeUnit.MINUTES.toSeconds(1));
-        ShockSeriesRule shockSeriesRule = new ShockSeriesRule("A_Candle_Shock", candleETSeries, 2, 5);
+        CandleShockRule shockSeriesRule = new CandleShockRule("A_Candle_Shock", candleETSeries, 2, 5);
         OverTurnRule overTurnRule = new OverTurnRule("", shockSeriesRule);
         rulesManager.addRule(overTurnRule);
 

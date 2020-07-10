@@ -1,0 +1,30 @@
+package com.github.hubble.indicator.group;
+
+
+import com.github.hubble.Series;
+import com.github.hubble.ele.Element;
+import com.github.hubble.indicator.IndicatorSeries;
+
+
+public abstract class PairIndicatorSeries<I extends Element, R extends Element, SR extends Element> extends IndicatorSeries<I, R> {
+
+
+    protected IndicatorSeries<I, SR> first;
+
+    protected IndicatorSeries<I, SR> second;
+
+
+    public PairIndicatorSeries(String name, int size, long interval, IndicatorSeries<I, SR> first, IndicatorSeries<I, SR> second) {
+
+        super(name, size, interval);
+        this.first = first;
+        this.second = second;
+    }
+
+
+    @Override public void onChange(I ele, boolean replace, Series<I> series) {
+
+        this.first.onChange(ele, replace, series);
+        this.second.onChange(ele, replace, series);
+    }
+}
