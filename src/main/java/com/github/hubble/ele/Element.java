@@ -20,4 +20,13 @@ public abstract class Element implements Comparable<Element> {
 
         return Long.compare(this.id, that.id);
     }
+
+
+    public abstract boolean diff(Element other);
+
+
+    public boolean same(Element other) {
+
+        return !diff(other);
+    }
 }

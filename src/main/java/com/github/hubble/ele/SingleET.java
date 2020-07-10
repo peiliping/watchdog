@@ -18,4 +18,10 @@ public class SingleET extends Element {
         super(id);
         this.data = data;
     }
+
+
+    @Override public boolean diff(Element other) {
+
+        return this.data != ((SingleET) other).data;
+    }
 }

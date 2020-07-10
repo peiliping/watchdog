@@ -1,11 +1,12 @@
 package com.github.hubble.indicator;
 
 
+import com.github.hubble.Series;
 import com.github.hubble.ele.CandleET;
 import com.github.hubble.ele.SingleET;
 
 
-public class MAIndicatorSeries extends CacheIndicatorSeries<SingleET> {
+public class MAIndicatorSeries extends CacheIndicatorSeries<SingleET, CandleET> {
 
 
     private double last;
@@ -17,22 +18,20 @@ public class MAIndicatorSeries extends CacheIndicatorSeries<SingleET> {
     }
 
 
-    @Override public void onChange(CandleET ele, boolean replace) {
+    @Override public void onChange(CandleET ele, boolean replace, Series<CandleET> series) {
 
-        SingleET newSingle = new SingleET(ele.getId(), ele.getClose());
-
-        if (super.cache.getList().size() < super.step) {
-            super.cache.add(newSingle);
-            if (super.cache.getList().size() == super.step) {
-                this.last = super.cache.getList().stream().mapToDouble(value -> value.getData()).sum();
-                add(new SingleET(newSingle.getId(), this.last / super.step));
+        if (!isCacheFull()) {
+            super.cache.add(ele);
+            if (isCacheFull()) {
+                this.last = super.cache.getList().stream().mapToDouble(value -> value.getClose()).sum();
+                add(new SingleET(ele.getId(), this.last / super.cache.getCapacity()));
             }
             return;
         }
 
-        this.last -= (replace ? super.cache.getLast().getData() : super.cache.getFirst().getData());
-        this.last += newSingle.getData();
-        super.cache.add(newSingle);
-        add(new SingleET(newSingle.getId(), this.last / super.step));
+        this.last -= (replace ? super.cache.getLast().getClose() : super.cache.getFirst().getClose());
+        this.last += ele.getClose();
+        super.cache.add(ele);
+        add(new SingleET(ele.getId(), this.last / super.cache.getCapacity()));
     }
 }

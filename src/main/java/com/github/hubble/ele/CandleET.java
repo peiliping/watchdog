@@ -31,5 +31,19 @@ public class CandleET extends Element {
 
         super(id);
     }
+
+
+    @Override public boolean diff(Element other) {
+
+        CandleET that = (CandleET) other;
+
+        return this.open != that.open
+               || this.low != that.low
+               || this.high != that.high
+               || this.close != that.close
+               || this.amount != that.amount
+               || this.volume != that.volume
+               || this.count != that.count;
+    }
 }
 

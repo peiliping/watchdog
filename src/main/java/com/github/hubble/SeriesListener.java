@@ -7,6 +7,6 @@ import com.github.hubble.ele.Element;
 public interface SeriesListener<E extends Element> {
 
 
-    void onChange(E ele, boolean replace);
+    void onChange(E ele, boolean replace, Series<E> series);
 
 }

@@ -8,10 +8,10 @@ import lombok.Getter;
 import java.util.LinkedList;
 
 
+@Getter
 public class LastNQueue<E extends Element> {
 
 
-    @Getter
     private LinkedList<E> list = Lists.newLinkedList();
 
     private int capacity;

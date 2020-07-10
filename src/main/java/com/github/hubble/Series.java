@@ -26,13 +26,18 @@ public class Series<E extends Element> {
     protected List<SeriesListener<E>> listeners;
 
 
+    /**
+     * @param name     名字
+     * @param size     最多保留的element个数，必须是2的N次方
+     * @param interval 单位为秒
+     */
     public Series(String name, int size, long interval) {
 
         this.name = name;
         this.size = size;
         Validate.isTrue(Integer.bitCount((int) this.size) == 1);
         this.mask = this.size - 1;
-        this.elements = (E[]) new Object[size];
+        this.elements = (E[]) new Element[size];
         this.maxId = 0L;
         this.interval = interval;
         this.listeners = Lists.newArrayList();
@@ -48,15 +53,25 @@ public class Series<E extends Element> {
         Element lastElement = this.elements[position];
         if (lastElement == null || lastElement.compareTo(element) <= 0) {
             this.elements[position] = element;
+            boolean replace = lastElement != null && lastElement.getId() == element.getId();
+            if (replace && lastElement.same(element)) {
+                return;
+            }
             for (SeriesListener<E> listener : this.listeners) {
-                boolean replace = lastElement != null && lastElement.getId() == element.getId();
-                listener.onChange(element, replace);
+                listener.onChange(element, replace, this);
             }
         }
     }
 
 
-    private int mod(long i) {
+    public Series<E> regist(SeriesListener<E> listener) {
+
+        this.listeners.add(listener);
+        return this;
+    }
+
+
+    protected int mod(long i) {
 
         return (int) (i & this.mask);
     }

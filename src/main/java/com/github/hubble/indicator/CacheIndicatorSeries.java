@@ -4,18 +4,21 @@ package com.github.hubble.indicator;
 import com.github.hubble.ele.Element;
 
 
-public abstract class CacheIndicatorSeries<R extends Element> extends IndicatorSeries<R> {
+public abstract class CacheIndicatorSeries<R extends Element, C extends Element> extends IndicatorSeries<R> {
 
 
-    protected int step;
-
-    protected LastNQueue<R> cache;
+    protected LastNQueue<C> cache;
 
 
-    public CacheIndicatorSeries(String name, int size, long interval, int step) {
+    public CacheIndicatorSeries(String name, int size, long interval, int cacheSize) {
 
         super(name, size, interval);
-        this.step = step;
-        this.cache = new LastNQueue<>(step);
+        this.cache = new LastNQueue<>(cacheSize);
+    }
+
+
+    protected boolean isCacheFull() {
+
+        return this.cache.getList().size() == this.cache.getCapacity();
     }
 }
