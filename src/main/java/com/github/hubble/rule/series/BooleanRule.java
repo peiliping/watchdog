@@ -14,9 +14,9 @@ public class BooleanRule extends SeriesRule<BooleanET> {
     }
 
 
-    @Override public boolean isMatched() {
+    @Override public boolean isMatched(long id) {
 
-        BooleanET singleBooleanET = super.series.getLast();
+        BooleanET singleBooleanET = super.series.get(id);
         return singleBooleanET != null && singleBooleanET.isData();
     }
 }

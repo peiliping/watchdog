@@ -44,7 +44,7 @@ public class T {
             price -= 1d;
             candleET.setClose(price);
             candleETSeries.add(candleET);
-            rulesManager.traverseRules();
+            rulesManager.traverseRules(candleET.getId());
         }
 
         for (int i = 500; i < 1000; i++) {
@@ -52,7 +52,7 @@ public class T {
             price += 1d;
             candleET.setClose(price);
             candleETSeries.add(candleET);
-            rulesManager.traverseRules();
+            rulesManager.traverseRules(candleET.getId());
         }
     }
 }

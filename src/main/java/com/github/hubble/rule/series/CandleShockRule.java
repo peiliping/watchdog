@@ -26,7 +26,7 @@ public class CandleShockRule extends SeriesRule<CandleET> {
     }
 
 
-    @Override public boolean isMatched() {
+    @Override public boolean isMatched(long id) {
 
         if (super.series.getMaxId() == 0) {
             return false;

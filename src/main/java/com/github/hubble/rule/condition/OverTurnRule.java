@@ -20,10 +20,10 @@ public class OverTurnRule extends IRule {
     }
 
 
-    @Override public boolean isMatched() {
+    @Override public boolean isMatched(long id) {
 
         boolean last = this.current;
-        this.current = this.rule.isMatched();
+        this.current = this.rule.isMatched(id);
         return !last && this.current;
     }
 }

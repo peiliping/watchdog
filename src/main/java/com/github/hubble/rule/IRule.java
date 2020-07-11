@@ -26,7 +26,7 @@ public abstract class IRule {
     }
 
 
-    public abstract boolean isMatched();
+    public abstract boolean isMatched(long id);
 
 
     public IRule and(IRule rule) {

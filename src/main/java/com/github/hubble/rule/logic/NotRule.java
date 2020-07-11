@@ -17,8 +17,8 @@ public class NotRule extends IRule {
     }
 
 
-    @Override public boolean isMatched() {
+    @Override public boolean isMatched(long id) {
 
-        return !this.rule.isMatched();
+        return !this.rule.isMatched(id);
     }
 }

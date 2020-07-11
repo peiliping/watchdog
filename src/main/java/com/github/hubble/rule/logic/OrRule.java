@@ -20,8 +20,8 @@ public class OrRule extends IRule {
     }
 
 
-    @Override public boolean isMatched() {
+    @Override public boolean isMatched(long id) {
 
-        return this.leftRule.isMatched() || this.rightRule.isMatched();
+        return this.leftRule.isMatched(id) || this.rightRule.isMatched(id);
     }
 }

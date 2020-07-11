@@ -22,10 +22,10 @@ public class RulesManager {
     }
 
 
-    public void traverseRules() {
+    public void traverseRules(long id) {
 
         for (IRule rule : this.rules) {
-            if (rule.isMatched()) {
+            if (rule.isMatched(id)) {
                 rule.getResult().call();
             }
         }

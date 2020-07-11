@@ -4,7 +4,7 @@ package com.github.hubble.rule.condition;
 import com.github.hubble.rule.IRule;
 
 
-public class FusingRule extends IRule {
+public class OnceRule extends IRule {
 
 
     private IRule rule;
@@ -12,7 +12,7 @@ public class FusingRule extends IRule {
     private boolean current;
 
 
-    public FusingRule(String name, IRule rule) {
+    public OnceRule(String name, IRule rule) {
 
         super(name);
         this.rule = rule;
@@ -20,12 +20,12 @@ public class FusingRule extends IRule {
     }
 
 
-    @Override public boolean isMatched() {
+    @Override public boolean isMatched(long id) {
 
         if (this.current) {
             return true;
         } else {
-            this.current = this.rule.isMatched();
+            this.current = this.rule.isMatched(id);
             return this.current;
         }
     }
