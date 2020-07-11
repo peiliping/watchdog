@@ -22,11 +22,10 @@ public class ComparePairIndicatorSeries<I extends Element, SR extends Element> e
     }
 
 
-    @Override public void onChange(long sequence, I ele, boolean updateOrInsert, Series<I> series) {
+    @Override public void onChange(I ele, boolean updateOrInsert, Series<I> series) {
 
-        super.onChange(sequence, ele, updateOrInsert, series);
-        SR sr1 = super.first.getLast();
-        SR sr2 = super.second.getLast();
+        SR sr1 = super.first.get(ele.getId());
+        SR sr2 = super.second.get(ele.getId());
         if (sr1 != null && sr2 != null) {
             add(new BooleanET(ele.getId(), this.customCompare.exec(sr1, sr2)));
         }

@@ -9,7 +9,7 @@ import com.github.hubble.ele.Element;
 public abstract class IndicatorSeries<I extends Element, R extends Element> extends Series<R> implements SeriesListener<I> {
 
 
-    private long lastSequence;
+    protected long lastSequence;
 
 
     public IndicatorSeries(String name, int size, long interval) {
@@ -18,10 +18,10 @@ public abstract class IndicatorSeries<I extends Element, R extends Element> exte
     }
 
 
-    @Override public void onChange(long sequence, I ele, boolean updateOrInsert, Series<I> series) {
+    @Override public void onChange(long seq, I ele, boolean updateOrInsert, Series<I> series) {
 
-        if (sequence > this.lastSequence) {
-            this.lastSequence = sequence;
+        if (seq > this.lastSequence) {
+            this.lastSequence = seq;
             onChange(ele, updateOrInsert, series);
         }
     }

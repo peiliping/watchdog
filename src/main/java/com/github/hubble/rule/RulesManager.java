@@ -14,9 +14,11 @@ public class RulesManager {
     private List<IRule> rules = Lists.newArrayList();
 
 
-    public void addRule(IRule rule) {
+    public void addRule(IRule... rules) {
 
-        this.rules.add(rule);
+        for (IRule rule : rules) {
+            this.rules.add(rule);
+        }
     }
 
 

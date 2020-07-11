@@ -82,9 +82,11 @@ public class Series<E extends Element> {
     }
 
 
-    public Series<E> bind(SeriesListener<E> listener) {
+    public Series<E> bind(SeriesListener<E>... listeners) {
 
-        this.listeners.add(listener);
+        for (SeriesListener<E> listener : listeners) {
+            this.listeners.add(listener);
+        }
         return this;
     }
 

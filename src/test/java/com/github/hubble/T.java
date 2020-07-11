@@ -8,7 +8,6 @@ import com.github.hubble.indicator.MAIndicatorSeries;
 import com.github.hubble.indicator.group.ComparePairIndicatorSeries;
 import com.github.hubble.rule.RulesManager;
 import com.github.hubble.rule.condition.OverTurnRule;
-import com.github.hubble.rule.logic.AndRule;
 import com.github.hubble.rule.result.FixedRuleResult;
 import com.github.hubble.rule.series.BooleanRule;
 import lombok.extern.slf4j.Slf4j;
@@ -22,26 +21,21 @@ public class T {
 
     public static void main(String[] args) {
 
-        RulesManager rulesManager = new RulesManager();
-
         long duration = TimeUnit.MINUTES.toSeconds(1);
         Series<CandleET> candleETSeries = new Series<>("A", 128, duration);
-
         MAIndicatorSeries ma05 = new MAIndicatorSeries("A_ma05", 128, duration, 5);
         MAIndicatorSeries ma10 = new MAIndicatorSeries("A_ma10", 128, duration, 10);
         MAIndicatorSeries ma30 = new MAIndicatorSeries("A_ma30", 128, duration, 30);
-
         CustomCompare<NumberET> cc = (e1, e2) -> Double.compare(e1.getData(), e2.getData());
         ComparePairIndicatorSeries<CandleET, NumberET> ma05VS10 = new ComparePairIndicatorSeries<>("A_ma05VS10", 128, duration, ma05, ma10, cc);
         ComparePairIndicatorSeries<CandleET, NumberET> ma10VS30 = new ComparePairIndicatorSeries<>("A_ma10VS30", 128, duration, ma10, ma30, cc);
-
-        candleETSeries.bind(ma05VS10).bind(ma10VS30);
+        candleETSeries.bind(ma05VS10, ma10VS30);
 
         BooleanRule ma05VS10BR = new BooleanRule("ma05VS10BR", ma05VS10);
         BooleanRule ma10VS30BR = new BooleanRule("ma10VS30BR", ma10VS30);
-        AndRule andRule = new AndRule("AndRule", ma05VS10BR, ma10VS30BR);
-        OverTurnRule overTurnRule = new OverTurnRule("OverTurnRule", andRule, true);
+        OverTurnRule overTurnRule = new OverTurnRule("OverTurnRule", ma05VS10BR.and(ma10VS30BR), true);
         overTurnRule.setResult(new FixedRuleResult("A出现买入信号"));
+        RulesManager rulesManager = new RulesManager();
         rulesManager.addRule(overTurnRule);
 
         double price = 1000d;
