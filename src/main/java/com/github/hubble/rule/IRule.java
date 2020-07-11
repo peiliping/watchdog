@@ -10,12 +10,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 
+@Getter
 public abstract class IRule {
 
 
     protected String name;
 
-    @Getter
     @Setter
     protected RuleResult result;
 

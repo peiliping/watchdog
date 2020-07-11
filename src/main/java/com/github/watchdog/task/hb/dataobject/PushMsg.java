@@ -12,7 +12,12 @@ public class PushMsg {
 
     private String ch;
 
-    private long ts;
+    private String rep;
 
     private String tick;
+
+    private String data;
+
+    private long ts;
+
 }

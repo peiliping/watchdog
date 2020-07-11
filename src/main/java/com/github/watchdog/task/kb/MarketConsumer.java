@@ -42,7 +42,7 @@ public class MarketConsumer extends AbstractMarketConsumer {
 
 
                 }).get(0);
-                CandleET currentCandle = new CandleET(data.get(0).longValue());
+                CandleET currentCandle = new CandleET(data.get(0).longValue() / 1000);
                 currentCandle.setLow(data.get(1));
                 currentCandle.setHigh(data.get(2));
                 currentCandle.setOpen(data.get(3));
