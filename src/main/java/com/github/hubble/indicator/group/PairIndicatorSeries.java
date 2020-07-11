@@ -22,9 +22,14 @@ public abstract class PairIndicatorSeries<I extends Element, R extends Element, 
     }
 
 
-    @Override public void onChange(I ele, boolean replace, Series<I> series) {
+    @Override public void onChange(long sequence, I ele, boolean updateOrInsert, Series<I> series) {
 
-        this.first.onChange(ele, replace, series);
-        this.second.onChange(ele, replace, series);
+        this.first.onChange(sequence, ele, updateOrInsert, series);
+        this.second.onChange(sequence, ele, updateOrInsert, series);
+    }
+
+
+    @Override protected void onChange(I ele, boolean updateOrInsert, Series<I> series) {
+
     }
 }

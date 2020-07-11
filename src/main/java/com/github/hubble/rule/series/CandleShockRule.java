@@ -3,14 +3,13 @@ package com.github.hubble.rule.series;
 
 import com.github.hubble.Series;
 import com.github.hubble.ele.CandleET;
+import com.github.hubble.rule.result.OnceRuleResult;
 import com.google.common.collect.Lists;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.Comparator;
 import java.util.List;
 
 
-@Slf4j
 public class CandleShockRule extends SeriesRule<CandleET> {
 
 
@@ -66,7 +65,8 @@ public class CandleShockRule extends SeriesRule<CandleET> {
                 direction = "-";
             }
         }
-        log.warn(String.format("%s %s %s%s%%", super.name, currentCandle.getClose(), direction, tRatio));
+        String msg = String.format("%s %s %s %s%s%%", super.name, currentCandle.getId(), currentCandle.getClose(), direction, tRatio);
+        super.result = new OnceRuleResult(msg);
         return true;
     }
 }

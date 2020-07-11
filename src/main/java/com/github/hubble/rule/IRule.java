@@ -1,6 +1,7 @@
 package com.github.hubble.rule;
 
 
+import com.github.hubble.rule.result.RuleResult;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,9 +11,9 @@ public abstract class IRule {
 
     protected String name;
 
-    @Setter
     @Getter
-    protected String msg;
+    @Setter
+    protected RuleResult result;
 
 
     public IRule(String name) {

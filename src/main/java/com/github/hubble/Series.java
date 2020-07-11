@@ -12,21 +12,23 @@ import java.util.List;
 public class Series<E extends Element> {
 
 
-    protected String name;
+    protected final String name;
 
-    protected long size;
+    protected final long size;
 
-    protected long mask;
+    protected final long mask;
 
-    protected E[] elements;
+    protected final E[] elements;
+
+    protected final List<SeriesListener<E>> listeners;
 
     @Getter
-    protected long maxId;
+    protected final long interval;
 
     @Getter
-    protected long interval;
+    protected long maxId = 0L;
 
-    protected List<SeriesListener<E>> listeners;
+    protected long sequence = 0;
 
 
     /**
@@ -41,29 +43,36 @@ public class Series<E extends Element> {
         Validate.isTrue(Integer.bitCount((int) this.size) == 1);
         this.mask = this.size - 1;
         this.elements = (E[]) new Element[size];
-        this.maxId = 0L;
-        this.interval = interval;
         this.listeners = Lists.newArrayList();
+        this.interval = interval;
     }
 
 
     public void add(E element) {
 
-        Validate.isTrue(element.getId() % this.interval == 0L);
         Validate.isTrue(element.getId() >= this.maxId);
-        this.maxId = element.getId();
-        int position = mod(element.getId() / this.interval);
+
+        int position = getPosition(element.getId());
         Element lastElement = this.elements[position];
-        if (lastElement == null || lastElement.compareTo(element) <= 0) {
-            this.elements[position] = element;
-            boolean replace = lastElement != null && lastElement.getId() == element.getId();
-            if (replace && lastElement.same(element)) {
-                return;
-            }
-            for (SeriesListener<E> listener : this.listeners) {
-                listener.onChange(element, replace, this);
-            }
+        this.elements[position] = element;
+        this.maxId = element.getId();
+
+        boolean replace = lastElement != null && lastElement.getId() == element.getId();
+        if (replace && lastElement.same(element)) {
+            return;
         }
+        for (SeriesListener<E> listener : this.listeners) {
+            listener.onChange(this.sequence, element, replace, this);
+        }
+        this.sequence++;
+    }
+
+
+    public E get(long id) {
+
+        int position = getPosition(id);
+        E e = this.elements[position];
+        return e != null && e.getId() == id ? e : null;
     }
 
 
@@ -73,24 +82,17 @@ public class Series<E extends Element> {
     }
 
 
-    public E get(long id) {
-
-        Validate.isTrue(id % this.interval == 0L);
-        int position = mod(id / this.interval);
-        E e = this.elements[position];
-        return e != null && e.getId() == id ? e : null;
-    }
-
-
-    public Series<E> regist(SeriesListener<E> listener) {
+    public Series<E> bind(SeriesListener<E> listener) {
 
         this.listeners.add(listener);
         return this;
     }
 
 
-    protected int mod(long i) {
+    protected int getPosition(long id) {
 
+        Validate.isTrue(id % this.interval == 0L);
+        long i = id / this.interval;
         return (int) (i & this.mask);
     }
 }
