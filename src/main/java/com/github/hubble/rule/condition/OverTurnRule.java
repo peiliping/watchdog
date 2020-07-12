@@ -2,20 +2,18 @@ package com.github.hubble.rule.condition;
 
 
 import com.github.hubble.rule.IRule;
+import com.github.hubble.rule.ProxyRule;
 
 
-public class OverTurnRule extends IRule {
+public class OverTurnRule extends ProxyRule {
 
-
-    private IRule rule;
 
     private boolean current;
 
 
     public OverTurnRule(String name, IRule rule, boolean current) {
 
-        super(name);
-        this.rule = rule;
+        super(name, rule);
         this.current = current;
     }
 
@@ -29,7 +27,7 @@ public class OverTurnRule extends IRule {
     @Override public boolean isMatched(long id) {
 
         boolean last = this.current;
-        this.current = this.rule.isMatched(id);
+        this.current = super.rule.isMatched(id);
         return !last && this.current;
     }
 }

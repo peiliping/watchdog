@@ -40,7 +40,7 @@ public class Symbol {
 
     public void initRule() {
 
-        CandleShockRule candleShockRule = new CandleShockRule(this.name + "_ShockRule", this.candleETSeries, 1d, 5);
+        CandleShockRule candleShockRule = new CandleShockRule(this.name + "_ShockRule", this.candleETSeries, 0.05d, 5);
         this.rulesManager.addRule(new PeriodRule(new OverTurnRule(candleShockRule, false), TimeUnit.MINUTES.toSeconds(10)));
     }
 }

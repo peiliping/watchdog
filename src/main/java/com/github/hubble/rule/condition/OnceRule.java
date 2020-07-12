@@ -2,20 +2,18 @@ package com.github.hubble.rule.condition;
 
 
 import com.github.hubble.rule.IRule;
+import com.github.hubble.rule.ProxyRule;
 
 
-public class OnceRule extends IRule {
+public class OnceRule extends ProxyRule {
 
-
-    private IRule rule;
 
     private boolean current;
 
 
     public OnceRule(String name, IRule rule) {
 
-        super(name);
-        this.rule = rule;
+        super(name, rule);
         this.current = false;
     }
 
@@ -31,7 +29,7 @@ public class OnceRule extends IRule {
         if (this.current) {
             return true;
         } else {
-            this.current = this.rule.isMatched(id);
+            this.current = super.rule.isMatched(id);
             return this.current;
         }
     }

@@ -2,13 +2,12 @@ package com.github.hubble.rule.condition;
 
 
 import com.github.hubble.rule.IRule;
+import com.github.hubble.rule.ProxyRule;
 import com.github.watchdog.common.Util;
 
 
-public class PeriodRule extends IRule {
+public class PeriodRule extends ProxyRule {
 
-
-    private IRule rule;
 
     private long period;
 
@@ -17,8 +16,7 @@ public class PeriodRule extends IRule {
 
     public PeriodRule(String name, IRule rule, long period) {
 
-        super(name);
-        this.rule = rule;
+        super(name, rule);
         this.period = period;
     }
 
@@ -34,7 +32,7 @@ public class PeriodRule extends IRule {
         if (Util.nowSec() - this.lastTS < this.period) {
             return false;
         }
-        if (this.rule.isMatched(id)) {
+        if (super.rule.isMatched(id)) {
             this.lastTS = Util.nowSec();
             return true;
         } else {

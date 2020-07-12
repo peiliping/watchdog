@@ -2,26 +2,20 @@ package com.github.hubble.rule.logic;
 
 
 import com.github.hubble.rule.IRule;
+import com.github.hubble.rule.ProxyPairRule;
 
 
-public class OrRule extends IRule {
-
-
-    private IRule leftRule;
-
-    private IRule rightRule;
+public class OrRule extends ProxyPairRule {
 
 
     public OrRule(String name, IRule leftRule, IRule rightRule) {
 
-        super(name);
-        this.leftRule = leftRule;
-        this.rightRule = rightRule;
+        super(name, leftRule, rightRule);
     }
 
 
     @Override public boolean isMatched(long id) {
 
-        return this.leftRule.isMatched(id) || this.rightRule.isMatched(id);
+        return super.leftRule.isMatched(id) || super.rightRule.isMatched(id);
     }
 }
