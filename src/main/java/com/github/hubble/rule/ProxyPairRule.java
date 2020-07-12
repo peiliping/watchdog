@@ -1,10 +1,6 @@
 package com.github.hubble.rule;
 
 
-import com.github.hubble.rule.result.PairRuleResult;
-import com.github.hubble.rule.result.RuleResult;
-
-
 public abstract class ProxyPairRule extends IRule {
 
 
@@ -18,11 +14,5 @@ public abstract class ProxyPairRule extends IRule {
         super(name);
         this.leftRule = leftRule;
         this.rightRule = rightRule;
-    }
-
-
-    @Override public RuleResult getResult() {
-
-        return new PairRuleResult(this.leftRule.result, this.rightRule.result);
     }
 }

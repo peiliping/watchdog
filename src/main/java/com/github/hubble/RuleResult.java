@@ -1,11 +1,11 @@
-package com.github.hubble.rule.result;
+package com.github.hubble;
 
 
 import lombok.extern.slf4j.Slf4j;
 
 
 @Slf4j
-public abstract class RuleResult {
+public class RuleResult {
 
 
     protected String message;
@@ -25,5 +25,8 @@ public abstract class RuleResult {
     }
 
 
-    public abstract void call();
+    public void call() {
+
+        logMsg();
+    }
 }

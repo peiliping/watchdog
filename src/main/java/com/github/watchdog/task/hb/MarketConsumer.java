@@ -43,7 +43,6 @@ public class MarketConsumer extends AbstractMarketConsumer {
             keyStr = pushMsg.getCh();
             reqOrsub = false;
         } else {
-            log.info(msg);
             return;
         }
 
@@ -54,7 +53,14 @@ public class MarketConsumer extends AbstractMarketConsumer {
             return;
         }
 
-        Symbol symbol = getOrcCreateSymbol(pairCodeName, CandleType.of(step).interval);
+        CandleType candleType = CandleType.of(step);
+        if (candleType == null) {
+            return;
+        }
+
+        pairCodeName = super.marketName + "." + pairCodeName;
+
+        Symbol symbol = getOrcCreateSymbol(pairCodeName, candleType);
         if (reqOrsub) {
             JSONArray array = JSON.parseArray(pushMsg.getData());
             for (int i = 0; i < array.size(); i++) {
@@ -67,24 +73,14 @@ public class MarketConsumer extends AbstractMarketConsumer {
             addCandle(candleET, symbol);
             symbol.getRulesManager().traverseRules(candleET.getId());
         }
-
     }
 
 
-    private void addCandle(CandleET candleET, Symbol symbol) {
-
-        Series<CandleET> candleETSeries = symbol.getCandleETSeries();
-        if (candleET.getId() >= candleETSeries.getMaxId()) {
-            candleETSeries.add(candleET);
-        }
-    }
-
-
-    private Symbol getOrcCreateSymbol(String name, long interval) {
+    private Symbol getOrcCreateSymbol(String name, CandleType candleType) {
 
         Symbol symbol = this.symbols.get(name);
         if (symbol == null) {
-            symbol = new Symbol(name, interval);
+            symbol = new Symbol(name, candleType.interval);
             symbol.initIndicators();
             this.symbols.put(name, symbol);
         }
@@ -103,5 +99,14 @@ public class MarketConsumer extends AbstractMarketConsumer {
         candleET.setVolume(data.getDouble("vol"));
         candleET.setCount(data.getInteger("count"));
         return candleET;
+    }
+
+
+    private void addCandle(CandleET candleET, Symbol symbol) {
+
+        Series<CandleET> candleETSeries = symbol.getCandleETSeries();
+        if (candleET.getId() >= candleETSeries.getMaxId()) {
+            candleETSeries.add(candleET);
+        }
     }
 }

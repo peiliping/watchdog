@@ -1,13 +1,14 @@
 package com.github.hubble.rule;
 
 
+import com.github.hubble.RuleResult;
 import com.github.hubble.rule.logic.AndRule;
 import com.github.hubble.rule.logic.NotRule;
 import com.github.hubble.rule.logic.OrRule;
 import com.github.hubble.rule.logic.XorRule;
-import com.github.hubble.rule.result.RuleResult;
 import lombok.Getter;
-import lombok.Setter;
+
+import java.util.List;
 
 
 @Getter
@@ -16,9 +17,6 @@ public abstract class IRule {
 
     protected String name;
 
-    @Setter
-    protected RuleResult result;
-
 
     public IRule(String name) {
 
@@ -26,7 +24,7 @@ public abstract class IRule {
     }
 
 
-    public abstract boolean isMatched(long id);
+    public abstract boolean match(long id, List<RuleResult> results);
 
 
     public IRule and(IRule rule) {

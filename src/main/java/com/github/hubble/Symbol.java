@@ -28,7 +28,7 @@ public class Symbol {
 
         this.name = name;
         this.interval = interval;
-        this.candleETSeries = new Series<>(this.name + "_candles", 128, interval);
+        this.candleETSeries = new Series<>(this.name + ".candles", 128, interval);
         this.rulesManager = new RulesManager();
     }
 
@@ -40,7 +40,7 @@ public class Symbol {
 
     public void initRule() {
 
-        CandleShockRule candleShockRule = new CandleShockRule(this.name + "_ShockRule", this.candleETSeries, 0.05d, 5);
-        this.rulesManager.addRule(new PeriodRule(new OverTurnRule(candleShockRule, false), TimeUnit.MINUTES.toSeconds(10)));
+        CandleShockRule candleShockRule = new CandleShockRule(this.name + ".ShockRule", this.candleETSeries, 0.05d, 5);
+        this.rulesManager.addRule(new PeriodRule(new OverTurnRule(candleShockRule, false), TimeUnit.MINUTES.toSeconds(2)));
     }
 }

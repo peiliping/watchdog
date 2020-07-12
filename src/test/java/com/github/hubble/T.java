@@ -8,7 +8,6 @@ import com.github.hubble.indicator.MAIndicatorSeries;
 import com.github.hubble.indicator.group.CompareIndicatorSeries;
 import com.github.hubble.rule.RulesManager;
 import com.github.hubble.rule.condition.OverTurnRule;
-import com.github.hubble.rule.result.FixedRuleResult;
 import com.github.hubble.rule.series.BooleanRule;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,7 +33,7 @@ public class T {
         BooleanRule ma05VS10BR = new BooleanRule("ma05VS10BR", ma05VS10);
         BooleanRule ma10VS30BR = new BooleanRule("ma10VS30BR", ma10VS30);
         OverTurnRule overTurnRule = new OverTurnRule("OverTurnRule", ma05VS10BR.and(ma10VS30BR), false);
-        overTurnRule.setResult(new FixedRuleResult("A出现买入信号"));
+        //overTurnRule.setResult(new FixedRuleResult("A出现买入信号"));
         RulesManager rulesManager = new RulesManager();
         rulesManager.addRule(overTurnRule);
 
