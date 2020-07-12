@@ -20,6 +20,12 @@ public class OverTurnRule extends IRule {
     }
 
 
+    public OverTurnRule(IRule rule, boolean current) {
+
+        this("OverTurnRule", rule, current);
+    }
+
+
     @Override public boolean isMatched(long id) {
 
         boolean last = this.current;

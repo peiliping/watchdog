@@ -11,14 +11,20 @@ import java.util.List;
 public class RulesManager {
 
 
+    private boolean lock = false;
+
     private List<IRule> rules = Lists.newArrayList();
 
 
     public void addRule(IRule... rules) {
 
+        if (this.lock) {
+            return;
+        }
         for (IRule rule : rules) {
             this.rules.add(rule);
         }
+        this.lock = true;
     }
 
 

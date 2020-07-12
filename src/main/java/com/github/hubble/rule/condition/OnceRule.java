@@ -20,6 +20,12 @@ public class OnceRule extends IRule {
     }
 
 
+    public OnceRule(IRule rule) {
+
+        this("OnceRule", rule);
+    }
+
+
     @Override public boolean isMatched(long id) {
 
         if (this.current) {

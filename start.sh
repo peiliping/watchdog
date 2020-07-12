@@ -1,7 +1,7 @@
-java -jar ../target/watchdog-1.0-SNAPSHOT.jar --logLevel info \
+java -jar ../target/watchdog-1.0-SNAPSHOT.jar \
+	--logLevel info \
 	--ssl --host api.huobiasia.vip \
-	--heartBeat '{"pong":%s}' \
-	--subscribe '{"sub":"market.btcusdt.kline.1min"}' \
 	--market hb \
-	--marketConfig '{"candleChangeRatioConditions":{"btcusdt":0.8}}' \
-	--barkIds XXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+	--heartBeat '{"pong":%s}' \
+	--subscribe '{"req":"market.lambusdt.kline.30min","symbol":"lambusdt","period":"30min"}${"sub":"market.lambusdt.kline.30min","symbol":"lambusdt","period":"30min"}' \
+	--barkIds XXXXX

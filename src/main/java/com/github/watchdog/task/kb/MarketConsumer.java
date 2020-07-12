@@ -48,7 +48,7 @@ public class MarketConsumer extends AbstractMarketConsumer {
                 currentCandle.setOpen(data.get(3));
                 currentCandle.setClose(data.get(4));
                 currentCandle.setAmount(data.get(5));
-                handleCandle(pushMsg.getPairCode(), currentCandle);
+                //handleCandle(pushMsg.getPairCode(), currentCandle);
                 break;
         }
     }

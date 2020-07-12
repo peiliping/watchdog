@@ -4,13 +4,10 @@ package com.github.watchdog.stream;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.watchdog.common.Util;
-import com.github.hubble.ele.CandleET;
-import com.github.hubble.indicator.LastNQueue;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Comparator;
 import java.util.Map;
 
 
@@ -21,10 +18,6 @@ public abstract class AbstractMarketConsumer extends AbstractConsumer {
     protected Map<String, Long> lastNotifyFilter = Maps.newHashMap();
 
     protected long notifyInterval = 10 * 60L;
-
-    protected Map<String, LastNQueue<CandleET>> lastCandles = Maps.newHashMap();
-
-    protected int candleQueueSize = 6;
 
     protected Map<String, Double> candleChangeRatioConditions = Maps.newHashMap();
 
@@ -42,14 +35,6 @@ public abstract class AbstractMarketConsumer extends AbstractConsumer {
             Long tNotifyInterval = jsonObject.getLong("notifyInterval");
             if (tNotifyInterval != null) {
                 this.notifyInterval = tNotifyInterval;
-            }
-            Integer tCandleQueueSize = jsonObject.getInteger("candleQueueSize");
-            if (tCandleQueueSize != null) {
-                this.candleQueueSize = tCandleQueueSize;
-            }
-            Double tDefaultCandleChangeRatioCondition = jsonObject.getDouble("defaultCandleChangeRatioCondition");
-            if (tDefaultCandleChangeRatioCondition != null) {
-                this.defaultCandleChangeRatioCondition = tDefaultCandleChangeRatioCondition;
             }
             JSONObject tJCandleChangeRatioConditions = jsonObject.getJSONObject("candleChangeRatioConditions");
             if (tJCandleChangeRatioConditions != null) {
@@ -69,46 +54,5 @@ public abstract class AbstractMarketConsumer extends AbstractConsumer {
             super.msgChannel.addResult(msg);
             this.lastNotifyFilter.put(key, now);
         }
-    }
-
-
-    protected void handleCandle(String pairCodeName, CandleET currentCandle) {
-
-        LastNQueue<CandleET> oldLNQ = this.lastCandles.get(pairCodeName);
-        if (oldLNQ == null) {
-            oldLNQ = new LastNQueue<>(this.candleQueueSize);
-            this.lastCandles.put(pairCodeName, oldLNQ);
-        }
-        oldLNQ.add(currentCandle);
-
-        CandleET lowCandle = oldLNQ.getList().stream().min(Comparator.comparingDouble(CandleET::getLow)).get();
-        CandleET highCandle = oldLNQ.getList().stream().max(Comparator.comparingDouble(CandleET::getHigh)).get();
-        if (currentCandle.getId() != lowCandle.getId() && currentCandle.getId() != highCandle.getId()) {
-            return;
-        }
-
-        Double delta = highCandle.getHigh() - lowCandle.getLow();
-        Double ratio = (double) Math.round(delta / lowCandle.getLow() * 10000) / 100;
-        double condition = this.candleChangeRatioConditions.getOrDefault(pairCodeName, this.defaultCandleChangeRatioCondition);
-        if (ratio < condition) {
-            return;
-        }
-
-        String direction = "~";
-        if (lowCandle.getId() < highCandle.getId()) {
-            direction = "+";
-        } else if (lowCandle.getId() > highCandle.getId()) {
-            direction = "-";
-        } else {
-            if (currentCandle.getOpen() < currentCandle.getClose()) {
-                direction = "+";
-            } else if (currentCandle.getOpen() > currentCandle.getClose()) {
-                direction = "-";
-            }
-        }
-
-        String key = StringUtils.joinWith("_", "Candle", pairCodeName);
-        String result = String.format("%s %s %s %s%s%%", this.marketName, pairCodeName, currentCandle.getClose(), direction, ratio);
-        output(key, result);
     }
 }
