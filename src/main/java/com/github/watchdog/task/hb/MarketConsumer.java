@@ -4,15 +4,15 @@ package com.github.watchdog.task.hb;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.github.hubble.Series;
-import com.github.hubble.Symbol;
 import com.github.hubble.ele.CandleET;
 import com.github.watchdog.stream.AbstractMarketConsumer;
 import com.github.watchdog.task.hb.dataobject.CandleType;
 import com.github.watchdog.task.hb.dataobject.PushMsg;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -34,8 +34,8 @@ public class MarketConsumer extends AbstractMarketConsumer {
 
         PushMsg pushMsg = JSON.parseObject(msg, PushMsg.class);
 
-        boolean reqOrsub = false;
-        String keyStr = null;
+        boolean reqOrsub;
+        String keyStr;
         if (pushMsg.getRep() != null) {
             keyStr = pushMsg.getRep();
             reqOrsub = true;
@@ -58,30 +58,27 @@ public class MarketConsumer extends AbstractMarketConsumer {
             return;
         }
 
-        pairCodeName = super.marketName + "." + pairCodeName;
-
-        Symbol symbol = getOrcCreateSymbol(pairCodeName, candleType);
+        Symbol symbol = getOrcCreateSymbol(pairCodeName);
         if (reqOrsub) {
+            List<CandleET> candleETList = Lists.newArrayList();
             JSONArray array = JSON.parseArray(pushMsg.getData());
             for (int i = 0; i < array.size(); i++) {
                 CandleET candleET = convert(array.getJSONObject(i));
-                addCandle(candleET, symbol);
+                candleETList.add(candleET);
             }
-            symbol.initRule();
+            symbol.initCandleETSeries(candleType, candleETList);
         } else {
             CandleET candleET = convert(JSON.parseObject(pushMsg.getTick()));
-            addCandle(candleET, symbol);
-            symbol.getRulesManager().traverseRules(candleET.getId());
+            symbol.addCandleET(candleType, candleET);
         }
     }
 
 
-    private Symbol getOrcCreateSymbol(String name, CandleType candleType) {
+    private Symbol getOrcCreateSymbol(String name) {
 
         Symbol symbol = this.symbols.get(name);
         if (symbol == null) {
-            symbol = new Symbol(name, candleType.interval);
-            symbol.initIndicators();
+            symbol = new Symbol(super.marketName, name);
             this.symbols.put(name, symbol);
         }
         return symbol;
@@ -99,14 +96,5 @@ public class MarketConsumer extends AbstractMarketConsumer {
         candleET.setVolume(data.getDouble("vol"));
         candleET.setCount(data.getInteger("count"));
         return candleET;
-    }
-
-
-    private void addCandle(CandleET candleET, Symbol symbol) {
-
-        Series<CandleET> candleETSeries = symbol.getCandleETSeries();
-        if (candleET.getId() >= candleETSeries.getMaxId()) {
-            candleETSeries.add(candleET);
-        }
     }
 }
