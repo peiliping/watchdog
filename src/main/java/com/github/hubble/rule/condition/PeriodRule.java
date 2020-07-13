@@ -1,9 +1,9 @@
 package com.github.hubble.rule.condition;
 
 
+import com.github.hubble.RuleResult;
 import com.github.hubble.rule.IRule;
 import com.github.hubble.rule.ProxyRule;
-import com.github.hubble.RuleResult;
 import com.github.watchdog.common.Util;
 
 import java.util.List;
@@ -21,12 +21,6 @@ public class PeriodRule extends ProxyRule {
 
         super(name, rule);
         this.period = period;
-    }
-
-
-    public PeriodRule(IRule rule, long period) {
-
-        this("PeriodRule", rule, period);
     }
 
 

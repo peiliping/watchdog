@@ -1,9 +1,9 @@
 package com.github.hubble.rule.condition;
 
 
+import com.github.hubble.RuleResult;
 import com.github.hubble.rule.IRule;
 import com.github.hubble.rule.ProxyRule;
-import com.github.hubble.RuleResult;
 
 import java.util.List;
 
@@ -18,12 +18,6 @@ public class OverTurnRule extends ProxyRule {
 
         super(name, rule);
         this.current = current;
-    }
-
-
-    public OverTurnRule(IRule rule, boolean current) {
-
-        this("OverTurnRule", rule, current);
     }
 
 
