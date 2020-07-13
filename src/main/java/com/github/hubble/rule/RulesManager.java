@@ -30,14 +30,21 @@ public class RulesManager {
     }
 
 
-    public void traverseRules(long id) {
+    public void traverseRules(final long id) {
 
         for (Pair<IRule, RuleResult> rule : this.rootRules) {
             List<RuleResult> results = Lists.newArrayList();
             if (rule.getKey().match(id, results)) {
-                results.forEach(ruleResult -> ruleResult.call());
+                if (log.isDebugEnabled()) {
+                    log.debug("{} match : true .", rule.getKey().name);
+                }
+                results.forEach(ruleResult -> ruleResult.call(id));
                 if (rule.getValue() != null) {
-                    rule.getValue().call();
+                    rule.getValue().call(id);
+                }
+            } else {
+                if (log.isDebugEnabled()) {
+                    log.debug("{} match : false .", rule.getKey().name);
                 }
             }
         }

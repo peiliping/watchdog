@@ -19,6 +19,6 @@ public class AndRule extends ProxyPairRule {
 
     @Override public boolean match(long id, List<RuleResult> results) {
 
-        return super.leftRule.match(id, results) && super.rightRule.match(id, results);
+        return super.leftRule.match(id, results) & super.rightRule.match(id, results);
     }
 }

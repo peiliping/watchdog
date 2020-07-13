@@ -17,16 +17,16 @@ public class RuleResult {
     }
 
 
-    public void logMsg() {
+    public void logMsg(long id) {
 
         if (this.message != null) {
-            log.warn(this.message);
+            log.warn(id + " " + this.message);
         }
     }
 
 
-    public void call() {
+    public void call(long id) {
 
-        logMsg();
+        logMsg(id);
     }
 }

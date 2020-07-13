@@ -4,11 +4,13 @@ package com.github.hubble;
 import com.github.hubble.ele.Element;
 import com.google.common.collect.Lists;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.Validate;
 
 import java.util.List;
 
 
+@Slf4j
 public class Series<E extends Element> {
 
 
@@ -60,6 +62,9 @@ public class Series<E extends Element> {
         boolean replace = lastElement != null && lastElement.getId() == element.getId();
         if (replace && lastElement.same(element)) {
             return;
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("{} add element {} .", this.name, element.toString());
         }
         for (SeriesListener<E> listener : this.listeners) {
             listener.onChange(this.sequence, element, replace, this);

@@ -69,7 +69,7 @@ public class MarketConsumer extends AbstractMarketConsumer {
             symbol.initCandleETSeries(candleType, candleETList);
         } else {
             CandleET candleET = convert(JSON.parseObject(pushMsg.getTick()));
-            symbol.addCandleET(candleType, candleET);
+            symbol.addCandleET(candleType, candleET, true);
         }
     }
 
