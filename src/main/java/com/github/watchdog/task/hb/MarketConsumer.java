@@ -78,7 +78,7 @@ public class MarketConsumer extends AbstractMarketConsumer {
 
         Symbol symbol = this.symbols.get(name);
         if (symbol == null) {
-            symbol = new Symbol(super.marketName, name);
+            symbol = new Symbol(super.marketName, name, getCandleShockRatioCondition(name));
             this.symbols.put(name, symbol);
         }
         return symbol;

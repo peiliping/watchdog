@@ -14,9 +14,9 @@ import java.util.Map;
 public abstract class AbstractMarketConsumer extends AbstractConsumer {
 
 
-    protected Map<String, Double> candleChangeRatioConditions = Maps.newHashMap();
+    protected Map<String, Double> candleShockRatioConditions = Maps.newHashMap();
 
-    protected double defaultCandleChangeRatioCondition = 2D;
+    protected double defaultCandleShockRatioCondition = 2D;
 
     protected String marketName = "Unknown";
 
@@ -26,12 +26,18 @@ public abstract class AbstractMarketConsumer extends AbstractConsumer {
         if (StringUtils.isNotBlank(config)) {
             log.info("marketConsumer config : " + config);
             JSONObject jsonObject = JSON.parseObject(config);
-            JSONObject tJCandleChangeRatioConditions = jsonObject.getJSONObject("candleChangeRatioConditions");
-            if (tJCandleChangeRatioConditions != null) {
-                for (String key : tJCandleChangeRatioConditions.keySet()) {
-                    this.candleChangeRatioConditions.put(key, tJCandleChangeRatioConditions.getDouble(key));
+            JSONObject tJCandleShockRatioConditions = jsonObject.getJSONObject("candleShockRatioConditions");
+            if (tJCandleShockRatioConditions != null) {
+                for (String key : tJCandleShockRatioConditions.keySet()) {
+                    this.candleShockRatioConditions.put(key, tJCandleShockRatioConditions.getDouble(key));
                 }
             }
         }
+    }
+
+
+    protected double getCandleShockRatioCondition(String name) {
+
+        return this.candleShockRatioConditions.getOrDefault(name, this.defaultCandleShockRatioCondition);
     }
 }
