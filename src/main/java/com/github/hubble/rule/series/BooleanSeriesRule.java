@@ -10,10 +10,10 @@ import java.util.List;
 
 
 @Slf4j
-public class BooleanRule extends SeriesRule<BooleanET> {
+public class BooleanSeriesRule extends SeriesRule<BooleanET> {
 
 
-    public BooleanRule(String name, Series<BooleanET> series) {
+    public BooleanSeriesRule(String name, Series<BooleanET> series) {
 
         super(name, series);
     }

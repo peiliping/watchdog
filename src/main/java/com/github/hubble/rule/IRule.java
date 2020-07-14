@@ -2,6 +2,7 @@ package com.github.hubble.rule;
 
 
 import com.github.hubble.RuleResult;
+import com.github.hubble.rule.condition.OnceRule;
 import com.github.hubble.rule.condition.OverTurnRule;
 import com.github.hubble.rule.condition.PeriodRule;
 import com.github.hubble.rule.logic.AndRule;
@@ -71,6 +72,12 @@ public abstract class IRule {
     public IRule overTurn(boolean initStatus) {
 
         return new OverTurnRule("OverTurnRule", this, initStatus);
+    }
+
+
+    public IRule once() {
+
+        return new OnceRule("OnceRule", this);
     }
 
 

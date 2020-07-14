@@ -1,5 +1,5 @@
 java -jar target/watchdog-1.0-SNAPSHOT.jar \
-	--logLevel info \
+	--logLevel debug \
 	--ssl --host api.huobiasia.vip \
 	--market hb \
 	--heartBeat '{"pong":%s}' \

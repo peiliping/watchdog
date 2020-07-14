@@ -7,11 +7,10 @@ import com.github.hubble.ele.CandleET;
 import com.github.hubble.ele.CustomCompare;
 import com.github.hubble.ele.NumberET;
 import com.github.hubble.indicator.MAIndicatorSeries;
-import com.github.hubble.indicator.group.CompareIndicatorSeries;
 import com.github.hubble.rule.IRule;
 import com.github.hubble.rule.RulesManager;
-import com.github.hubble.rule.series.BooleanRule;
 import com.github.hubble.rule.series.CandleShockRule;
+import com.github.hubble.rule.series.CompareSeriesRule;
 import com.github.watchdog.common.BarkRuleResult;
 import com.github.watchdog.task.hb.dataobject.CandleType;
 import com.google.common.collect.Maps;
@@ -60,16 +59,11 @@ public class Symbol {
                 MAIndicatorSeries ma05 = new MAIndicatorSeries(buildName("MA05"), 128, duration, 5);
                 MAIndicatorSeries ma10 = new MAIndicatorSeries(buildName("MA10"), 128, duration, 10);
                 MAIndicatorSeries ma30 = new MAIndicatorSeries(buildName("MA30"), 128, duration, 30);
+                series.bind(ma05, ma10, ma30);
 
                 CustomCompare<NumberET> cc = (e1, e2) -> Double.compare(e1.getData(), e2.getData());
-                CompareIndicatorSeries<CandleET, NumberET> ma05VS10 = new CompareIndicatorSeries<>(buildName("CIS_MA05VS10"), 128, duration, ma05, ma10, cc);
-                CompareIndicatorSeries<CandleET, NumberET> ma05VS30 = new CompareIndicatorSeries<>(buildName("CIS_MA05VS30"), 128, duration, ma05, ma30, cc);
-                CompareIndicatorSeries<CandleET, NumberET> ma10VS05 = new CompareIndicatorSeries<>(buildName("CIS_MA10VS05"), 128, duration, ma10, ma05, cc);
-                CompareIndicatorSeries<CandleET, NumberET> ma30VS05 = new CompareIndicatorSeries<>(buildName("CIS_MA30VS05"), 128, duration, ma30, ma05, cc);
-                series.bind(ma05VS10, ma05VS30, ma10VS05, ma30VS05);
-
-                IRule enterRule = new BooleanRule(buildName("BR_MA05VS10"), ma05VS10).and(new BooleanRule(buildName("BR_MA05VS30"), ma05VS30));
-                IRule exitRule = new BooleanRule(buildName("BR_MA10VS05"), ma10VS05).and(new BooleanRule(buildName("BR_MA30VS05"), ma30VS05));
+                IRule enterRule = new CompareSeriesRule<>(buildName("CSR_MA05VS10"), ma05, ma10, cc).and(new CompareSeriesRule<>(buildName("CSR_MA05VS30"), ma05, ma30, cc));
+                IRule exitRule = new CompareSeriesRule<>(buildName("CSR_MA10VS05"), ma10, ma05, cc).and(new CompareSeriesRule<>(buildName("CSR_MA30VS05"), ma30, ma05, cc));
                 addRule(candleType, enterRule.overTurn(true).period(600), new BarkRuleResult(buildName(" MA趋势走强")));
                 addRule(candleType, exitRule.overTurn(true).period(600), new BarkRuleResult(buildName(" MA趋势走弱")));
             }
