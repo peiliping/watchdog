@@ -57,7 +57,7 @@ public class Start {
                 Util.sleepSec(60);
                 long delta = Util.nowMS() - MsgChannel.getInstance().getLastMsgTime();
                 if (delta > 5 * 60 * 1000) {
-                    //Util.sendMsg(uids[0], "watchdog-nodata-error");
+                    Util.sendMsg(uids[0], "watchdog-nodata-error");
                     System.exit(0);
                 }
             }
