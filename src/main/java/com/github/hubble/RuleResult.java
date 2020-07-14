@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RuleResult {
 
 
-    protected String message;
+    protected final String message;
 
 
     public RuleResult(String message) {
@@ -17,16 +17,10 @@ public class RuleResult {
     }
 
 
-    public void logMsg(long id) {
+    public void call(long id) {
 
         if (this.message != null) {
             log.warn(id + " " + this.message);
         }
-    }
-
-
-    public void call(long id) {
-
-        logMsg(id);
     }
 }

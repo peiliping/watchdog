@@ -20,9 +20,16 @@ public class CandleShockRule extends SeriesRule<CandleET> {
 
     public CandleShockRule(String name, Series<CandleET> series, double ratio, int count) {
 
+        this(name, series, ratio, count, RuleResult.class);
+    }
+
+
+    public CandleShockRule(String name, Series<CandleET> series, double ratio, int count, Class<? extends RuleResult> clazz) {
+
         super(name, series);
         this.ratio = ratio;
         this.count = count;
+        this.clazz = clazz;
     }
 
 
@@ -66,7 +73,7 @@ public class CandleShockRule extends SeriesRule<CandleET> {
             }
         }
         String msg = String.format("%s %s %s %s%s%%", super.name, currentCandle.getId(), currentCandle.getClose(), direction, tRatio);
-        results.add(new RuleResult(msg));
+        results.add(createResult(msg));
         return true;
     }
 }

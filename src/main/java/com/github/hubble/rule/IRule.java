@@ -9,15 +9,22 @@ import com.github.hubble.rule.logic.NotRule;
 import com.github.hubble.rule.logic.OrRule;
 import com.github.hubble.rule.logic.XorRule;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.Validate;
 
 import java.util.List;
 
 
 @Getter
+@Slf4j
 public abstract class IRule {
 
 
     protected String name;
+
+    @Setter
+    protected Class<? extends RuleResult> clazz = RuleResult.class;
 
 
     public IRule(String name) {
@@ -64,5 +71,17 @@ public abstract class IRule {
     public IRule overTurn(boolean initStatus) {
 
         return new OverTurnRule("OverTurnRule", this, initStatus);
+    }
+
+
+    protected RuleResult createResult(String msg) {
+
+        try {
+            return this.clazz.getConstructor(String.class).newInstance(msg);
+        } catch (Exception e) {
+            log.error("Create Rule Result Error : ", e);
+            Validate.isTrue(false, "RuleResult Class Error .");
+        }
+        return null;
     }
 }

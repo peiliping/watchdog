@@ -12,6 +12,7 @@ import com.github.hubble.rule.IRule;
 import com.github.hubble.rule.RulesManager;
 import com.github.hubble.rule.series.BooleanRule;
 import com.github.hubble.rule.series.CandleShockRule;
+import com.github.watchdog.task.hb.dataobject.BarkRuleResult;
 import com.github.watchdog.task.hb.dataobject.CandleType;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
@@ -52,7 +53,9 @@ public class Symbol {
             this.candleETSeries.put(candleType, series);
             if (CandleType.MIN_1 == candleType) {
                 String ruleName = StringUtils.joinWith(".", this.marketName, this.name, "ShockRule");
-                addRule(candleType, new CandleShockRule(ruleName, series, this.shockRatio, 5).overTurn(false).period(600), null);
+                CandleShockRule candleShockRule = new CandleShockRule(ruleName, series, this.shockRatio, 5);
+                candleShockRule.setClazz(BarkRuleResult.class);
+                addRule(candleType, candleShockRule.overTurn(false).period(600), null);
             } else {
                 long duration = candleType.interval;
                 MAIndicatorSeries ma05 = new MAIndicatorSeries("MA05", 128, duration, 5);
@@ -60,20 +63,20 @@ public class Symbol {
                 MAIndicatorSeries ma30 = new MAIndicatorSeries("MA30", 128, duration, 30);
 
                 CustomCompare<NumberET> cc = (e1, e2) -> Double.compare(e1.getData(), e2.getData());
-                CompareIndicatorSeries<CandleET, NumberET> ma05VS10 = new CompareIndicatorSeries<>("A_ma05VS10", 128, duration, ma05, ma10, cc);
-                CompareIndicatorSeries<CandleET, NumberET> ma05VS30 = new CompareIndicatorSeries<>("A_ma05VS30", 128, duration, ma05, ma30, cc);
-                CompareIndicatorSeries<CandleET, NumberET> ma30VS05 = new CompareIndicatorSeries<>("A_ma30VS05", 128, duration, ma30, ma05, cc);
+                CompareIndicatorSeries<CandleET, NumberET> ma05VS10 = new CompareIndicatorSeries<>("CIS_MA05VS10", 128, duration, ma05, ma10, cc);
+                CompareIndicatorSeries<CandleET, NumberET> ma05VS30 = new CompareIndicatorSeries<>("CIS_MA05VS30", 128, duration, ma05, ma30, cc);
+                CompareIndicatorSeries<CandleET, NumberET> ma30VS05 = new CompareIndicatorSeries<>("CIS_MA30VS05", 128, duration, ma30, ma05, cc);
                 series.bind(ma05VS10, ma05VS30, ma30VS05);
 
                 {
-                    IRule enterRule = new BooleanRule("ma05VS10BR", ma05VS10).and(new BooleanRule("ma10VS30BR", ma05VS30)).overTurn(false);
-                    String msg = StringUtils.joinWith(".", this.marketName, this.name) + " MA趋势走强 .";
-                    addRule(candleType, enterRule, new RuleResult(msg));
+                    IRule enterRule = new BooleanRule("BR_MA05VS10", ma05VS10).and(new BooleanRule("BR_MA10VS30", ma05VS30)).overTurn(true);
+                    String msg = StringUtils.joinWith(".", this.marketName, this.name) + " MA趋势走强";
+                    addRule(candleType, enterRule, new BarkRuleResult(msg));
                 }
                 {
-                    IRule exitRule = new BooleanRule("ma30VS05BR", ma30VS05).overTurn(false);
-                    String msg = StringUtils.joinWith(".", this.marketName, this.name) + " MA趋势走弱 .";
-                    addRule(candleType, exitRule, new RuleResult(msg));
+                    IRule exitRule = new BooleanRule("BR_MA30VS05", ma30VS05).overTurn(true);
+                    String msg = StringUtils.joinWith(".", this.marketName, this.name) + " MA趋势走弱";
+                    addRule(candleType, exitRule, new BarkRuleResult(msg));
                 }
 
             }
