@@ -64,12 +64,13 @@ public class Symbol {
                 CustomCompare<NumberET> cc = (e1, e2) -> Double.compare(e1.getData(), e2.getData());
                 CompareIndicatorSeries<CandleET, NumberET> ma05VS10 = new CompareIndicatorSeries<>(buildName("CIS_MA05VS10"), 128, duration, ma05, ma10, cc);
                 CompareIndicatorSeries<CandleET, NumberET> ma05VS30 = new CompareIndicatorSeries<>(buildName("CIS_MA05VS30"), 128, duration, ma05, ma30, cc);
+                CompareIndicatorSeries<CandleET, NumberET> ma10VS05 = new CompareIndicatorSeries<>(buildName("CIS_MA10VS05"), 128, duration, ma10, ma05, cc);
                 CompareIndicatorSeries<CandleET, NumberET> ma30VS05 = new CompareIndicatorSeries<>(buildName("CIS_MA30VS05"), 128, duration, ma30, ma05, cc);
-                series.bind(ma05VS10, ma05VS30, ma30VS05);
+                series.bind(ma05VS10, ma05VS30, ma10VS05, ma30VS05);
 
                 IRule enterRule = new BooleanRule(buildName("BR_MA05VS10"), ma05VS10).and(new BooleanRule(buildName("BR_MA05VS30"), ma05VS30));
+                IRule exitRule = new BooleanRule(buildName("BR_MA10VS05"), ma10VS05).and(new BooleanRule(buildName("BR_MA30VS05"), ma30VS05));
                 addRule(candleType, enterRule.overTurn(true).period(600), new BarkRuleResult(buildName(" MA趋势走强")));
-                IRule exitRule = new BooleanRule(buildName("BR_MA30VS05"), ma30VS05);
                 addRule(candleType, exitRule.overTurn(true).period(600), new BarkRuleResult(buildName(" MA趋势走弱")));
             }
         }
