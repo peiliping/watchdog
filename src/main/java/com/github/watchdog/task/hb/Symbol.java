@@ -12,7 +12,7 @@ import com.github.hubble.rule.IRule;
 import com.github.hubble.rule.RulesManager;
 import com.github.hubble.rule.series.BooleanRule;
 import com.github.hubble.rule.series.CandleShockRule;
-import com.github.watchdog.task.hb.dataobject.BarkRuleResult;
+import com.github.watchdog.common.BarkRuleResult;
 import com.github.watchdog.task.hb.dataobject.CandleType;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
