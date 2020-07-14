@@ -135,6 +135,7 @@
             <groupId>org.ta4j</groupId>
             <artifactId>ta4j-core</artifactId>
             <version>0.13</version>
+            <scope>system</scope>
         </dependency>
     </dependencies>
 </project>

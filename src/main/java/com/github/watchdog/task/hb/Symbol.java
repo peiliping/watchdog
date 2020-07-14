@@ -67,17 +67,10 @@ public class Symbol {
                 CompareIndicatorSeries<CandleET, NumberET> ma30VS05 = new CompareIndicatorSeries<>(buildName("CIS_MA30VS05"), 128, duration, ma30, ma05, cc);
                 series.bind(ma05VS10, ma05VS30, ma30VS05);
 
-                {
-                    IRule enterRule = new BooleanRule(buildName("BR_MA05VS10"), ma05VS10).and(new BooleanRule(buildName("BR_MA10VS30"), ma05VS30)).overTurn(true);
-                    String msg = buildName(" MA趋势走强");
-                    addRule(candleType, enterRule, new BarkRuleResult(msg));
-                }
-                {
-                    IRule exitRule = new BooleanRule(buildName("BR_MA30VS05"), ma30VS05).overTurn(true);
-                    String msg = buildName(" MA趋势走弱");
-                    addRule(candleType, exitRule, new BarkRuleResult(msg));
-                }
-
+                IRule enterRule = new BooleanRule(buildName("BR_MA05VS10"), ma05VS10).and(new BooleanRule(buildName("BR_MA05VS30"), ma05VS30));
+                addRule(candleType, enterRule.overTurn(true).period(600), new BarkRuleResult(buildName(" MA趋势走强")));
+                IRule exitRule = new BooleanRule(buildName("BR_MA30VS05"), ma30VS05);
+                addRule(candleType, exitRule.overTurn(true).period(600), new BarkRuleResult(buildName(" MA趋势走弱")));
             }
         }
 
