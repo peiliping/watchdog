@@ -6,7 +6,7 @@ public interface CustomCompare<E extends Element> {
 
     int compareWith(E e1, E e2);
 
-    NumberET delta(E e1, E e2);
+    double delta(E e1, E e2);
 
     default boolean result(int c) {
 
@@ -27,9 +27,9 @@ public interface CustomCompare<E extends Element> {
         }
 
 
-        @Override public NumberET delta(NumberET e1, NumberET e2) {
+        @Override public double delta(NumberET e1, NumberET e2) {
 
-            return new NumberET(e1.getId(), e1.getData() - e2.getData());
+            return e1.getData() - e2.getData();
         }
     };
 }

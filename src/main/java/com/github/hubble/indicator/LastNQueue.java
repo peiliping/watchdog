@@ -17,9 +17,15 @@ public class LastNQueue<E extends Element> {
     private int capacity;
 
 
-    public LastNQueue(int size) {
+    public LastNQueue(int capacity) {
 
-        this.capacity = size;
+        this.capacity = capacity;
+    }
+
+
+    public int size() {
+
+        return this.list.size();
     }
 
 

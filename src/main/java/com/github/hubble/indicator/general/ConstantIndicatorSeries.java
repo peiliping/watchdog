@@ -1,9 +1,10 @@
-package com.github.hubble.indicator;
+package com.github.hubble.indicator.general;
 
 
 import com.github.hubble.Series;
 import com.github.hubble.ele.Element;
 import com.github.hubble.ele.NumberET;
+import com.github.hubble.indicator.IndicatorSeries;
 
 
 public class ConstantIndicatorSeries<I extends Element> extends IndicatorSeries<I, NumberET> {
