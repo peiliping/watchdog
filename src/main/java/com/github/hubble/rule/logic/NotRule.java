@@ -3,7 +3,7 @@ package com.github.hubble.rule.logic;
 
 import com.github.hubble.rule.IRule;
 import com.github.hubble.rule.ProxyRule;
-import com.github.hubble.RuleResult;
+import com.github.hubble.rule.RuleResult;
 
 import java.util.List;
 

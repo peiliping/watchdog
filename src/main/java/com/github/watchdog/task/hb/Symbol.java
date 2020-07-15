@@ -1,7 +1,7 @@
 package com.github.watchdog.task.hb;
 
 
-import com.github.hubble.RuleResult;
+import com.github.hubble.rule.RuleResult;
 import com.github.hubble.Series;
 import com.github.hubble.ele.CandleET;
 import com.github.hubble.ele.CustomCompare;

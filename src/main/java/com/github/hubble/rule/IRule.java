@@ -1,7 +1,6 @@
 package com.github.hubble.rule;
 
 
-import com.github.hubble.RuleResult;
 import com.github.hubble.rule.condition.OnceRule;
 import com.github.hubble.rule.condition.OverTurnRule;
 import com.github.hubble.rule.condition.PeriodRule;
@@ -50,25 +49,28 @@ public abstract class IRule {
     //逻辑运算
     public IRule and(IRule rule) {
 
-        return new AndRule("AndRule", this, rule);
+        String t = String.format("AndRule[%s,%s]", this.name, rule.name);
+        return new AndRule(t, this, rule);
     }
 
 
     public IRule or(IRule rule) {
 
-        return new OrRule("OrRule", this, rule);
+        String t = String.format("OrRule[%s,%s]", this.name, rule.name);
+        return new OrRule(t, this, rule);
     }
 
 
     public IRule xor(IRule rule) {
 
-        return new XorRule("XorRule", this, rule);
+        String t = String.format("XorRule[%s,%s]", this.name, rule.name);
+        return new XorRule(t, this, rule);
     }
 
 
     public IRule not() {
 
-        return new NotRule("NotRule", this);
+        return new NotRule(this.name + "-NotRule", this);
     }
 
 

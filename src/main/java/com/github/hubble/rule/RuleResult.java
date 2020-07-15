@@ -1,4 +1,4 @@
-package com.github.hubble;
+package com.github.hubble.rule;
 
 
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ public class RuleResult {
     public void call(long id) {
 
         if (this.message != null) {
-            log.warn(id + " " + this.message);
+            log.info(id + " " + this.message);
         }
     }
 }

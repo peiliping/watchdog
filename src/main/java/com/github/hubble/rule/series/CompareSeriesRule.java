@@ -1,7 +1,7 @@
 package com.github.hubble.rule.series;
 
 
-import com.github.hubble.RuleResult;
+import com.github.hubble.rule.RuleResult;
 import com.github.hubble.Series;
 import com.github.hubble.ele.CustomCompare;
 import com.github.hubble.ele.Element;

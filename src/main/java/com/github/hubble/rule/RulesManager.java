@@ -1,15 +1,12 @@
 package com.github.hubble.rule;
 
 
-import com.github.hubble.RuleResult;
 import com.google.common.collect.Lists;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 
 
-@Slf4j
 public class RulesManager {
 
 
