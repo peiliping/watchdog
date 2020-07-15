@@ -34,17 +34,10 @@ public class RulesManager {
 
         for (Pair<IRule, RuleResult> rule : this.rootRules) {
             List<RuleResult> results = Lists.newArrayList();
-            if (rule.getKey().match(id, results)) {
-                if (log.isDebugEnabled()) {
-                    log.debug("{} match : true .", rule.getKey().name);
-                }
+            if (rule.getKey().matchRule(id, results)) {
                 results.forEach(ruleResult -> ruleResult.call(id));
                 if (rule.getValue() != null) {
                     rule.getValue().call(id);
-                }
-            } else {
-                if (log.isDebugEnabled()) {
-                    log.debug("{} match : false .", rule.getKey().name);
                 }
             }
         }

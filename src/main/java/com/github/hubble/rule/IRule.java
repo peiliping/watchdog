@@ -34,7 +34,17 @@ public abstract class IRule {
     }
 
 
-    public abstract boolean match(long id, List<RuleResult> results);
+    protected abstract boolean match(long id, List<RuleResult> results);
+
+
+    public boolean matchRule(long id, List<RuleResult> results) {
+
+        boolean r = match(id, results);
+        if (log.isDebugEnabled()) {
+            log.debug("{} match : {} .", this.name, r);
+        }
+        return r;
+    }
 
 
     //逻辑运算
@@ -65,19 +75,19 @@ public abstract class IRule {
     //常用组合
     public IRule period(long second) {
 
-        return new PeriodRule("PeriodRule", this, second);
+        return new PeriodRule(this.name + "-PeriodRule", this, second);
     }
 
 
     public IRule overTurn(boolean initStatus) {
 
-        return new OverTurnRule("OverTurnRule", this, initStatus);
+        return new OverTurnRule(this.name + "-OverTurnRule", this, initStatus);
     }
 
 
     public IRule once() {
 
-        return new OnceRule("OnceRule", this);
+        return new OnceRule(this.name + "-OnceRule", this);
     }
 
 

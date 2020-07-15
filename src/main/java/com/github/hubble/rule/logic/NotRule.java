@@ -19,6 +19,6 @@ public class NotRule extends ProxyRule {
 
     @Override public boolean match(long id, List<RuleResult> results) {
 
-        return !super.rule.match(id, results);
+        return !super.rule.matchRule(id, results);
     }
 }

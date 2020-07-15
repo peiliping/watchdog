@@ -26,7 +26,7 @@ public class OnceRule extends ProxyRule {
         if (this.current) {
             return true;
         } else {
-            this.current = super.rule.match(id, results);
+            this.current = super.rule.matchRule(id, results);
             return this.current;
         }
     }

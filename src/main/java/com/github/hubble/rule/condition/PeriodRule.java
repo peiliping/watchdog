@@ -29,7 +29,7 @@ public class PeriodRule extends ProxyRule {
         if (Util.nowSec() - this.lastTS < this.period) {
             return false;
         }
-        if (super.rule.match(id, results)) {
+        if (super.rule.matchRule(id, results)) {
             this.lastTS = Util.nowSec();
             return true;
         } else {
