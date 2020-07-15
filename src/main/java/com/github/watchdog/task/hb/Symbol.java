@@ -1,13 +1,12 @@
 package com.github.watchdog.task.hb;
 
 
-import com.github.hubble.rule.RuleResult;
 import com.github.hubble.Series;
 import com.github.hubble.ele.CandleET;
 import com.github.hubble.ele.CustomCompare;
-import com.github.hubble.ele.NumberET;
 import com.github.hubble.indicator.MAIndicatorSeries;
 import com.github.hubble.rule.IRule;
+import com.github.hubble.rule.RuleResult;
 import com.github.hubble.rule.RulesManager;
 import com.github.hubble.rule.series.CandleShockRule;
 import com.github.hubble.rule.series.CompareSeriesRule;
@@ -45,9 +44,7 @@ public class Symbol {
     public void initCandleETSeries(CandleType candleType, List<CandleET> candleETList) {
 
         Series<CandleET> series = this.candleETSeries.get(candleType);
-        boolean first = series == null;
-
-        if (first) {
+        if (series == null) {
             series = new Series<>(buildName(candleType.name()), 128, candleType.interval);
             this.candleETSeries.put(candleType, series);
             if (CandleType.MIN_1 == candleType) {
@@ -55,20 +52,21 @@ public class Symbol {
                 candleShockRule.setClazz(BarkRuleResult.class);
                 addRule(candleType, candleShockRule.overTurn(false).period(600), null);
             } else {
-                long duration = candleType.interval;
-                MAIndicatorSeries ma05 = new MAIndicatorSeries(buildName("MA05"), 128, duration, 5);
-                MAIndicatorSeries ma10 = new MAIndicatorSeries(buildName("MA10"), 128, duration, 10);
-                MAIndicatorSeries ma30 = new MAIndicatorSeries(buildName("MA30"), 128, duration, 30);
+                MAIndicatorSeries ma05 = new MAIndicatorSeries(buildName("MA05"), 128, candleType.interval, 5);
+                MAIndicatorSeries ma10 = new MAIndicatorSeries(buildName("MA10"), 128, candleType.interval, 10);
+                MAIndicatorSeries ma30 = new MAIndicatorSeries(buildName("MA30"), 128, candleType.interval, 30);
                 series.bind(ma05, ma10, ma30);
 
-                CustomCompare<NumberET> cc = (e1, e2) -> Double.compare(e1.getData(), e2.getData());
-                IRule enterRule = new CompareSeriesRule<>(buildName("CSR_MA05VS10"), ma05, ma10, cc).and(new CompareSeriesRule<>(buildName("CSR_MA05VS30"), ma05, ma30, cc));
-                IRule exitRule = new CompareSeriesRule<>(buildName("CSR_MA10VS05"), ma10, ma05, cc).and(new CompareSeriesRule<>(buildName("CSR_MA30VS05"), ma30, ma05, cc));
-                addRule(candleType, enterRule.overTurn(true).period(600), new BarkRuleResult(buildName(" MA趋势走强")));
-                addRule(candleType, exitRule.overTurn(true).period(600), new BarkRuleResult(buildName(" MA趋势走弱")));
+                addRule(candleType,
+                        new CompareSeriesRule<>(buildName("CSR_MA05VS10"), ma05, ma10, CustomCompare.numberETCompare)
+                                .and(new CompareSeriesRule<>(buildName("CSR_MA05VS30"), ma05, ma30, CustomCompare.numberETCompare)).overTurn(true)
+                                .period(600), new BarkRuleResult(buildName(" MA趋势走强")));
+                addRule(candleType,
+                        new CompareSeriesRule<>(buildName("CSR_MA10VS05"), ma10, ma05, CustomCompare.numberETCompare)
+                                .and(new CompareSeriesRule<>(buildName("CSR_MA30VS05"), ma30, ma05, CustomCompare.numberETCompare)).overTurn(true)
+                                .period(600), new BarkRuleResult(buildName(" MA趋势走弱")));
             }
         }
-
         for (CandleET candleET : candleETList) {
             addCandleET(candleType, candleET, false);
         }
