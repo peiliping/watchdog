@@ -1,9 +1,10 @@
-package com.github.hubble.rule.series;
+package com.github.hubble.rule.series.direction;
 
 
 import com.github.hubble.rule.RuleResult;
 import com.github.hubble.Series;
 import com.github.hubble.ele.CandleET;
+import com.github.hubble.rule.series.SeriesRule;
 import com.google.common.collect.Lists;
 
 import java.util.Comparator;

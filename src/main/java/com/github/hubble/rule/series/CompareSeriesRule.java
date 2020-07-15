@@ -1,10 +1,10 @@
 package com.github.hubble.rule.series;
 
 
-import com.github.hubble.rule.RuleResult;
 import com.github.hubble.Series;
 import com.github.hubble.ele.CustomCompare;
 import com.github.hubble.ele.Element;
+import com.github.hubble.rule.RuleResult;
 
 import java.util.List;
 
@@ -26,9 +26,6 @@ public class CompareSeriesRule<E extends Element> extends PairSeriesRule<E> {
 
         E e1 = super.first.get(id);
         E e2 = super.second.get(id);
-        if (e1 != null && e2 != null) {
-            return this.customCompare.exec(e1, e2);
-        }
-        return false;
+        return this.customCompare.exec(e1, e2);
     }
 }

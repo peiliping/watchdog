@@ -1,9 +1,9 @@
 package com.github.hubble.rule.series;
 
 
-import com.github.hubble.rule.RuleResult;
 import com.github.hubble.Series;
 import com.github.hubble.ele.BooleanET;
+import com.github.hubble.rule.RuleResult;
 
 import java.util.List;
 
@@ -19,7 +19,6 @@ public class BooleanSeriesRule extends SeriesRule<BooleanET> {
 
     @Override public boolean match(long id, List<RuleResult> results) {
 
-        BooleanET singleBooleanET = super.series.get(id);
-        return singleBooleanET != null && singleBooleanET.isData();
+        return super.series.get(id).isData();
     }
 }
