@@ -6,7 +6,7 @@ public interface CustomCompare<E extends Element> {
 
     int compareWith(E e1, E e2);
 
-    E delta(E e1, E e2);
+    NumberET delta(E e1, E e2);
 
     default boolean result(int c) {
 

@@ -81,12 +81,6 @@ public class Series<E extends Element> {
     }
 
 
-    public E getLast() {
-
-        return get(this.maxId);
-    }
-
-
     public Series<E> bind(SeriesListener<E>... listeners) {
 
         for (SeriesListener<E> listener : listeners) {

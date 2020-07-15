@@ -32,7 +32,7 @@ public class LastNQueue<E extends Element> {
             return;
         }
 
-        int t = last.compareTo(e);
+        int t = Long.compare(last.getId(), e.getId());
 
         if (t > 0) {
             return;
