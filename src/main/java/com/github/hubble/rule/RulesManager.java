@@ -35,14 +35,11 @@ public class RulesManager {
 
     private void checkRef(IRule rule) {
 
-        if (this.ruleSet.contains(rule)) {
-            Validate.isTrue(false, "Rule Ref Error : " + rule.getName());
-        } else {
-            this.ruleSet.add(rule);
-            List<IRule> refs = rule.getRefRules();
-            for (IRule tr : refs) {
-                checkRef(rule);
-            }
+        Validate.isTrue(!this.ruleSet.contains(rule), "Rule Ref Error : " + rule.getName());
+        this.ruleSet.add(rule);
+        List<IRule> refs = rule.getRefRules();
+        for (IRule tr : refs) {
+            checkRef(tr);
         }
     }
 
