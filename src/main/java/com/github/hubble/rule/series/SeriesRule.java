@@ -22,11 +22,8 @@ public abstract class SeriesRule<E extends Element> extends IRule {
     }
 
 
-    @Override public boolean matchRule(long id, List<RuleResult> results) {
+    @Override protected boolean prepare(long id, List<RuleResult> results) {
 
-        if (this.series.get(id) == null) {
-            return false;
-        }
-        return super.matchRule(id, results);
+        return this.series.get(id) != null;
     }
 }

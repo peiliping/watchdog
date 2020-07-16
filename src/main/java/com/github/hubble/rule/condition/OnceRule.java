@@ -1,9 +1,9 @@
 package com.github.hubble.rule.condition;
 
 
-import com.github.hubble.rule.RuleResult;
 import com.github.hubble.rule.IRule;
 import com.github.hubble.rule.ProxyRule;
+import com.github.hubble.rule.RuleResult;
 
 import java.util.List;
 
@@ -23,11 +23,9 @@ public class OnceRule extends ProxyRule {
 
     @Override public boolean match(long id, List<RuleResult> results) {
 
-        if (this.current) {
-            return true;
-        } else {
-            this.current = super.rule.matchRule(id, results);
-            return this.current;
+        if (super.rule.matchRule(id, results)) {
+            this.current = true;
         }
+        return this.current;
     }
 }

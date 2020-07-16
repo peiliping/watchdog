@@ -1,9 +1,9 @@
 package com.github.hubble.rule.condition;
 
 
-import com.github.hubble.rule.RuleResult;
 import com.github.hubble.rule.IRule;
 import com.github.hubble.rule.ProxyRule;
+import com.github.hubble.rule.RuleResult;
 import com.github.watchdog.common.Util;
 
 import java.util.List;
@@ -26,14 +26,10 @@ public class PeriodRule extends ProxyRule {
 
     @Override public boolean match(long id, List<RuleResult> results) {
 
-        if (Util.nowSec() - this.lastTS < this.period) {
-            return false;
-        }
-        if (super.rule.matchRule(id, results)) {
+        if (super.rule.matchRule(id, results) && Util.nowSec() - this.lastTS >= this.period) {
             this.lastTS = Util.nowSec();
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 }

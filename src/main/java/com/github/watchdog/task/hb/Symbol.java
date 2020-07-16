@@ -10,7 +10,6 @@ import com.github.hubble.rule.RuleResult;
 import com.github.hubble.rule.RulesManager;
 import com.github.hubble.rule.series.CompareSeriesRule;
 import com.github.hubble.rule.series.direction.CandleShockRule;
-import com.github.hubble.rule.series.direction.DirectionalSeriesRule;
 import com.github.watchdog.common.BarkRuleResult;
 import com.github.watchdog.task.hb.dataobject.CandleType;
 import com.google.common.collect.Maps;
@@ -59,14 +58,12 @@ public class Symbol {
                 series.bind(ma05, ma10, ma30);
 
                 IRule risingRule = new CompareSeriesRule<>(buildName("CSR_MA05VS10"), ma05, ma10, CustomCompare.numberETCompare)
-                        .and(new CompareSeriesRule<>(buildName("CSR_MA10VS30"), ma10, ma30, CustomCompare.numberETCompare))
-                        .and(new DirectionalSeriesRule<>("RDSR_MA05", ma05, 1d, 2, CustomCompare.numberETCompare));
+                        .and(new CompareSeriesRule<>(buildName("CSR_MA10VS30"), ma10, ma30, CustomCompare.numberETCompare)).overTurn(true);
                 IRule fallingRule = new CompareSeriesRule<>(buildName("CSR_MA10VS05"), ma10, ma05, CustomCompare.numberETCompare)
-                        .and(new CompareSeriesRule<>(buildName("CSR_MA30VS10"), ma30, ma10, CustomCompare.numberETCompare))
-                        .and(new DirectionalSeriesRule<>("FDSR_MA05", ma05, 1d, 2, CustomCompare.numberETCompareReverse));
+                        .and(new CompareSeriesRule<>(buildName("CSR_MA30VS10"), ma30, ma10, CustomCompare.numberETCompare)).overTurn(true);
 
-                addRule(candleType, risingRule.overTurn(true).period(600), new BarkRuleResult(buildName(" MA趋势走强")));
-                addRule(candleType, fallingRule.overTurn(true).period(600), new BarkRuleResult(buildName(" MA趋势走弱")));
+                addRule(candleType, risingRule.alternateRule(fallingRule), new BarkRuleResult(buildName(" MA趋势走强")));
+                addRule(candleType, fallingRule.alternateRule(risingRule), new BarkRuleResult(buildName(" MA趋势走弱")));
             }
         }
         for (CandleET candleET : candleETList) {

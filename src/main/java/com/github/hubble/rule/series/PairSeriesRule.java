@@ -25,13 +25,10 @@ public abstract class PairSeriesRule<E extends Element> extends IRule {
     }
 
 
-    @Override public boolean matchRule(long id, List<RuleResult> results) {
+    @Override public boolean prepare(long id, List<RuleResult> results) {
 
         E e1 = this.first.get(id);
         E e2 = this.second.get(id);
-        if (e1 == null || e2 == null) {
-            return false;
-        }
-        return super.matchRule(id, results);
+        return e1 != null && e2 != null;
     }
 }
