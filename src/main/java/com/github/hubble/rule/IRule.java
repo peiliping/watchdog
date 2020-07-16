@@ -9,6 +9,7 @@ import com.github.hubble.rule.logic.AndRule;
 import com.github.hubble.rule.logic.NotRule;
 import com.github.hubble.rule.logic.OrRule;
 import com.github.hubble.rule.logic.XorRule;
+import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +34,12 @@ public abstract class IRule implements IRuleOb {
     public IRule(String name) {
 
         this.name = name;
+    }
+
+
+    public List<IRule> getRefRules() {
+
+        return Lists.newArrayList();
     }
 
 
