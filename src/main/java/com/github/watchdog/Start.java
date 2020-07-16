@@ -49,15 +49,20 @@ public class Start {
             AbstractMarketConsumer marketConsumer = mcClass.getConstructor(String.class).newInstance(marketConfig);
             namedThreadStart(marketConsumer);
 
-            final String barkIds = getValueForce(commandLine, BARKIDS, s -> s);
-            String[] uids = barkIds.split(",");
-            namedThreadStart(new BarkConsumer(uids));
+            String[] uids = null;
+            if (hasOption(commandLine, BARKIDS)) {
+                final String barkIds = getValueForce(commandLine, BARKIDS, s -> s);
+                uids = barkIds.split(",");
+            }
+            namedThreadStart(new BarkConsumer(uids, hasOption(commandLine, BARKIDS)));
 
             while (true) {
                 Util.sleepSec(60);
                 long delta = Util.nowMS() - MsgChannel.getInstance().getLastMsgTime();
                 if (delta > 5 * 60 * 1000) {
-                    Util.sendMsg(uids[0], "watchdog-nodata-error");
+                    if (uids != null) {
+                        Util.sendMsg(uids[0], "watchdog-nodata-error");
+                    }
                     System.exit(0);
                 }
             }

@@ -11,10 +11,13 @@ public class BarkConsumer extends AbstractConsumer {
 
     private String[] uids;
 
+    private boolean inUse;
 
-    public BarkConsumer(String[] uids) {
+
+    public BarkConsumer(String[] uids, boolean inUse) {
 
         this.uids = uids;
+        this.inUse = inUse;
     }
 
 
@@ -27,6 +30,9 @@ public class BarkConsumer extends AbstractConsumer {
     @Override protected void handle(String msg) {
 
         log.info("notify : " + msg);
+        if (!this.inUse) {
+            return;
+        }
         for (String uid : this.uids) {
             Util.sendMsg(uid, msg);
         }

@@ -19,6 +19,7 @@ public class BarkRuleResult extends RuleResult {
 
     @Override public void call(long id) {
 
+        super.call(id);
         this.msgChannel.addResult(super.message);
     }
 }

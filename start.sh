@@ -4,7 +4,4 @@ java -jar target/watchdog-1.0-SNAPSHOT.jar \
 	--market hb \
 	--heartBeat '{"pong":%s}' \
 	--subscribe '{"req":"market.btcusdt.kline.1min","symbol":"btcusdt","period":"1min"}${"sub":"market.btcusdt.kline.1min","symbol":"btcusdt","period":"1min"}${"req":"market.btcusdt.kline.60min","symbol":"btcusdt","period":"60min"}${"sub":"market.btcusdt.kline.60min","symbol":"btcusdt","period":"60min"}' \
-	--marketConfig '{"candleShockRatioConditions":{"btcusdt":0.8}}' \
-	--barkIds xxxxx
-
-
+	--marketConfig '{"candleShockRatioConditions":{"btcusdt":0.8}}'
