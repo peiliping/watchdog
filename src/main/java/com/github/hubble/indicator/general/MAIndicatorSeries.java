@@ -24,14 +24,14 @@ public class MAIndicatorSeries extends CacheIndicatorSeries<CandleET, NumberET, 
         if (!isCacheFull()) {
             super.cache.add(ele);
             if (isCacheFull()) {
-                this.sum = super.cache.getList().stream().mapToDouble(value -> value.getClose()).sum();
+                this.sum = super.cache.getList().stream().mapToDouble(value -> value.getVal()).sum();
                 add(new NumberET(ele.getId(), this.sum / super.cache.getCapacity()));
             }
             return;
         }
 
-        this.sum -= (updateOrInsert ? super.cache.getLast().getClose() : super.cache.getFirst().getClose());
-        this.sum += ele.getClose();
+        this.sum -= (updateOrInsert ? super.cache.getLast().getVal() : super.cache.getFirst().getVal());
+        this.sum += ele.getVal();
         super.cache.add(ele);
         add(new NumberET(ele.getId(), this.sum / super.cache.getCapacity()));
     }

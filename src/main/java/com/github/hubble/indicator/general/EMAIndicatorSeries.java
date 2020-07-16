@@ -22,7 +22,7 @@ public class EMAIndicatorSeries extends CacheIndicatorSeries<CandleET, NumberET,
 
     @Override protected void onChange(CandleET ele, boolean updateOrInsert, Series<CandleET> series) {
 
-        NumberET cur = new NumberET(ele.getId(), ele.getClose());
+        NumberET cur = new NumberET(ele.getId(), ele.getVal());
         if (super.cache.size() == 0 || (super.cache.size() == 1 && updateOrInsert)) {
             super.cache.add(cur);
             return;

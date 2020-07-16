@@ -33,6 +33,12 @@ public class CandleET extends Element {
     }
 
 
+    public double getVal() {
+
+        return this.close;
+    }
+
+
     @Override public boolean diff(Element other) {
 
         CandleET that = (CandleET) other;

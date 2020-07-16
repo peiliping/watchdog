@@ -31,22 +31,20 @@ public class DirectionalSeriesRule<E extends Element> extends SeriesRule<E> {
 
     @Override protected boolean match(long id, List<RuleResult> results) {
 
+        E first = super.series.get(id - this.step * super.series.getInterval());
+        E last = first;
+        if (last == null) {
+            return false;
+        }
         double c = 0, m = 0;
-        E first = null;
-        E last = null;
-        for (long i = id - (this.step - 1) * super.series.getInterval(); i <= id; i += super.series.getInterval()) {
+        for (long i = first.getId() + super.series.getInterval(); i <= id; i += super.series.getInterval()) {
             E e = super.series.get(i);
             if (e != null) {
                 c++;
-                if (first == null) {
-                    first = e;
-                }
-                if (last != null && this.customCompare.exec(e, last)) {
-                    m++;
-                }
+                m = m + (this.customCompare.exec(e, last) ? 1 : 0);
             }
             last = e;
         }
-        return (m / c) >= this.ratio && this.customCompare.exec(last, first);
+        return ((m / c) >= this.ratio) && this.customCompare.exec(last, first);
     }
 }
