@@ -2,48 +2,38 @@ package com.github.hubble.indicator.general;
 
 
 import com.github.hubble.Series;
+import com.github.hubble.ele.CandleET;
 import com.github.hubble.ele.HMLNumber;
 import com.github.hubble.ele.NumberET;
-import com.github.hubble.indicator.CacheIndicatorSeries;
+import com.github.hubble.indicator.IndicatorSeries;
 
 
-public class BollingIndicatorSeries extends CacheIndicatorSeries<NumberET, HMLNumber, NumberET> {
+public class BollingIndicatorSeries extends IndicatorSeries<CandleET, HMLNumber> {
 
 
     private double multiplier;
 
-    private double maSum;
+    private STDDIndicatorSeries stddIndicatorSeries;
+
+    private MAIndicatorSeries maIndicatorSeries;
 
 
-    public BollingIndicatorSeries(String name, int size, long interval, int step, double multiplier) {
+    public BollingIndicatorSeries(String name, int size, long interval, double multiplier, STDDIndicatorSeries stdd, MAIndicatorSeries ma) {
 
-        super(name, size, interval, step);
+        super(name, size, interval);
         this.multiplier = multiplier;
+        this.stddIndicatorSeries = stdd;
+        this.maIndicatorSeries = ma;
     }
 
 
-    @Override protected void onChange(NumberET ele, boolean updateOrInsert, Series<NumberET> series) {
+    @Override protected void onChange(CandleET ele, boolean updateOrInsert, Series<CandleET> series) {
 
-        if (!isCacheFull()) {
-            super.cache.add(ele);
-            if (isCacheFull()) {
-                this.maSum = super.cache.getList().stream().mapToDouble(value -> value.getData()).sum();
-                calculate(ele, series.get(ele.getId() - series.getInterval()));
-            }
-            return;
+        NumberET stdd = this.stddIndicatorSeries.get(ele.getId());
+        NumberET ma = this.maIndicatorSeries.get(ele.getId());
+        if (stdd != null && ma != null) {
+            double delta = stdd.getData() * this.multiplier;
+            add(new HMLNumber(ele.getId(), ma.getData() + delta, ma.getData(), ma.getData() - delta));
         }
-        this.maSum -= (updateOrInsert ? super.cache.getLast().getData() : super.cache.getFirst().getData());
-        this.maSum += ele.getData();
-        super.cache.add(ele);
-        calculate(ele, series.get(ele.getId() - series.getInterval()));
-    }
-
-
-    private void calculate(NumberET ele, NumberET pre) {
-
-        final double avg = this.maSum / super.cache.getCapacity();
-        double varianceSum = super.cache.getList().stream().mapToDouble(value -> Math.pow(value.getData() - avg, 2)).sum();
-        double delta = Math.sqrt(varianceSum / super.cache.getCapacity()) * this.multiplier;
-        add(new HMLNumber(ele.getId(), pre.getData() + delta, ele.getData(), pre.getData() - delta));
     }
 }

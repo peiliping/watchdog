@@ -13,6 +13,8 @@ public abstract class PairIndicatorSeries<I extends Element, R extends Element, 
 
     protected IndicatorSeries<I, SR> second;
 
+    protected boolean broadcast = true;
+
 
     public PairIndicatorSeries(String name, int size, long interval, IndicatorSeries<I, SR> first, IndicatorSeries<I, SR> second) {
 
@@ -26,8 +28,10 @@ public abstract class PairIndicatorSeries<I extends Element, R extends Element, 
 
         if (seq > super.lastSequence) {
             super.lastSequence = seq;
-            this.first.onChange(seq, ele, updateOrInsert, series);
-            this.second.onChange(seq, ele, updateOrInsert, series);
+            if (this.broadcast) {
+                this.first.onChange(seq, ele, updateOrInsert, series);
+                this.second.onChange(seq, ele, updateOrInsert, series);
+            }
             onChange(ele, updateOrInsert, series);
         }
     }
