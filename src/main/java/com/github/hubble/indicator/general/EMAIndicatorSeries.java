@@ -22,13 +22,12 @@ public class EMAIndicatorSeries extends CacheIndicatorSeries<CandleET, NumberET,
 
     @Override protected void onChange(CandleET ele, boolean updateOrInsert, Series<CandleET> series) {
 
-        NumberET cur = new NumberET(ele.getId(), ele.getVal());
         if (super.cache.size() == 0 || (super.cache.size() == 1 && updateOrInsert)) {
-            super.cache.add(cur);
+            super.cache.add(new NumberET(ele.getId(), ele.getVal()));
             return;
         }
 
-        NumberET ema = new NumberET(ele.getId(), ema(super.cache.getLast(), cur));
+        NumberET ema = new NumberET(ele.getId(), ema(updateOrInsert ? super.cache.getLast(2) : super.cache.getLast(), ele.getVal()));
         super.cache.add(ema);
         if (isCacheFull()) {
             add(ema);
@@ -36,9 +35,9 @@ public class EMAIndicatorSeries extends CacheIndicatorSeries<CandleET, NumberET,
     }
 
 
-    protected double ema(NumberET pre, NumberET cur) {
+    protected double ema(NumberET pre, double cur) {
 
-        int n = super.cache.getCapacity();
-        return ((cur.getData() * this.multiplier) + (n - 1) * pre.getData()) / (n + 1);
+        double r = this.multiplier / (super.cache.getCapacity() + 1);
+        return r * cur + (1 - r) * pre.getData();
     }
 }

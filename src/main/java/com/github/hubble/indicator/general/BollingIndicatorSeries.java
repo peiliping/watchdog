@@ -28,22 +28,22 @@ public class BollingIndicatorSeries extends CacheIndicatorSeries<NumberET, HMLNu
             super.cache.add(ele);
             if (isCacheFull()) {
                 this.maSum = super.cache.getList().stream().mapToDouble(value -> value.getData()).sum();
-                calculate(ele);
+                calculate(ele, series.get(ele.getId() - series.getInterval()));
             }
             return;
         }
         this.maSum -= (updateOrInsert ? super.cache.getLast().getData() : super.cache.getFirst().getData());
         this.maSum += ele.getData();
         super.cache.add(ele);
-        calculate(ele);
+        calculate(ele, series.get(ele.getId() - series.getInterval()));
     }
 
 
-    private void calculate(NumberET ele) {
+    private void calculate(NumberET ele, NumberET pre) {
 
         final double avg = this.maSum / super.cache.getCapacity();
         double varianceSum = super.cache.getList().stream().mapToDouble(value -> Math.pow(value.getData() - avg, 2)).sum();
         double delta = Math.sqrt(varianceSum / super.cache.getCapacity()) * this.multiplier;
-        add(new HMLNumber(ele.getId(), ele.getData() + delta, ele.getData(), ele.getData() - delta));
+        add(new HMLNumber(ele.getId(), pre.getData() + delta, ele.getData(), pre.getData() - delta));
     }
 }

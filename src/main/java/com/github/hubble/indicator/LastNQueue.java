@@ -65,6 +65,15 @@ public class LastNQueue<E extends Element> {
     }
 
 
+    public E getLast(int n) {
+
+        if (this.list.size() - n < 0) {
+            return null;
+        }
+        return this.list.get(this.list.size() - n);
+    }
+
+
     public E getLast() {
 
         return this.list.peekLast();

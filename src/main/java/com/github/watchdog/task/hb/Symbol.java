@@ -4,6 +4,8 @@ package com.github.watchdog.task.hb;
 import com.github.hubble.Series;
 import com.github.hubble.ele.CandleET;
 import com.github.hubble.ele.CustomCompare;
+import com.github.hubble.indicator.general.BollingIndicatorSeries;
+import com.github.hubble.indicator.general.EMAIndicatorSeries;
 import com.github.hubble.indicator.general.MAIndicatorSeries;
 import com.github.hubble.rule.IRule;
 import com.github.hubble.rule.RuleResult;
@@ -54,8 +56,13 @@ public class Symbol {
             } else {
                 MAIndicatorSeries ma05 = new MAIndicatorSeries(buildName("MA05"), 128, candleType.interval, 5);
                 MAIndicatorSeries ma10 = new MAIndicatorSeries(buildName("MA10"), 128, candleType.interval, 10);
+                MAIndicatorSeries ma20 = new MAIndicatorSeries(buildName("MA20"), 128, candleType.interval, 20);
                 MAIndicatorSeries ma30 = new MAIndicatorSeries(buildName("MA30"), 128, candleType.interval, 30);
-                series.bind(ma05, ma10, ma30);
+                EMAIndicatorSeries ema10 = new EMAIndicatorSeries(buildName("EMA10"), 128, candleType.interval, 10, 2);
+                series.bind(ma05, ma10, ma20, ma30, ema10);
+
+                BollingIndicatorSeries bolling = new BollingIndicatorSeries(buildName("Bolling"), 128, candleType.interval, 20, 2);
+                ma20.bind(bolling);
 
                 IRule risingRule = new CompareSeriesRule<>(buildName("CSR_MA05VS10"), ma05, ma10, CustomCompare.numberETCompare)
                         .and(new CompareSeriesRule<>(buildName("CSR_MA10VS30"), ma10, ma30, CustomCompare.numberETCompare)).overTurn(true);
