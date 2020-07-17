@@ -1,6 +1,12 @@
 package com.github.hubble.ele;
 
 
+import lombok.Getter;
+import lombok.Setter;
+
+
+@Getter
+@Setter
 public class HMLNumber extends Element {
 
 
@@ -9,6 +15,12 @@ public class HMLNumber extends Element {
     private double middle;
 
     private double low;
+
+
+    public HMLNumber(long id) {
+
+        super(id);
+    }
 
 
     public HMLNumber(long id, double high, double middle, double low) {

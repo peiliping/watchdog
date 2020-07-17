@@ -3,15 +3,15 @@ package com.github.hubble.indicator;
 
 import com.github.hubble.Series;
 import com.github.hubble.ele.CandleET;
+import com.github.hubble.ele.HMLNumber;
 
 
-@Deprecated
-public class PolarIndicatorSeries extends CacheIndicatorSeries<CandleET, CandleET, CandleET> {
+public class PolarIndicatorSeries extends CacheIndicatorSeries<CandleET, HMLNumber, CandleET> {
 
 
-    public PolarIndicatorSeries(String name, int size, long interval, int cacheSize) {
+    public PolarIndicatorSeries(String name, int size, long interval, int step) {
 
-        super(name, size, interval, cacheSize);
+        super(name, size, interval, step);
     }
 
 
@@ -25,21 +25,13 @@ public class PolarIndicatorSeries extends CacheIndicatorSeries<CandleET, CandleE
     }
 
 
-    private CandleET convert(CandleET ele) {
+    private HMLNumber convert(CandleET ele) {
 
         double max = Double.MIN_VALUE, min = Double.MAX_VALUE;
         for (CandleET candleET : super.cache.getList()) {
             max = Math.max(max, candleET.getHigh());
             min = Math.min(min, candleET.getLow());
         }
-        CandleET candleET = new CandleET(ele.getId());
-        candleET.setOpen(ele.getOpen());
-        candleET.setLow(min);
-        candleET.setHigh(max);
-        candleET.setClose(ele.getClose());
-        candleET.setAmount(ele.getAmount());
-        candleET.setVolume(ele.getVolume());
-        candleET.setCount(ele.getCount());
-        return candleET;
+        return new HMLNumber(ele.getId(), max, ele.getClose(), min);
     }
 }
