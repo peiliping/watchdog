@@ -38,6 +38,7 @@ public class EMAIndicatorSeries extends CacheIndicatorSeries<CandleET, NumberET,
 
     protected double ema(NumberET pre, NumberET cur) {
 
-        return pre.getData() + (cur.getData() - pre.getData()) * this.multiplier;
+        int n = super.cache.getCapacity();
+        return ((cur.getData() * this.multiplier) + (n - 1) * pre.getData()) / (n + 1);
     }
 }

@@ -5,6 +5,7 @@ import com.github.hubble.Series;
 import com.github.hubble.ele.CandleET;
 
 
+@Deprecated
 public class PolarIndicatorSeries extends CacheIndicatorSeries<CandleET, CandleET, CandleET> {
 
 

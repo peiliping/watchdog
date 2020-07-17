@@ -33,7 +33,7 @@ public class DirectionalSeriesRule<E extends Element> extends SeriesRule<E> {
 
         E first = super.series.get(id - this.step * super.series.getInterval());
         E last = first;
-        if (last == null) {
+        if (first == null) {
             return false;
         }
         double c = 0, m = 0;

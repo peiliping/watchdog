@@ -21,7 +21,7 @@ public class CompareIndicatorSeries<I extends Element, SR extends Element> exten
     }
 
 
-    @Override public void onChange(I ele, boolean updateOrInsert, Series<I> series) {
+    @Override protected void onChange(I ele, boolean updateOrInsert, Series<I> series) {
 
         SR sr1 = super.first.get(ele.getId());
         SR sr2 = super.second.get(ele.getId());

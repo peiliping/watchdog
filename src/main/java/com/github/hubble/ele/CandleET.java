@@ -42,7 +42,6 @@ public class CandleET extends Element {
     @Override public boolean diff(Element other) {
 
         CandleET that = (CandleET) other;
-
         return this.open != that.open
                || this.low != that.low
                || this.high != that.high
