@@ -57,12 +57,14 @@ public class Symbol {
 
                 MAIndicatorSeries ma05 = new MAIndicatorSeries(buildName("MA05"), 128, candleType.interval, 5);
                 MAIndicatorSeries ma10 = new MAIndicatorSeries(buildName("MA10"), 128, candleType.interval, 10);
-                MAIndicatorSeries ma20 = new MAIndicatorSeries(buildName("MA20"), 128, candleType.interval, 20);
                 MAIndicatorSeries ma30 = new MAIndicatorSeries(buildName("MA30"), 128, candleType.interval, 30);
                 EMAIndicatorSeries ema10 = new EMAIndicatorSeries(buildName("EMA10"), 128, candleType.interval, 10, 2);
+                closeSeries.bind(ma05, ma10, ma30, ema10);
+
                 STDDIndicatorSeries stdd = new STDDIndicatorSeries(buildName("STDD"), 128, candleType.interval, 20);
+                MAIndicatorSeries ma20 = new MAIndicatorSeries(buildName("MA20"), 128, candleType.interval, 20);
                 BollingIndicatorSeries bolling = new BollingIndicatorSeries(buildName("Bolling"), 128, candleType.interval, 2, stdd, ma20);
-                closeSeries.bind(ma05, ma10, ma20, ma30, ema10, stdd, bolling);
+                closeSeries.bind(bolling);
 
                 IRule risingRule = new CompareSeriesRule<>(buildName("CSR_MA05VS10"), ma05, ma10, CustomCompare.numberETCompare)
                         .and(new CompareSeriesRule<>(buildName("CSR_MA10VS30"), ma10, ma30, CustomCompare.numberETCompare)).overTurn(true);

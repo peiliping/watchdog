@@ -85,14 +85,9 @@ public class MarketConsumer extends AbstractMarketConsumer {
 
     private CandleET convert(JSONObject data) {
 
-        CandleET candleET = new CandleET(data.getLong("id"));
-        candleET.setLow(data.getDouble("low"));
-        candleET.setHigh(data.getDouble("high"));
-        candleET.setOpen(data.getDouble("open"));
-        candleET.setClose(data.getDouble("close"));
-        candleET.setAmount(data.getDouble("amount"));
-        candleET.setVolume(data.getDouble("vol"));
-        candleET.setCount(data.getInteger("count"));
+        CandleET candleET = new CandleET(data.getLong("id"),
+                                         data.getDouble("open"), data.getDouble("low"), data.getDouble("high"), data.getDouble("close"),
+                                         data.getDouble("amount"), data.getDouble("vol"), data.getInteger("count"));
         return candleET;
     }
 }
