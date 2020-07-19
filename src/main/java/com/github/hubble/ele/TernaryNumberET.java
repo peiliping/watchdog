@@ -7,7 +7,7 @@ import lombok.ToString;
 
 @Getter
 @ToString(callSuper = true)
-public class HMLNumber extends Element {
+public class TernaryNumberET extends Element {
 
 
     private final double high;
@@ -17,7 +17,7 @@ public class HMLNumber extends Element {
     private final double low;
 
 
-    public HMLNumber(long id, double high, double middle, double low) {
+    public TernaryNumberET(long id, double high, double middle, double low) {
 
         super(id);
         this.high = high;
@@ -28,7 +28,7 @@ public class HMLNumber extends Element {
 
     @Override public boolean diff(Element other) {
 
-        HMLNumber that = (HMLNumber) other;
+        TernaryNumberET that = (TernaryNumberET) other;
         return this.high != that.high
                || this.middle != that.middle
                || this.low != that.low;
