@@ -4,16 +4,16 @@ package com.github.hubble.indicator.general;
 import com.github.hubble.Series;
 import com.github.hubble.ele.HMLNumber;
 import com.github.hubble.ele.NumberET;
-import com.github.hubble.indicator.pair.PairIndicatorSeries;
+import com.github.hubble.indicator.PairIndicatorSeries;
 
 
-public class BollingIndicatorSeries extends PairIndicatorSeries<NumberET, HMLNumber, NumberET> {
+public class BollingPIS extends PairIndicatorSeries<NumberET, HMLNumber, NumberET> {
 
 
     private double multiplier;
 
 
-    public BollingIndicatorSeries(String name, int size, long interval, double multiplier, STDDIndicatorSeries stdd, MAIndicatorSeries ma) {
+    public BollingPIS(String name, int size, long interval, double multiplier, STDDIS stdd, MAIS ma) {
 
         super(name, size, interval, stdd, ma);
         this.multiplier = multiplier;

@@ -1,20 +1,21 @@
-package com.github.hubble.indicator.pair;
+package com.github.hubble.indicator.general;
 
 
 import com.github.hubble.Series;
-import com.github.hubble.ele.BooleanET;
 import com.github.hubble.ele.CustomCompare;
 import com.github.hubble.ele.Element;
+import com.github.hubble.ele.NumberET;
 import com.github.hubble.indicator.IndicatorSeries;
+import com.github.hubble.indicator.PairIndicatorSeries;
 
 
-public class CompareIndicatorSeries<I extends Element, SR extends Element> extends PairIndicatorSeries<I, BooleanET, SR> {
+public class DeltaPIS<I extends Element, SR extends Element> extends PairIndicatorSeries<I, NumberET, SR> {
 
 
     private CustomCompare<SR> customCompare;
 
 
-    public CompareIndicatorSeries(String name, int size, long interval, IndicatorSeries<I, SR> first, IndicatorSeries<I, SR> second, CustomCompare<SR> customCompare) {
+    public DeltaPIS(String name, int size, long interval, IndicatorSeries<I, SR> first, IndicatorSeries<I, SR> second, CustomCompare<SR> customCompare) {
 
         super(name, size, interval, first, second);
         this.customCompare = customCompare;
@@ -26,7 +27,7 @@ public class CompareIndicatorSeries<I extends Element, SR extends Element> exten
         SR sr1 = super.first.get(ele.getId());
         SR sr2 = super.second.get(ele.getId());
         if (sr1 != null && sr2 != null) {
-            add(new BooleanET(ele.getId(), this.customCompare.exec(sr1, sr2)));
+            add(new NumberET(ele.getId(), this.customCompare.delta(sr1, sr2)));
         }
     }
 }

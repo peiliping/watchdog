@@ -1,6 +1,7 @@
 package com.github.watchdog.task.hb;
 
 
+import com.github.hubble.CandleSeries;
 import com.github.hubble.Series;
 import com.github.hubble.ele.CandleET;
 import com.github.hubble.ele.CustomCompare;
@@ -28,7 +29,7 @@ public class Symbol {
 
     private double shockRatio;
 
-    private Map<CandleType, Series<CandleET>> candleETSeries = Maps.newHashMap();
+    private Map<CandleType, CandleSeries> candleETSeries = Maps.newHashMap();
 
     private Map<CandleType, RulesManager> rulesManagerMap = Maps.newHashMap();
 
@@ -43,27 +44,27 @@ public class Symbol {
 
     public void initCandleETSeries(CandleType candleType, List<CandleET> candleETList) {
 
-        Series<CandleET> series = this.candleETSeries.get(candleType);
+        CandleSeries series = this.candleETSeries.get(candleType);
         if (series == null) {
-            series = new Series<>(buildName(candleType.name()), 128, candleType.interval);
+            series = new CandleSeries(buildName(candleType.name()), 128, candleType.interval);
             this.candleETSeries.put(candleType, series);
             if (CandleType.MIN_1 == candleType) {
                 CandleShockRule candleShockRule = new CandleShockRule(buildName("ShockRule"), series, this.shockRatio, 5);
                 candleShockRule.setClazz(BarkRuleResult.class);
                 addRule(candleType, candleShockRule.overTurn(false).period(600), null);
             } else {
-                ToNumIndicatorSeries<CandleET> closeSeries = new ToNumIndicatorSeries<>(buildName("Close"), 128, candleType.interval, candleET -> candleET.getClose());
+                ToNumIS<CandleET> closeSeries = new ToNumIS<>(buildName("Close"), 128, candleType.interval, candleET -> candleET.getClose());
                 series.bind(closeSeries);
 
-                MAIndicatorSeries ma05 = new MAIndicatorSeries(buildName("MA05"), 128, candleType.interval, 5);
-                MAIndicatorSeries ma10 = new MAIndicatorSeries(buildName("MA10"), 128, candleType.interval, 10);
-                MAIndicatorSeries ma30 = new MAIndicatorSeries(buildName("MA30"), 128, candleType.interval, 30);
-                EMAIndicatorSeries ema10 = new EMAIndicatorSeries(buildName("EMA10"), 128, candleType.interval, 10, 2);
+                MAIS ma05 = new MAIS(buildName("MA05"), 128, candleType.interval, 5);
+                MAIS ma10 = new MAIS(buildName("MA10"), 128, candleType.interval, 10);
+                MAIS ma30 = new MAIS(buildName("MA30"), 128, candleType.interval, 30);
+                EMAIS ema10 = new EMAIS(buildName("EMA10"), 128, candleType.interval, 10, 2);
                 closeSeries.bind(ma05, ma10, ma30, ema10);
 
-                STDDIndicatorSeries stdd = new STDDIndicatorSeries(buildName("STDD"), 128, candleType.interval, 20);
-                MAIndicatorSeries ma20 = new MAIndicatorSeries(buildName("MA20"), 128, candleType.interval, 20);
-                BollingIndicatorSeries bolling = new BollingIndicatorSeries(buildName("Bolling"), 128, candleType.interval, 2, stdd, ma20);
+                STDDIS stdd = new STDDIS(buildName("STDD"), 128, candleType.interval, 20);
+                MAIS ma20 = new MAIS(buildName("MA20"), 128, candleType.interval, 20);
+                BollingPIS bolling = new BollingPIS(buildName("Bolling"), 128, candleType.interval, 2, stdd, ma20);
                 closeSeries.bind(bolling);
 
                 IRule risingRule = new CompareSeriesRule<>(buildName("CSR_MA05VS10"), ma05, ma10, CustomCompare.numberETCompare)

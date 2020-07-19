@@ -6,13 +6,13 @@ import com.github.hubble.ele.NumberET;
 import com.github.hubble.indicator.CacheIndicatorSeries;
 
 
-public class EMAIndicatorSeries extends CacheIndicatorSeries<NumberET, NumberET, NumberET> {
+public class EMAIS extends CacheIndicatorSeries<NumberET, NumberET, NumberET> {
 
 
     private double multiplier;
 
 
-    public EMAIndicatorSeries(String name, int size, long interval, int step, double multiplier) {
+    public EMAIS(String name, int size, long interval, int step, double multiplier) {
 
         super(name, size, interval, step);
         this.multiplier = multiplier;

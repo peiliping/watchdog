@@ -1,4 +1,4 @@
-package com.github.hubble.indicator.other;
+package com.github.hubble.indicator.general;
 
 
 import com.github.hubble.Series;
@@ -7,10 +7,10 @@ import com.github.hubble.ele.HMLNumber;
 import com.github.hubble.indicator.CacheIndicatorSeries;
 
 
-public class PolarIndicatorSeries extends CacheIndicatorSeries<CandleET, HMLNumber, CandleET> {
+public class PolarIS extends CacheIndicatorSeries<CandleET, HMLNumber, CandleET> {
 
 
-    public PolarIndicatorSeries(String name, int size, long interval, int step) {
+    public PolarIS(String name, int size, long interval, int step) {
 
         super(name, size, interval, step);
     }

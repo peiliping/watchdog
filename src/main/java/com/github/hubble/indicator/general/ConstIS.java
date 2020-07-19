@@ -7,13 +7,13 @@ import com.github.hubble.ele.NumberET;
 import com.github.hubble.indicator.IndicatorSeries;
 
 
-public class ConstantIndicatorSeries<I extends Element> extends IndicatorSeries<I, NumberET> {
+public class ConstIS<I extends Element> extends IndicatorSeries<I, NumberET> {
 
 
     private double value;
 
 
-    public ConstantIndicatorSeries(String name, int size, long interval, double value) {
+    public ConstIS(String name, int size, long interval, double value) {
 
         super(name, size, interval);
         this.value = value;

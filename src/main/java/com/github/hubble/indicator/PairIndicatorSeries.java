@@ -1,4 +1,4 @@
-package com.github.hubble.indicator.pair;
+package com.github.hubble.indicator;
 
 
 import com.github.hubble.Series;

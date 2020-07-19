@@ -9,13 +9,13 @@ import com.github.hubble.indicator.IndicatorSeries;
 import java.util.function.Function;
 
 
-public class ToNumIndicatorSeries<I extends Element> extends IndicatorSeries<I, NumberET> {
+public class ToNumIS<I extends Element> extends IndicatorSeries<I, NumberET> {
 
 
-    private Function<I, Double> function;
+    protected Function<I, Double> function;
 
 
-    public ToNumIndicatorSeries(String name, int size, long interval, Function<I, Double> function) {
+    public ToNumIS(String name, int size, long interval, Function<I, Double> function) {
 
         super(name, size, interval);
         this.function = function;
