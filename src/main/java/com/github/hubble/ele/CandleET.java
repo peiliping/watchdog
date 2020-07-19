@@ -2,40 +2,39 @@ package com.github.hubble.ele;
 
 
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 
 
 @Getter
-@Setter
 @ToString(callSuper = true)
 public class CandleET extends Element {
 
 
-    private double open;
+    private final double open;
 
-    private double low;
+    private final double low;
 
-    private double high;
+    private final double high;
 
-    private double close;
+    private final double close;
 
-    private double amount;//成交量
+    private final double amount;//成交量
 
-    private double volume; //成交额
+    private final double volume; //成交额
 
-    private int count; //成交笔数
+    private final int count; //成交笔数
 
 
-    public CandleET(long id) {
+    public CandleET(long id, double open, double low, double high, double close, double amount, double volume, int count) {
 
         super(id);
-    }
-
-
-    public double getVal() {
-
-        return this.close;
+        this.open = open;
+        this.low = low;
+        this.high = high;
+        this.close = close;
+        this.amount = amount;
+        this.volume = volume;
+        this.count = count;
     }
 
 

@@ -2,12 +2,11 @@ package com.github.hubble.indicator.general;
 
 
 import com.github.hubble.Series;
-import com.github.hubble.ele.CandleET;
 import com.github.hubble.ele.NumberET;
 import com.github.hubble.indicator.CacheIndicatorSeries;
 
 
-public class EMAIndicatorSeries extends CacheIndicatorSeries<CandleET, NumberET, NumberET> {
+public class EMAIndicatorSeries extends CacheIndicatorSeries<NumberET, NumberET, NumberET> {
 
 
     private double multiplier;
@@ -20,24 +19,28 @@ public class EMAIndicatorSeries extends CacheIndicatorSeries<CandleET, NumberET,
     }
 
 
-    @Override protected void onChange(CandleET ele, boolean updateOrInsert, Series<CandleET> series) {
+    @Override protected void onChange(NumberET ele, boolean updateOrInsert, Series<NumberET> series) {
 
-        if (super.cache.size() == 0 || (super.cache.size() == 1 && updateOrInsert)) {
-            super.cache.add(new NumberET(ele.getId(), ele.getVal()));
+        if (!super.cache.isFull()) {
+            super.cache.add(ele);
+            if (super.cache.isFull()) {
+                Double result = null;
+                for (NumberET item : super.cache.getList()) {
+                    result = (result == null ? item.getData() : ema(result, item));
+                }
+                add(new NumberET(ele.getId(), result));
+            }
             return;
         }
-
-        NumberET ema = new NumberET(ele.getId(), ema(updateOrInsert ? super.cache.getLast(2) : super.cache.getLast(), ele.getVal()));
-        super.cache.add(ema);
-        if (isCacheFull()) {
-            add(ema);
-        }
+        super.cache.add(ele);
+        NumberET pre = super.getBefore(ele.getId());
+        add(new NumberET(ele.getId(), ema(pre.getData(), ele)));
     }
 
 
-    protected double ema(NumberET pre, double cur) {
+    protected double ema(Double pre, NumberET cur) {
 
         double r = this.multiplier / (super.cache.getCapacity() + 1);
-        return r * cur + (1 - r) * pre.getData();
+        return r * cur.getData() + (1 - r) * pre;
     }
 }

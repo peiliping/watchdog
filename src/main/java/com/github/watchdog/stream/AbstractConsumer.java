@@ -22,6 +22,7 @@ public abstract class AbstractConsumer implements Runnable {
                 handle(msg);
             } catch (Throwable e) {
                 log.error("handle msg error : ", e);
+                log.error("msg : " + msg);
             }
         }
     }

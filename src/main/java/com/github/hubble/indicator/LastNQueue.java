@@ -59,18 +59,15 @@ public class LastNQueue<E extends Element> {
     }
 
 
-    public E getFirst() {
+    public boolean isFull() {
 
-        return this.list.peekFirst();
+        return this.capacity == this.list.size();
     }
 
 
-    public E getLast(int n) {
+    public E getFirst() {
 
-        if (this.list.size() - n < 0) {
-            return null;
-        }
-        return this.list.get(this.list.size() - n);
+        return this.list.peekFirst();
     }
 
 

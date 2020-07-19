@@ -81,12 +81,17 @@ public class Series<E extends Element> {
     }
 
 
-    public Series<E> bind(SeriesListener<E>... listeners) {
+    public E getBefore(long id) {
+
+        return get(id - this.interval);
+    }
+
+
+    public void bind(SeriesListener<E>... listeners) {
 
         for (SeriesListener<E> listener : listeners) {
             this.listeners.add(listener);
         }
-        return this;
     }
 
 

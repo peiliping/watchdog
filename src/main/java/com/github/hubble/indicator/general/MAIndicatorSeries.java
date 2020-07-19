@@ -2,12 +2,11 @@ package com.github.hubble.indicator.general;
 
 
 import com.github.hubble.Series;
-import com.github.hubble.ele.CandleET;
 import com.github.hubble.ele.NumberET;
 import com.github.hubble.indicator.CacheIndicatorSeries;
 
 
-public class MAIndicatorSeries extends CacheIndicatorSeries<CandleET, NumberET, CandleET> {
+public class MAIndicatorSeries extends CacheIndicatorSeries<NumberET, NumberET, NumberET> {
 
 
     private double sum;
@@ -19,19 +18,18 @@ public class MAIndicatorSeries extends CacheIndicatorSeries<CandleET, NumberET, 
     }
 
 
-    @Override protected void onChange(CandleET ele, boolean updateOrInsert, Series<CandleET> series) {
+    @Override protected void onChange(NumberET ele, boolean updateOrInsert, Series<NumberET> series) {
 
-        if (!isCacheFull()) {
+        if (!super.cache.isFull()) {
             super.cache.add(ele);
-            if (isCacheFull()) {
-                this.sum = super.cache.getList().stream().mapToDouble(value -> value.getVal()).sum();
+            if (super.cache.isFull()) {
+                this.sum = super.cache.getList().stream().mapToDouble(value -> value.getData()).sum();
                 add(new NumberET(ele.getId(), this.sum / super.cache.getCapacity()));
             }
             return;
         }
-
-        this.sum -= (updateOrInsert ? super.cache.getLast().getVal() : super.cache.getFirst().getVal());
-        this.sum += ele.getVal();
+        this.sum -= (updateOrInsert ? super.cache.getLast().getData() : super.cache.getFirst().getData());
+        this.sum += ele.getData();
         super.cache.add(ele);
         add(new NumberET(ele.getId(), this.sum / super.cache.getCapacity()));
     }

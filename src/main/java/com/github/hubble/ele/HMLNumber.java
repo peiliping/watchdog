@@ -2,27 +2,19 @@ package com.github.hubble.ele;
 
 
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 
 
 @Getter
-@Setter
 @ToString(callSuper = true)
 public class HMLNumber extends Element {
 
 
-    private double high;
+    private final double high;
 
-    private double middle;
+    private final double middle;
 
-    private double low;
-
-
-    public HMLNumber(long id) {
-
-        super(id);
-    }
+    private final double low;
 
 
     public HMLNumber(long id, double high, double middle, double low) {

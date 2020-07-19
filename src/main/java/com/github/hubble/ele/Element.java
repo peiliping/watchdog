@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 public abstract class Element implements Comparable<Element> {
 
 
-    protected long id;
+    protected final long id;
 
 
     @Override public int compareTo(@NotNull Element that) {

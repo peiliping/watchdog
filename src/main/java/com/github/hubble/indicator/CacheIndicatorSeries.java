@@ -17,10 +17,4 @@ public abstract class CacheIndicatorSeries<I extends Element, R extends Element,
         super(name, size, interval);
         this.cache = new LastNQueue<>(cacheSize);
     }
-
-
-    protected boolean isCacheFull() {
-
-        return this.cache.getList().size() == this.cache.getCapacity();
-    }
 }

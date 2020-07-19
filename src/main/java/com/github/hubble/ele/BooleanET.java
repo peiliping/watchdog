@@ -10,7 +10,7 @@ import lombok.ToString;
 public class BooleanET extends Element {
 
 
-    private boolean data;
+    private final boolean data;
 
 
     public BooleanET(long id, boolean data) {

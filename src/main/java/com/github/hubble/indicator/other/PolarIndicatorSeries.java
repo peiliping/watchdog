@@ -1,9 +1,10 @@
-package com.github.hubble.indicator;
+package com.github.hubble.indicator.other;
 
 
 import com.github.hubble.Series;
 import com.github.hubble.ele.CandleET;
 import com.github.hubble.ele.HMLNumber;
+import com.github.hubble.indicator.CacheIndicatorSeries;
 
 
 public class PolarIndicatorSeries extends CacheIndicatorSeries<CandleET, HMLNumber, CandleET> {
@@ -18,10 +19,9 @@ public class PolarIndicatorSeries extends CacheIndicatorSeries<CandleET, HMLNumb
     @Override protected void onChange(CandleET ele, boolean updateOrInsert, Series<CandleET> series) {
 
         super.cache.add(ele);
-        if (!isCacheFull()) {
-            return;
+        if (super.cache.isFull()) {
+            add(convert(ele));
         }
-        add(convert(ele));
     }
 
 

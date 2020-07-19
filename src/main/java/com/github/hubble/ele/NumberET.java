@@ -10,7 +10,7 @@ import lombok.ToString;
 public class NumberET extends Element {
 
 
-    private double data;
+    private final double data;
 
 
     public NumberET(long id, double data) {

@@ -56,9 +56,9 @@ public abstract class IRule implements IRuleOb {
 
         if (!prepare(id, results)) {
             this.lastMatchResult = false;
-            return false;
+        } else {
+            this.lastMatchResult = match(id, results);
         }
-        this.lastMatchResult = match(id, results);
         if (log.isDebugEnabled()) {
             log.debug("{} match : {} .", this.name, this.lastMatchResult);
         }

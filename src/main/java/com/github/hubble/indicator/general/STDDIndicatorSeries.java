@@ -20,9 +20,9 @@ public class STDDIndicatorSeries extends CacheIndicatorSeries<NumberET, NumberET
 
     @Override protected void onChange(NumberET ele, boolean updateOrInsert, Series<NumberET> series) {
 
-        if (!isCacheFull()) {
+        if (!super.cache.isFull()) {
             super.cache.add(ele);
-            if (isCacheFull()) {
+            if (super.cache.isFull()) {
                 this.sum = super.cache.getList().stream().mapToDouble(value -> value.getData()).sum();
                 calculate(ele.getId());
             }

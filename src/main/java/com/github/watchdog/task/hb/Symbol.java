@@ -52,25 +52,22 @@ public class Symbol {
                 candleShockRule.setClazz(BarkRuleResult.class);
                 addRule(candleType, candleShockRule.overTurn(false).period(600), null);
             } else {
+                ToNumIndicatorSeries<CandleET> closeSeries = new ToNumIndicatorSeries<>(buildName("Close"), 128, candleType.interval, candleET -> candleET.getClose());
+                series.bind(closeSeries);
+
                 MAIndicatorSeries ma05 = new MAIndicatorSeries(buildName("MA05"), 128, candleType.interval, 5);
                 MAIndicatorSeries ma10 = new MAIndicatorSeries(buildName("MA10"), 128, candleType.interval, 10);
                 MAIndicatorSeries ma20 = new MAIndicatorSeries(buildName("MA20"), 128, candleType.interval, 20);
                 MAIndicatorSeries ma30 = new MAIndicatorSeries(buildName("MA30"), 128, candleType.interval, 30);
                 EMAIndicatorSeries ema10 = new EMAIndicatorSeries(buildName("EMA10"), 128, candleType.interval, 10, 2);
-                series.bind(ma05, ma10, ma20, ma30, ema10);
-
-                ToNumIndicatorSeries<CandleET> closeSeries = new ToNumIndicatorSeries<>(buildName("Close"), 128, candleType.interval, candleET -> candleET.getClose());
                 STDDIndicatorSeries stdd = new STDDIndicatorSeries(buildName("STDD"), 128, candleType.interval, 20);
-                closeSeries.bind(stdd);
-
                 BollingIndicatorSeries bolling = new BollingIndicatorSeries(buildName("Bolling"), 128, candleType.interval, 2, stdd, ma20);
-                series.bind(closeSeries, bolling);
+                closeSeries.bind(ma05, ma10, ma20, ma30, ema10, stdd, bolling);
 
                 IRule risingRule = new CompareSeriesRule<>(buildName("CSR_MA05VS10"), ma05, ma10, CustomCompare.numberETCompare)
                         .and(new CompareSeriesRule<>(buildName("CSR_MA10VS30"), ma10, ma30, CustomCompare.numberETCompare)).overTurn(true);
                 IRule fallingRule = new CompareSeriesRule<>(buildName("CSR_MA10VS05"), ma10, ma05, CustomCompare.numberETCompare)
                         .and(new CompareSeriesRule<>(buildName("CSR_MA30VS10"), ma30, ma10, CustomCompare.numberETCompare)).overTurn(true);
-
                 addRule(candleType, risingRule.alternateRule(fallingRule), new BarkRuleResult(buildName(" MA趋势走强")));
                 addRule(candleType, fallingRule.alternateRule(risingRule), new BarkRuleResult(buildName(" MA趋势走弱")));
             }
