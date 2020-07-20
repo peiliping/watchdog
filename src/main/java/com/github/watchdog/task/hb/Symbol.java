@@ -5,6 +5,7 @@ import com.github.hubble.CandleSeries;
 import com.github.hubble.Series;
 import com.github.hubble.ele.CandleET;
 import com.github.hubble.ele.CustomCompare;
+import com.github.hubble.ele.NumberET;
 import com.github.hubble.ele.TernaryNumberET;
 import com.github.hubble.indicator.function.RSVFunction;
 import com.github.hubble.indicator.function.WilliamsRFunction;
@@ -62,8 +63,16 @@ public class Symbol {
                 MAIS ma05 = new MAIS(buildName("MA05"), 128, candleType.interval, 5);
                 MAIS ma10 = new MAIS(buildName("MA10"), 128, candleType.interval, 10);
                 MAIS ma30 = new MAIS(buildName("MA30"), 128, candleType.interval, 30);
-                EMAIS ema10 = new EMAIS(buildName("EMA10"), 128, candleType.interval, 10, 2);
-                closeSeries.bind(ma05, ma10, ma30, ema10);
+                closeSeries.bind(ma05, ma10, ma30);
+
+                EMAIS ema12 = new EMAIS(buildName("EMA12"), 128, candleType.interval, 12, 2);
+                EMAIS ema26 = new EMAIS(buildName("EMA26"), 128, candleType.interval, 26, 2);
+                DeltaPIS<NumberET, NumberET> dif = new DeltaPIS<>(buildName("DIF"), 128, candleType.interval, ema12, ema26, CustomCompare.numberETCompare);
+                closeSeries.bind(dif);
+                EMAIS dea = new EMAIS(buildName("DEA"), 128, candleType.interval, 9, 2);
+                dif.bind(dea);
+                MACDPIS macd = new MACDPIS(buildName("MACD"), 128, candleType.interval, dif, dea);
+                closeSeries.bind(macd);
 
                 STDDIS stdd = new STDDIS(buildName("STDD"), 128, candleType.interval, 20);
                 MAIS ma20 = new MAIS(buildName("MA20"), 128, candleType.interval, 20);

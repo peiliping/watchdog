@@ -3,7 +3,6 @@ package com.github.hubble.indicator;
 
 import com.github.hubble.Series;
 import com.github.hubble.ele.Element;
-import com.github.hubble.indicator.IndicatorSeries;
 
 
 public abstract class PairIndicatorSeries<I extends Element, R extends Element, SR extends Element> extends IndicatorSeries<I, R> {
