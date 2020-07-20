@@ -85,7 +85,11 @@ public class Symbol {
                 polarIS.bind(williamsrIS);
                 ToNumIS<TernaryNumberET> rsvIS = new ToNumIS<>(buildName("RSV"), 128, candleType.interval, new RSVFunction());
                 polarIS.bind(rsvIS);
-                KDJIS kdj = new KDJIS(buildName("KDJ"), 128, candleType.interval);
+                MAIS k = new MAIS(buildName("K"), 128, candleType.interval, 1);
+                rsvIS.bind(k);
+                MAIS d = new MAIS(buildName("D"), 128, candleType.interval, 3);
+                k.bind(d);
+                KDJIS kdj = new KDJIS(buildName("KDJ"), 128, candleType.interval, k, d);
                 rsvIS.bind(kdj);
 
                 IRule risingRule = new CompareSeriesRule<>(buildName("CSR_MA05VS10"), ma05, ma10, CustomCompare.numberETCompare)
