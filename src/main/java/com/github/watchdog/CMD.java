@@ -28,7 +28,7 @@ public class CMD extends CMDUtil {
 
     static final Option SUBSCRIBE = Option.builder().longOpt("subscribe").hasArg(true).required(false).desc("订阅请求的字符串 (*)").build();
 
-    static final Option SUBSCRIBEINTERVAL = Option.builder().longOpt("subscribeInterval").hasArg(false).required(false).desc("订阅请求间隔时间 (5ms)").build();
+    static final Option SUBSCRIBEINTERVAL = Option.builder().longOpt("subscribeInterval").hasArg(false).required(false).desc("订阅请求间隔时间 (100ms)").build();
 
     static final Option MARKET = Option.builder().longOpt("market").hasArg(true).required(false).desc("交易所名称 (*)").build();
 

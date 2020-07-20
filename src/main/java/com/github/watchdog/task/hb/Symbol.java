@@ -5,6 +5,9 @@ import com.github.hubble.CandleSeries;
 import com.github.hubble.Series;
 import com.github.hubble.ele.CandleET;
 import com.github.hubble.ele.CustomCompare;
+import com.github.hubble.ele.TernaryNumberET;
+import com.github.hubble.indicator.function.RSVFunction;
+import com.github.hubble.indicator.function.WilliamsRFunction;
 import com.github.hubble.indicator.general.*;
 import com.github.hubble.rule.IRule;
 import com.github.hubble.rule.RuleResult;
@@ -69,8 +72,12 @@ public class Symbol {
 
                 PolarIS polarIS = new PolarIS(buildName("POLAR"), 128, candleType.interval, 14);
                 series.bind(polarIS);
+                ToNumIS<TernaryNumberET> williamsrIS = new ToNumIS<>(buildName("WR"), 128, candleType.interval, new WilliamsRFunction());
+                polarIS.bind(williamsrIS);
+                ToNumIS<TernaryNumberET> rsvIS = new ToNumIS<>(buildName("RSV"), 128, candleType.interval, new RSVFunction());
+                polarIS.bind(rsvIS);
                 KDJIS kdj = new KDJIS(buildName("KDJ"), 128, candleType.interval);
-                polarIS.bind(kdj);
+                rsvIS.bind(kdj);
 
                 IRule risingRule = new CompareSeriesRule<>(buildName("CSR_MA05VS10"), ma05, ma10, CustomCompare.numberETCompare)
                         .and(new CompareSeriesRule<>(buildName("CSR_MA10VS30"), ma10, ma30, CustomCompare.numberETCompare)).overTurn(true);

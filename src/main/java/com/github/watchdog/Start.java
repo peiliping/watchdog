@@ -37,7 +37,7 @@ public class Start {
                     .heartBeatString(getValueForce(commandLine, HEARTBEAT, s -> s))
                     .heartBeatInterval(getValue(commandLine, HEARTBEATINTERVAL, Integer::parseInt, 10))
                     .subscribeString(getValueForce(commandLine, SUBSCRIBE, s -> s))
-                    .subscribeInterval(getValue(commandLine, SUBSCRIBEINTERVAL, Long::parseLong, 10L))
+                    .subscribeInterval(getValue(commandLine, SUBSCRIBEINTERVAL, Long::parseLong, 100L))
                     .build();
             log.info(clientConfig.toString());
             new NettyClient(clientConfig).connect();
