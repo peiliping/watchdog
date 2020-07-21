@@ -2,6 +2,7 @@ package com.github.hubble.indicator.general;
 
 
 import com.github.hubble.Series;
+import com.github.hubble.SeriesParams;
 import com.github.hubble.ele.NumberET;
 import com.github.hubble.indicator.CacheIndicatorSeries;
 
@@ -12,9 +13,9 @@ public class MAIS extends CacheIndicatorSeries<NumberET, NumberET, NumberET> {
     private double sum;
 
 
-    public MAIS(String name, int size, long interval, int step) {
+    public MAIS(SeriesParams params, int step) {
 
-        super(name, size, interval, step);
+        super(params, step);
     }
 
 

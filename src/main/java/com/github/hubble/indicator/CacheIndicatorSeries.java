@@ -1,6 +1,7 @@
 package com.github.hubble.indicator;
 
 
+import com.github.hubble.SeriesParams;
 import com.github.hubble.ele.Element;
 import lombok.Getter;
 
@@ -12,9 +13,9 @@ public abstract class CacheIndicatorSeries<I extends Element, R extends Element,
     protected LastNQueue<C> cache;
 
 
-    public CacheIndicatorSeries(String name, int size, long interval, int cacheSize) {
+    public CacheIndicatorSeries(SeriesParams params, int cacheSize) {
 
-        super(name, size, interval);
+        super(params);
         this.cache = new LastNQueue<>(cacheSize);
     }
 }

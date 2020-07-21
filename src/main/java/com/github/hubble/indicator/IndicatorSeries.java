@@ -3,6 +3,7 @@ package com.github.hubble.indicator;
 
 import com.github.hubble.Series;
 import com.github.hubble.SeriesListener;
+import com.github.hubble.SeriesParams;
 import com.github.hubble.ele.Element;
 
 
@@ -12,9 +13,9 @@ public abstract class IndicatorSeries<I extends Element, R extends Element> exte
     protected long lastSequence;
 
 
-    public IndicatorSeries(String name, int size, long interval) {
+    public IndicatorSeries(SeriesParams params) {
 
-        super(name, size, interval);
+        super(params);
     }
 
 

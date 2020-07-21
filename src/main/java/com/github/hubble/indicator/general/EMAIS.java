@@ -2,6 +2,7 @@ package com.github.hubble.indicator.general;
 
 
 import com.github.hubble.Series;
+import com.github.hubble.SeriesParams;
 import com.github.hubble.ele.NumberET;
 import com.github.hubble.indicator.CacheIndicatorSeries;
 
@@ -12,9 +13,9 @@ public class EMAIS extends CacheIndicatorSeries<NumberET, NumberET, NumberET> {
     private double multiplier;
 
 
-    public EMAIS(String name, int size, long interval, int step, double multiplier) {
+    public EMAIS(SeriesParams params, int step, double multiplier) {
 
-        super(name, size, interval, step);
+        super(params, step);
         this.multiplier = multiplier;
     }
 

@@ -2,6 +2,7 @@ package com.github.hubble.indicator;
 
 
 import com.github.hubble.Series;
+import com.github.hubble.SeriesParams;
 import com.github.hubble.ele.Element;
 
 
@@ -15,9 +16,9 @@ public abstract class PairIndicatorSeries<I extends Element, R extends Element, 
     protected boolean broadcast = false;
 
 
-    public PairIndicatorSeries(String name, int size, long interval, IndicatorSeries<I, SR> first, IndicatorSeries<I, SR> second) {
+    public PairIndicatorSeries(SeriesParams params, IndicatorSeries<I, SR> first, IndicatorSeries<I, SR> second) {
 
-        super(name, size, interval);
+        super(params);
         this.first = first;
         this.second = second;
     }

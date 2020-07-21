@@ -2,6 +2,7 @@ package com.github.hubble.indicator.general;
 
 
 import com.github.hubble.Series;
+import com.github.hubble.SeriesParams;
 import com.github.hubble.ele.NumberET;
 import com.github.hubble.indicator.CacheIndicatorSeries;
 
@@ -9,9 +10,9 @@ import com.github.hubble.indicator.CacheIndicatorSeries;
 public class DeltaIS extends CacheIndicatorSeries<NumberET, NumberET, NumberET> {
 
 
-    public DeltaIS(String name, int size, long interval) {
+    public DeltaIS(SeriesParams params) {
 
-        super(name, size, interval, 2);
+        super(params, 2);
     }
 
 

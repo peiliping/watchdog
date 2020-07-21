@@ -2,6 +2,7 @@ package com.github.hubble.indicator.general;
 
 
 import com.github.hubble.Series;
+import com.github.hubble.SeriesParams;
 import com.github.hubble.ele.Element;
 import com.github.hubble.ele.NumberET;
 import com.github.hubble.indicator.IndicatorSeries;
@@ -15,9 +16,9 @@ public class ToNumIS<I extends Element> extends IndicatorSeries<I, NumberET> {
     protected ToDoubleFunction<I> function;
 
 
-    public ToNumIS(String name, int size, long interval, ToDoubleFunction<I> function) {
+    public ToNumIS(SeriesParams params, ToDoubleFunction<I> function) {
 
-        super(name, size, interval);
+        super(params);
         this.function = function;
     }
 

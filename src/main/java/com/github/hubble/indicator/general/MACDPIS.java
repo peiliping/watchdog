@@ -2,6 +2,7 @@ package com.github.hubble.indicator.general;
 
 
 import com.github.hubble.Series;
+import com.github.hubble.SeriesParams;
 import com.github.hubble.ele.NumberET;
 import com.github.hubble.ele.TernaryNumberET;
 import com.github.hubble.indicator.PairIndicatorSeries;
@@ -10,9 +11,9 @@ import com.github.hubble.indicator.PairIndicatorSeries;
 public class MACDPIS extends PairIndicatorSeries<NumberET, TernaryNumberET, NumberET> {
 
 
-    public MACDPIS(String name, int size, long interval, CalculatePIS dif, EMAIS dea) {
+    public MACDPIS(SeriesParams params, CalculatePIS dif, EMAIS dea) {
 
-        super(name, size, interval, dif, dea);
+        super(params, dif, dea);
     }
 
 

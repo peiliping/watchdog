@@ -7,8 +7,8 @@ import com.github.hubble.ele.CandleET;
 public class CandleSeries extends Series<CandleET> {
 
 
-    public CandleSeries(String name, int size, long interval) {
+    public CandleSeries(SeriesParams params) {
 
-        super(name, size, interval);
+        super(params);
     }
 }

@@ -2,6 +2,7 @@ package com.github.hubble.indicator.general;
 
 
 import com.github.hubble.Series;
+import com.github.hubble.SeriesParams;
 import com.github.hubble.ele.Element;
 import com.github.hubble.ele.NumberET;
 import com.github.hubble.indicator.IndicatorSeries;
@@ -13,9 +14,9 @@ public class ConstIS<I extends Element> extends IndicatorSeries<I, NumberET> {
     private double value;
 
 
-    public ConstIS(String name, int size, long interval, double value) {
+    public ConstIS(SeriesParams params, double value) {
 
-        super(name, size, interval);
+        super(params);
         this.value = value;
     }
 

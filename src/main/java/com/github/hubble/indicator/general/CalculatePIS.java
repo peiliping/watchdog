@@ -2,6 +2,7 @@ package com.github.hubble.indicator.general;
 
 
 import com.github.hubble.Series;
+import com.github.hubble.SeriesParams;
 import com.github.hubble.ele.NumberET;
 import com.github.hubble.indicator.IndicatorSeries;
 import com.github.hubble.indicator.PairIndicatorSeries;
@@ -15,10 +16,10 @@ public class CalculatePIS extends PairIndicatorSeries<NumberET, NumberET, Number
     protected ToDoubleBiFunction<NumberET, NumberET> function;
 
 
-    public CalculatePIS(String name, int size, long interval, IndicatorSeries<NumberET, NumberET> first, IndicatorSeries<NumberET, NumberET> second,
+    public CalculatePIS(SeriesParams params, IndicatorSeries<NumberET, NumberET> first, IndicatorSeries<NumberET, NumberET> second,
                         ToDoubleBiFunction<NumberET, NumberET> function) {
 
-        super(name, size, interval, first, second);
+        super(params, first, second);
         this.function = function;
     }
 

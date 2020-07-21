@@ -33,20 +33,15 @@ public class Series<E extends Element> {
     protected long sequence = 0;
 
 
-    /**
-     * @param name     名字
-     * @param size     最多保留的element个数，必须是2的N次方
-     * @param interval 单位为秒
-     */
-    public Series(String name, int size, long interval) {
+    public Series(SeriesParams params) {
 
-        this.name = name;
-        this.size = size;
+        this.name = params.getName();
+        this.size = params.getSize();
         Validate.isTrue(Integer.bitCount((int) this.size) == 1);
         this.mask = this.size - 1;
-        this.elements = (E[]) new Element[size];
+        this.elements = (E[]) new Element[(int) this.size];
         this.listeners = Lists.newArrayList();
-        this.interval = interval;
+        this.interval = params.getInterval();
     }
 
 

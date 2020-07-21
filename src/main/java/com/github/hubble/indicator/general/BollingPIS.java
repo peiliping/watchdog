@@ -2,8 +2,9 @@ package com.github.hubble.indicator.general;
 
 
 import com.github.hubble.Series;
-import com.github.hubble.ele.TernaryNumberET;
+import com.github.hubble.SeriesParams;
 import com.github.hubble.ele.NumberET;
+import com.github.hubble.ele.TernaryNumberET;
 import com.github.hubble.indicator.PairIndicatorSeries;
 
 
@@ -13,9 +14,9 @@ public class BollingPIS extends PairIndicatorSeries<NumberET, TernaryNumberET, N
     private double multiplier;
 
 
-    public BollingPIS(String name, int size, long interval, double multiplier, STDDIS stdd, MAIS ma) {
+    public BollingPIS(SeriesParams params, double multiplier, STDDIS stdd, MAIS ma) {
 
-        super(name, size, interval, stdd, ma);
+        super(params, stdd, ma);
         this.multiplier = multiplier;
     }
 
