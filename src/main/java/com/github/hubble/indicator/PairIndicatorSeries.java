@@ -3,20 +3,22 @@ package com.github.hubble.indicator;
 
 import com.github.hubble.Series;
 import com.github.hubble.SeriesParams;
+import com.github.hubble.SeriesTimeListener;
 import com.github.hubble.ele.Element;
+import com.github.hubble.ele.NumberET;
+import org.apache.commons.lang3.Validate;
 
 
-public abstract class PairIndicatorSeries<I extends Element, R extends Element, SR extends Element> extends IndicatorSeries<I, R> {
+public abstract class PairIndicatorSeries<F extends IndicatorSeries, S extends IndicatorSeries, R extends Element>
+        extends IndicatorSeries<NumberET, R> implements SeriesTimeListener {
 
 
-    protected IndicatorSeries<I, SR> first;
+    protected F first;
 
-    protected IndicatorSeries<I, SR> second;
-
-    protected boolean broadcast = false;
+    protected S second;
 
 
-    public PairIndicatorSeries(SeriesParams params, IndicatorSeries<I, SR> first, IndicatorSeries<I, SR> second) {
+    public PairIndicatorSeries(SeriesParams params, F first, S second) {
 
         super(params);
         this.first = first;
@@ -24,15 +26,31 @@ public abstract class PairIndicatorSeries<I extends Element, R extends Element, 
     }
 
 
-    @Override public void onChange(long seq, I ele, boolean updateOrInsert, Series<I> series) {
+    @Override public void after(Series series) {
+
+        series.bindTimeListener(this);
+    }
+
+
+    @Override public final void onChange(long seq, NumberET ele, boolean updateOrInsert, Series<NumberET> series) {
+
+        Validate.isTrue(false);
+    }
+
+
+    @Override protected final void onChange(NumberET ele, boolean updateOrInsert, Series<NumberET> series) {
+
+    }
+
+
+    @Override public void onTime(long seq, long timeId) {
 
         if (seq > super.lastSequence) {
             super.lastSequence = seq;
-            if (this.broadcast) {
-                this.first.onChange(seq, ele, updateOrInsert, series);
-                this.second.onChange(seq, ele, updateOrInsert, series);
-            }
-            onChange(ele, updateOrInsert, series);
+            onTime(timeId);
         }
     }
+
+
+    protected abstract void onTime(long timeId);
 }

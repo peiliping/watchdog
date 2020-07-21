@@ -1,14 +1,13 @@
 package com.github.hubble.indicator.general;
 
 
-import com.github.hubble.Series;
 import com.github.hubble.SeriesParams;
 import com.github.hubble.ele.NumberET;
 import com.github.hubble.ele.TernaryNumberET;
 import com.github.hubble.indicator.PairIndicatorSeries;
 
 
-public class KDJIS extends PairIndicatorSeries<NumberET, TernaryNumberET, NumberET> {
+public class KDJIS extends PairIndicatorSeries<MAIS, MAIS, TernaryNumberET> {
 
 
     public KDJIS(SeriesParams params, MAIS k, MAIS d) {
@@ -17,12 +16,12 @@ public class KDJIS extends PairIndicatorSeries<NumberET, TernaryNumberET, Number
     }
 
 
-    @Override protected void onChange(NumberET ele, boolean updateOrInsert, Series<NumberET> series) {
+    @Override protected void onTime(long timeId) {
 
-        NumberET k = super.first.get(ele.getId());
-        NumberET d = super.second.get(ele.getId());
+        NumberET k = super.first.get(timeId);
+        NumberET d = super.second.get(timeId);
         if (k != null && d != null) {
-            add(new TernaryNumberET(ele.getId(), k.getData(), d.getData(), 3 * k.getData() - 2 * d.getData()));
+            add(new TernaryNumberET(timeId, k.getData(), d.getData(), 3 * k.getData() - 2 * d.getData()));
         }
     }
 }

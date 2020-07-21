@@ -22,7 +22,9 @@ public class Series<E extends Element> {
 
     protected final E[] elements;
 
-    protected final List<SeriesListener<E>> listeners;
+    protected final List<SeriesUpsertListener<E>> upsertListeners;
+
+    protected final List<SeriesTimeListener> timeListeners;
 
     @Getter
     protected final long interval;
@@ -40,7 +42,8 @@ public class Series<E extends Element> {
         Validate.isTrue(Integer.bitCount((int) this.size) == 1);
         this.mask = this.size - 1;
         this.elements = (E[]) new Element[(int) this.size];
-        this.listeners = Lists.newArrayList();
+        this.upsertListeners = Lists.newArrayList();
+        this.timeListeners = Lists.newArrayList();
         this.interval = params.getInterval();
     }
 
@@ -61,8 +64,11 @@ public class Series<E extends Element> {
         if (log.isDebugEnabled()) {
             log.debug("{} add element {} .", this.name, element.toString());
         }
-        for (SeriesListener<E> listener : this.listeners) {
+        for (SeriesUpsertListener<E> listener : this.upsertListeners) {
             listener.onChange(this.sequence, element, replace, this);
+        }
+        for (SeriesTimeListener listener : this.timeListeners) {
+            listener.onTime(this.sequence, element.getId());
         }
         this.sequence++;
     }
@@ -82,10 +88,18 @@ public class Series<E extends Element> {
     }
 
 
-    public void bind(SeriesListener<E>... listeners) {
+    public void bindUpsertListener(SeriesUpsertListener<E>... listeners) {
 
-        for (SeriesListener<E> listener : listeners) {
-            this.listeners.add(listener);
+        for (SeriesUpsertListener<E> listener : listeners) {
+            this.upsertListeners.add(listener);
+        }
+    }
+
+
+    public void bindTimeListener(SeriesTimeListener... listeners) {
+
+        for (SeriesTimeListener listener : listeners) {
+            this.timeListeners.add(listener);
         }
     }
 

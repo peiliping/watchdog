@@ -2,12 +2,12 @@ package com.github.hubble.indicator;
 
 
 import com.github.hubble.Series;
-import com.github.hubble.SeriesListener;
 import com.github.hubble.SeriesParams;
+import com.github.hubble.SeriesUpsertListener;
 import com.github.hubble.ele.Element;
 
 
-public abstract class IndicatorSeries<I extends Element, R extends Element> extends Series<R> implements SeriesListener<I> {
+public abstract class IndicatorSeries<I extends Element, R extends Element> extends Series<R> implements SeriesUpsertListener<I> {
 
 
     protected long lastSequence;
@@ -19,12 +19,9 @@ public abstract class IndicatorSeries<I extends Element, R extends Element> exte
     }
 
 
-    public IndicatorSeries<I, R> after(Series<I>... series) {
+    public void after(Series<I> series) {
 
-        for (Series<I> t : series) {
-            t.bind(this);
-        }
-        return this;
+        series.bindUpsertListener(this);
     }
 
 

@@ -1,8 +1,8 @@
 package com.github.hubble.indicator.general;
 
 
-import com.github.hubble.Series;
 import com.github.hubble.SeriesParams;
+import com.github.hubble.ele.Element;
 import com.github.hubble.ele.NumberET;
 import com.github.hubble.indicator.IndicatorSeries;
 import com.github.hubble.indicator.PairIndicatorSeries;
@@ -10,13 +10,13 @@ import com.github.hubble.indicator.PairIndicatorSeries;
 import java.util.function.ToDoubleBiFunction;
 
 
-public class CalculatePIS extends PairIndicatorSeries<NumberET, NumberET, NumberET> {
+public class CalculatePIS extends PairIndicatorSeries<IndicatorSeries<? extends Element, NumberET>, IndicatorSeries<? extends Element, NumberET>, NumberET> {
 
 
     protected ToDoubleBiFunction<NumberET, NumberET> function;
 
 
-    public CalculatePIS(SeriesParams params, IndicatorSeries<NumberET, NumberET> first, IndicatorSeries<NumberET, NumberET> second,
+    public CalculatePIS(SeriesParams params, IndicatorSeries<? extends Element, NumberET> first, IndicatorSeries<? extends Element, NumberET> second,
                         ToDoubleBiFunction<NumberET, NumberET> function) {
 
         super(params, first, second);
@@ -24,12 +24,12 @@ public class CalculatePIS extends PairIndicatorSeries<NumberET, NumberET, Number
     }
 
 
-    @Override protected void onChange(NumberET ele, boolean updateOrInsert, Series<NumberET> series) {
+    @Override protected void onTime(long timeId) {
 
-        NumberET one = super.first.get(ele.getId());
-        NumberET two = super.second.get(ele.getId());
+        NumberET one = super.first.get(timeId);
+        NumberET two = super.second.get(timeId);
         if (one != null && two != null) {
-            add(new NumberET(ele.getId(), this.function.applyAsDouble(one, two)));
+            add(new NumberET(timeId, this.function.applyAsDouble(one, two)));
         }
     }
 }

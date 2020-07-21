@@ -1,14 +1,13 @@
 package com.github.hubble.indicator.general;
 
 
-import com.github.hubble.Series;
 import com.github.hubble.SeriesParams;
 import com.github.hubble.ele.NumberET;
 import com.github.hubble.ele.TernaryNumberET;
 import com.github.hubble.indicator.PairIndicatorSeries;
 
 
-public class BollingPIS extends PairIndicatorSeries<NumberET, TernaryNumberET, NumberET> {
+public class BollingPIS extends PairIndicatorSeries<STDDIS, MAIS, TernaryNumberET> {
 
 
     private double multiplier;
@@ -21,13 +20,13 @@ public class BollingPIS extends PairIndicatorSeries<NumberET, TernaryNumberET, N
     }
 
 
-    @Override protected void onChange(NumberET ele, boolean updateOrInsert, Series<NumberET> series) {
+    @Override protected void onTime(long timeId) {
 
-        NumberET stdd = super.first.get(ele.getId());
-        NumberET ma = super.second.get(ele.getId());
+        NumberET stdd = super.first.get(timeId);
+        NumberET ma = super.second.get(timeId);
         if (stdd != null && ma != null) {
             double delta = stdd.getData() * this.multiplier;
-            add(new TernaryNumberET(ele.getId(), ma.getData() + delta, ma.getData(), ma.getData() - delta));
+            add(new TernaryNumberET(timeId, ma.getData() + delta, ma.getData(), ma.getData() - delta));
         }
     }
 }

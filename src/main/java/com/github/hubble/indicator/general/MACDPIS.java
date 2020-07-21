@@ -1,14 +1,13 @@
 package com.github.hubble.indicator.general;
 
 
-import com.github.hubble.Series;
 import com.github.hubble.SeriesParams;
 import com.github.hubble.ele.NumberET;
 import com.github.hubble.ele.TernaryNumberET;
 import com.github.hubble.indicator.PairIndicatorSeries;
 
 
-public class MACDPIS extends PairIndicatorSeries<NumberET, TernaryNumberET, NumberET> {
+public class MACDPIS extends PairIndicatorSeries<CalculatePIS, EMAIS, TernaryNumberET> {
 
 
     public MACDPIS(SeriesParams params, CalculatePIS dif, EMAIS dea) {
@@ -17,12 +16,12 @@ public class MACDPIS extends PairIndicatorSeries<NumberET, TernaryNumberET, Numb
     }
 
 
-    @Override protected void onChange(NumberET ele, boolean updateOrInsert, Series<NumberET> series) {
+    @Override protected void onTime(long timeId) {
 
-        NumberET dif = super.first.get(ele.getId());
-        NumberET dea = super.second.get(ele.getId());
+        NumberET dif = super.first.get(timeId);
+        NumberET dea = super.second.get(timeId);
         if (dif != null && dea != null) {
-            add(new TernaryNumberET(ele.getId(), dif.getData(), dea.getData(), dif.getData() - dea.getData()));
+            add(new TernaryNumberET(timeId, dif.getData(), dea.getData(), dif.getData() - dea.getData()));
         }
     }
 }
