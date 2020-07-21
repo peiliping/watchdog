@@ -59,49 +59,58 @@ public class Symbol {
                 addRule(candleType, candleShockRule.overTurn(false).period(600), null);
             } else {
                 ToNumIS<CandleET> closeSeries = new ToNumIS<>(buildName("Close"), 128, candleType.interval, candleET -> candleET.getClose());
-                series.bind(closeSeries);
+                closeSeries.after(series);
 
                 DeltaIS change = new DeltaIS(buildName("Change"), 128, candleType.interval);
-                closeSeries.bind(change);
+                change.after(closeSeries);
                 ToNumIS<NumberET> up = new ToNumIS<>(buildName("Change-Up"), 128, candleType.interval, numberET -> Math.max(numberET.getData(), 0));
+                up.after(change);
                 EMAIS emaUP = new EMAIS(buildName("EMA-Change-Up"), 128, candleType.interval, 14, 1);
-                up.bind(emaUP);
+                emaUP.after(up);
                 ToNumIS<NumberET> total = new ToNumIS<>(buildName("Change-Total"), 128, candleType.interval, numberET -> Math.abs(numberET.getData()));
+                total.after(change);
                 EMAIS emaTotal = new EMAIS(buildName("EMA-Change-Total"), 128, candleType.interval, 14, 1);
-                total.bind(emaTotal);
-                CalculatePIS calculatePIS = new CalculatePIS(buildName("Calculate"), 128, candleType.interval, emaUP, emaTotal, PISFuncs.PERCENT);
-                change.bind(up, total, calculatePIS);
+                emaTotal.after(total);
+                CalculatePIS calculatePIS = new CalculatePIS(buildName("RSI"), 128, candleType.interval, emaUP, emaTotal, PISFuncs.PERCENT);
+                calculatePIS.after(change);
 
                 MAIS ma05 = new MAIS(buildName("MA05"), 128, candleType.interval, 5);
+                ma05.after(closeSeries);
                 MAIS ma10 = new MAIS(buildName("MA10"), 128, candleType.interval, 10);
+                ma10.after(closeSeries);
                 MAIS ma30 = new MAIS(buildName("MA30"), 128, candleType.interval, 30);
-                closeSeries.bind(ma05, ma10, ma30);
+                ma30.after(closeSeries);
 
                 EMAIS ema12 = new EMAIS(buildName("EMA12"), 128, candleType.interval, 12, 2);
+                ema12.after(closeSeries);
                 EMAIS ema26 = new EMAIS(buildName("EMA26"), 128, candleType.interval, 26, 2);
+                ema26.after(closeSeries);
                 CalculatePIS dif = new CalculatePIS(buildName("DIF"), 128, candleType.interval, ema12, ema26, PISFuncs.SUBTRACTION);
+                dif.after(closeSeries);
                 EMAIS dea = new EMAIS(buildName("DEA"), 128, candleType.interval, 9, 2);
-                dif.bind(dea);
+                dea.after(dif);
                 MACDPIS macd = new MACDPIS(buildName("MACD"), 128, candleType.interval, dif, dea);
-                closeSeries.bind(ema12, ema26, dif, macd);
+                macd.after(closeSeries);
 
                 STDDIS stdd = new STDDIS(buildName("STDD"), 128, candleType.interval, 20);
+                stdd.after(closeSeries);
                 MAIS ma20 = new MAIS(buildName("MA20"), 128, candleType.interval, 20);
+                ma20.after(closeSeries);
                 BollingPIS bolling = new BollingPIS(buildName("Bolling"), 128, candleType.interval, 2, stdd, ma20);
-                closeSeries.bind(stdd, ma20, bolling);
+                bolling.after(closeSeries);
 
                 PolarIS polarIS = new PolarIS(buildName("POLAR"), 128, candleType.interval, 14);
-                series.bind(polarIS);
+                polarIS.after(series);
                 ToNumIS<TernaryNumberET> williamsrIS = new ToNumIS<>(buildName("WR"), 128, candleType.interval, new WilliamsRFunction());
-                polarIS.bind(williamsrIS);
+                williamsrIS.after(polarIS);
                 ToNumIS<TernaryNumberET> rsvIS = new ToNumIS<>(buildName("RSV"), 128, candleType.interval, new RSVFunction());
-                polarIS.bind(rsvIS);
+                rsvIS.after(polarIS);
                 MAIS k = new MAIS(buildName("K"), 128, candleType.interval, 1);
-                rsvIS.bind(k);
+                k.after(rsvIS);
                 MAIS d = new MAIS(buildName("D"), 128, candleType.interval, 3);
-                k.bind(d);
+                d.after(k);
                 KDJIS kdj = new KDJIS(buildName("KDJ"), 128, candleType.interval, k, d);
-                rsvIS.bind(kdj);
+                kdj.after(rsvIS);
 
                 IRule risingRule = new CompareSeriesRule<>(buildName("CSR_MA05VS10"), ma05, ma10, CustomCompare.numberETCompare)
                         .and(new CompareSeriesRule<>(buildName("CSR_MA10VS30"), ma10, ma30, CustomCompare.numberETCompare)).overTurn(true);

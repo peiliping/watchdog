@@ -18,6 +18,15 @@ public abstract class IndicatorSeries<I extends Element, R extends Element> exte
     }
 
 
+    public IndicatorSeries<I, R> after(Series<I>... series) {
+
+        for (Series<I> t : series) {
+            t.bind(this);
+        }
+        return this;
+    }
+
+
     @Override public void onChange(long seq, I ele, boolean updateOrInsert, Series<I> series) {
 
         if (seq > this.lastSequence) {
