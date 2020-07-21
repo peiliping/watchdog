@@ -5,12 +5,15 @@ import com.github.hubble.Series;
 import com.github.hubble.SeriesParams;
 import com.github.hubble.SeriesUpsertListener;
 import com.github.hubble.ele.Element;
+import org.apache.commons.lang3.Validate;
 
 
 public abstract class IndicatorSeries<I extends Element, R extends Element> extends Series<R> implements SeriesUpsertListener<I> {
 
 
     protected long lastSequence;
+
+    protected Series parentSeries;
 
 
     public IndicatorSeries(SeriesParams params) {
@@ -21,6 +24,8 @@ public abstract class IndicatorSeries<I extends Element, R extends Element> exte
 
     public void after(Series<I> series) {
 
+        Validate.isTrue(this.parentSeries == null);
+        this.parentSeries = series;
         series.bindUpsertListener(this);
     }
 

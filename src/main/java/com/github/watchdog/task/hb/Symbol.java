@@ -74,7 +74,6 @@ public class Symbol {
                 EMAIS emaTotal = new EMAIS(params.createNew(buildName("EMA-Change-Total")), 14, 1);
                 emaTotal.after(total);
                 CalculatePIS calculatePIS = new CalculatePIS(params.createNew(buildName("RSI")), emaUP, emaTotal, PISFuncs.PERCENT);
-                calculatePIS.after(change);
 
                 MAIS ma05 = new MAIS(params.createNew(buildName("MA05")), 5);
                 ma05.after(closeSeries);
@@ -88,18 +87,15 @@ public class Symbol {
                 EMAIS ema26 = new EMAIS(params.createNew(buildName("EMA26")), 26, 2);
                 ema26.after(closeSeries);
                 CalculatePIS dif = new CalculatePIS(params.createNew(buildName("DIF")), ema12, ema26, PISFuncs.MINUS);
-                dif.after(closeSeries);
                 EMAIS dea = new EMAIS(params.createNew(buildName("DEA")), 9, 2);
                 dea.after(dif);
                 MACDPIS macd = new MACDPIS(params.createNew(buildName("MACD")), dif, dea);
-                macd.after(closeSeries);
 
                 STDDIS stdd = new STDDIS(params.createNew(buildName("STDD")), 20);
                 stdd.after(closeSeries);
                 MAIS ma20 = new MAIS(params.createNew(buildName("MA20")), 20);
                 ma20.after(closeSeries);
                 BollingPIS bolling = new BollingPIS(params.createNew(buildName("Bolling")), 2, stdd, ma20);
-                bolling.after(closeSeries);
 
                 PolarIS polarIS = new PolarIS(params.createNew(buildName("POLAR")), 14);
                 polarIS.after(series);
@@ -112,7 +108,6 @@ public class Symbol {
                 MAIS d = new MAIS(params.createNew(buildName("D")), 3);
                 d.after(k);
                 KDJIS kdj = new KDJIS(params.createNew(buildName("KDJ")), k, d);
-                kdj.after(rsvIS);
 
                 IRule risingRule = new CompareSeriesRule<>(buildName("CSR_MA05VS10"), ma05, ma10, CustomCompare.numberETCompare)
                         .and(new CompareSeriesRule<>(buildName("CSR_MA10VS30"), ma10, ma30, CustomCompare.numberETCompare)).overTurn(true);
