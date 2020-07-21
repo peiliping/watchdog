@@ -10,10 +10,9 @@ import com.github.hubble.indicator.PairIndicatorSeries;
 public class MACDPIS extends PairIndicatorSeries<NumberET, TernaryNumberET, NumberET> {
 
 
-    public MACDPIS(String name, int size, long interval, DeltaPIS<NumberET, NumberET> dif, EMAIS dea) {
+    public MACDPIS(String name, int size, long interval, CalculatePIS dif, EMAIS dea) {
 
         super(name, size, interval, dif, dea);
-        super.broadcast = false;
     }
 
 

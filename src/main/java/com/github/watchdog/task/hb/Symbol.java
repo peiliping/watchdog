@@ -7,6 +7,7 @@ import com.github.hubble.ele.CandleET;
 import com.github.hubble.ele.CustomCompare;
 import com.github.hubble.ele.NumberET;
 import com.github.hubble.ele.TernaryNumberET;
+import com.github.hubble.indicator.function.PISFuncs;
 import com.github.hubble.indicator.function.RSVFunction;
 import com.github.hubble.indicator.function.WilliamsRFunction;
 import com.github.hubble.indicator.general.*;
@@ -60,6 +61,17 @@ public class Symbol {
                 ToNumIS<CandleET> closeSeries = new ToNumIS<>(buildName("Close"), 128, candleType.interval, candleET -> candleET.getClose());
                 series.bind(closeSeries);
 
+                DeltaIS change = new DeltaIS(buildName("Change"), 128, candleType.interval);
+                closeSeries.bind(change);
+                ToNumIS<NumberET> up = new ToNumIS<>(buildName("Change-Up"), 128, candleType.interval, numberET -> Math.max(numberET.getData(), 0));
+                EMAIS emaUP = new EMAIS(buildName("EMA-Change-Up"), 128, candleType.interval, 14, 1);
+                up.bind(emaUP);
+                ToNumIS<NumberET> total = new ToNumIS<>(buildName("Change-Total"), 128, candleType.interval, numberET -> Math.abs(numberET.getData()));
+                EMAIS emaTotal = new EMAIS(buildName("EMA-Change-Total"), 128, candleType.interval, 14, 1);
+                total.bind(emaTotal);
+                CalculatePIS calculatePIS = new CalculatePIS(buildName("Calculate"), 128, candleType.interval, emaUP, emaTotal, PISFuncs.PERCENT);
+                change.bind(up, total, calculatePIS);
+
                 MAIS ma05 = new MAIS(buildName("MA05"), 128, candleType.interval, 5);
                 MAIS ma10 = new MAIS(buildName("MA10"), 128, candleType.interval, 10);
                 MAIS ma30 = new MAIS(buildName("MA30"), 128, candleType.interval, 30);
@@ -67,17 +79,16 @@ public class Symbol {
 
                 EMAIS ema12 = new EMAIS(buildName("EMA12"), 128, candleType.interval, 12, 2);
                 EMAIS ema26 = new EMAIS(buildName("EMA26"), 128, candleType.interval, 26, 2);
-                DeltaPIS<NumberET, NumberET> dif = new DeltaPIS<>(buildName("DIF"), 128, candleType.interval, ema12, ema26, CustomCompare.numberETCompare);
-                closeSeries.bind(dif);
+                CalculatePIS dif = new CalculatePIS(buildName("DIF"), 128, candleType.interval, ema12, ema26, PISFuncs.SUBTRACTION);
                 EMAIS dea = new EMAIS(buildName("DEA"), 128, candleType.interval, 9, 2);
                 dif.bind(dea);
                 MACDPIS macd = new MACDPIS(buildName("MACD"), 128, candleType.interval, dif, dea);
-                closeSeries.bind(macd);
+                closeSeries.bind(ema12, ema26, dif, macd);
 
                 STDDIS stdd = new STDDIS(buildName("STDD"), 128, candleType.interval, 20);
                 MAIS ma20 = new MAIS(buildName("MA20"), 128, candleType.interval, 20);
                 BollingPIS bolling = new BollingPIS(buildName("Bolling"), 128, candleType.interval, 2, stdd, ma20);
-                closeSeries.bind(bolling);
+                closeSeries.bind(stdd, ma20, bolling);
 
                 PolarIS polarIS = new PolarIS(buildName("POLAR"), 128, candleType.interval, 14);
                 series.bind(polarIS);

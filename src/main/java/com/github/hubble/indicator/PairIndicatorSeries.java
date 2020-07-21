@@ -12,7 +12,7 @@ public abstract class PairIndicatorSeries<I extends Element, R extends Element, 
 
     protected IndicatorSeries<I, SR> second;
 
-    protected boolean broadcast = true;
+    protected boolean broadcast = false;
 
 
     public PairIndicatorSeries(String name, int size, long interval, IndicatorSeries<I, SR> first, IndicatorSeries<I, SR> second) {

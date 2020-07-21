@@ -13,7 +13,6 @@ public class KDJIS extends PairIndicatorSeries<NumberET, TernaryNumberET, Number
     public KDJIS(String name, int size, long interval, MAIS k, MAIS d) {
 
         super(name, size, interval, k, d);
-        super.broadcast = false;
     }
 
 
