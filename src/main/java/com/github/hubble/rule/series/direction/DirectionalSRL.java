@@ -2,48 +2,49 @@ package com.github.hubble.rule.series.direction;
 
 
 import com.github.hubble.Series;
-import com.github.hubble.ele.Element;
+import com.github.hubble.common.NumCompareFunction;
+import com.github.hubble.ele.NumberET;
 import com.github.hubble.rule.RuleResult;
 import com.github.hubble.rule.series.SeriesRule;
 
 import java.util.List;
 
 
-public class DirectionalSRL<E extends Element> extends SeriesRule<E> {
+public class DirectionalSRL extends SeriesRule<NumberET> {
 
 
     protected double ratio;
 
     protected int step;
 
-    protected CustomCompare<E> customCompare;
+    protected NumCompareFunction numCompareFunction;
 
 
-    public DirectionalSRL(String name, Series<E> series, double ratio, int step, CustomCompare<E> customCompare) {
+    public DirectionalSRL(String name, Series<NumberET> series, double ratio, int step, NumCompareFunction numCompareFunction) {
 
         super(name, series);
         this.ratio = ratio;
         this.step = step;
-        this.customCompare = customCompare;
+        this.numCompareFunction = numCompareFunction;
     }
 
 
     @Override protected boolean match(long id, List<RuleResult> results) {
 
-        E first = super.series.get(id - this.step * super.series.getInterval());
-        E last = first;
+        NumberET first = super.series.get(id - this.step * super.series.getInterval());
+        NumberET last = first;
         if (first == null) {
             return false;
         }
         double c = 0, m = 0;
         for (long i = first.getId() + super.series.getInterval(); i <= id; i += super.series.getInterval()) {
-            E e = super.series.get(i);
+            NumberET e = super.series.get(i);
             if (e != null) {
                 c++;
-                m = m + (this.customCompare.exec(e, last) ? 1 : 0);
+                m = m + (this.numCompareFunction.apply(e.getData(), last.getData()) ? 1 : 0);
             }
             last = e;
         }
-        return ((m / c) >= this.ratio) && this.customCompare.exec(last, first);
+        return ((m / c) >= this.ratio) && this.numCompareFunction.apply(last.getData(), first.getData());
     }
 }

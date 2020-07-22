@@ -15,9 +15,8 @@ import com.github.hubble.indicator.general.*;
 import com.github.hubble.rule.IRule;
 import com.github.hubble.rule.RuleResult;
 import com.github.hubble.rule.RulesManager;
-import com.github.hubble.rule.series.ComparePSR;
+import com.github.hubble.rule.series.NumberComparePSR;
 import com.github.hubble.rule.series.direction.CandleShockSRL;
-import com.github.hubble.rule.series.direction.CustomCompare;
 import com.github.hubble.rule.series.threshold.ThresholdSRL;
 import com.github.watchdog.common.BarkRuleResult;
 import com.github.watchdog.task.hb.dataobject.CandleType;
@@ -112,17 +111,17 @@ public class Symbol {
                 emaTotal.after(total);
                 CalculatePIS calculatePIS = new CalculatePIS(params.createNew(buildName("RSI")), emaUP, emaTotal, PISFuncs.PERCENT);
 
-                IRule risingRule = new ComparePSR<>(buildName("CSR_MA05VS10"), ma05, ma10, CustomCompare.numberETCompare)
-                        .and(new ComparePSR<>(buildName("CSR_MA10VS30"), ma10, ma30, CustomCompare.numberETCompare)).overTurn(true);
-                IRule fallingRule = new ComparePSR<>(buildName("CSR_MA10VS05"), ma10, ma05, CustomCompare.numberETCompare)
-                        .and(new ComparePSR<>(buildName("CSR_MA30VS10"), ma30, ma10, CustomCompare.numberETCompare)).overTurn(true);
+                IRule risingRule = new NumberComparePSR(buildName("CSR_MA05VS10"), ma05, ma10, NumCompareFunction.GT)
+                        .and(new NumberComparePSR(buildName("CSR_MA10VS30"), ma10, ma30, NumCompareFunction.GT)).overTurn(true);
+                IRule fallingRule = new NumberComparePSR(buildName("CSR_MA10VS05"), ma10, ma05, NumCompareFunction.GT)
+                        .and(new NumberComparePSR(buildName("CSR_MA30VS10"), ma30, ma10, NumCompareFunction.GT)).overTurn(true);
                 addRule(candleType, risingRule.alternateRule(fallingRule), new BarkRuleResult(buildName(" MA趋势走强")));
                 addRule(candleType, fallingRule.alternateRule(risingRule), new BarkRuleResult(buildName(" MA趋势走弱")));
 
-                ThresholdSRL overSellRule = new ThresholdSRL(buildName("TSR_WR_OS"), williamsrIS, 95, NumCompareFunction.GTE);
-                ThresholdSRL overBuyRule = new ThresholdSRL(buildName("TSR_WR_OB"), williamsrIS, 5, NumCompareFunction.LTE);
-                addRule(candleType, overSellRule.overTurn(true).period(600), new BarkRuleResult(buildName(" WR提示超卖")));
-                addRule(candleType, overBuyRule.overTurn(true).period(600), new BarkRuleResult(buildName(" WR提示超买")));
+                IRule overSellRule = new ThresholdSRL(buildName("TSR_WR_OS"), williamsrIS, 95, NumCompareFunction.GTE).overTurn(true);
+                IRule overBuyRule = new ThresholdSRL(buildName("TSR_WR_OB"), williamsrIS, 5, NumCompareFunction.LTE).overTurn(true);
+                addRule(candleType, overSellRule.period(900), new BarkRuleResult(buildName(" WR提示超卖")));
+                addRule(candleType, overBuyRule.period(900), new BarkRuleResult(buildName(" WR提示超买")));
             }
         }
         for (CandleET candleET : candleETList) {

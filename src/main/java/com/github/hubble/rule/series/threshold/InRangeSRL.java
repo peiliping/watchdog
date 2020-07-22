@@ -10,7 +10,7 @@ import com.github.hubble.rule.series.SeriesRule;
 import java.util.List;
 
 
-public class RangeSRL extends SeriesRule<NumberET> {
+public class InRangeSRL extends SeriesRule<NumberET> {
 
 
     private double up;
@@ -18,7 +18,7 @@ public class RangeSRL extends SeriesRule<NumberET> {
     private double down;
 
 
-    public RangeSRL(String name, Series<NumberET> series, double up, double down) {
+    public InRangeSRL(String name, Series<NumberET> series, double up, double down) {
 
         super(name, series);
         this.up = up;
