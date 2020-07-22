@@ -2,20 +2,20 @@ package com.github.hubble.rule.series;
 
 
 import com.github.hubble.Series;
-import com.github.hubble.ele.CustomCompare;
+import com.github.hubble.rule.series.direction.CustomCompare;
 import com.github.hubble.ele.Element;
 import com.github.hubble.rule.RuleResult;
 
 import java.util.List;
 
 
-public class CompareSeriesRule<E extends Element> extends PairSeriesRule<E> {
+public class ComparePSR<E extends Element> extends PairSeriesRule<E> {
 
 
     private CustomCompare<E> customCompare;
 
 
-    public CompareSeriesRule(String name, Series<E> first, Series<E> second, CustomCompare<E> customCompare) {
+    public ComparePSR(String name, Series<E> first, Series<E> second, CustomCompare<E> customCompare) {
 
         super(name, first, second);
         this.customCompare = customCompare;

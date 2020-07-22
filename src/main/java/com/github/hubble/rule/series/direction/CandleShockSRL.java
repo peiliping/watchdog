@@ -11,7 +11,7 @@ import java.util.Comparator;
 import java.util.List;
 
 
-public class CandleShockRule extends SeriesRule<CandleET> {
+public class CandleShockSRL extends SeriesRule<CandleET> {
 
 
     private double ratio;
@@ -19,13 +19,13 @@ public class CandleShockRule extends SeriesRule<CandleET> {
     private int count;
 
 
-    public CandleShockRule(String name, Series<CandleET> series, double ratio, int count) {
+    public CandleShockSRL(String name, Series<CandleET> series, double ratio, int count) {
 
         this(name, series, ratio, count, RuleResult.class);
     }
 
 
-    public CandleShockRule(String name, Series<CandleET> series, double ratio, int count, Class<? extends RuleResult> clazz) {
+    public CandleShockSRL(String name, Series<CandleET> series, double ratio, int count, Class<? extends RuleResult> clazz) {
 
         super(name, series);
         this.ratio = ratio;

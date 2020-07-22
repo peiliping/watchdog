@@ -1,4 +1,8 @@
-package com.github.hubble.ele;
+package com.github.hubble.rule.series.direction;
+
+
+import com.github.hubble.ele.Element;
+import com.github.hubble.ele.NumberET;
 
 
 public interface CustomCompare<E extends Element> {

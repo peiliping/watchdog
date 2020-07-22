@@ -2,7 +2,6 @@ package com.github.hubble.rule.series.direction;
 
 
 import com.github.hubble.Series;
-import com.github.hubble.ele.CustomCompare;
 import com.github.hubble.ele.Element;
 import com.github.hubble.rule.RuleResult;
 import com.github.hubble.rule.series.SeriesRule;
@@ -10,7 +9,7 @@ import com.github.hubble.rule.series.SeriesRule;
 import java.util.List;
 
 
-public class DirectionalSeriesRule<E extends Element> extends SeriesRule<E> {
+public class DirectionalSRL<E extends Element> extends SeriesRule<E> {
 
 
     protected double ratio;
@@ -20,7 +19,7 @@ public class DirectionalSeriesRule<E extends Element> extends SeriesRule<E> {
     protected CustomCompare<E> customCompare;
 
 
-    public DirectionalSeriesRule(String name, Series<E> series, double ratio, int step, CustomCompare<E> customCompare) {
+    public DirectionalSRL(String name, Series<E> series, double ratio, int step, CustomCompare<E> customCompare) {
 
         super(name, series);
         this.ratio = ratio;
