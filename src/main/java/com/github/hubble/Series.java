@@ -14,6 +14,7 @@ import java.util.List;
 public class Series<E extends Element> {
 
 
+    @Getter
     protected final String name;
 
     protected final long size;
