@@ -15,6 +15,9 @@ public class Series<E extends Element> {
 
 
     @Getter
+    protected String parentName;
+
+    @Getter
     protected final String name;
 
     protected final long size;
@@ -49,6 +52,15 @@ public class Series<E extends Element> {
     }
 
 
+    public String getFullName() {
+
+        if (this.parentName == null) {
+            return this.name;
+        }
+        return this.parentName + "." + this.name;
+    }
+
+
     public void add(E element) {
 
         Validate.isTrue(element.getId() >= this.maxId);
@@ -63,7 +75,7 @@ public class Series<E extends Element> {
             return;
         }
         if (log.isDebugEnabled()) {
-            log.debug("{} add element {} .", this.name, element.toString());
+            log.debug("{} add element {} .", getFullName(), element.toString());
         }
         for (SeriesUpsertListener<E> listener : this.upsertListeners) {
             listener.onChange(this.sequence, element, replace, this);

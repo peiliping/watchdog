@@ -28,6 +28,7 @@ public abstract class PairIndicatorSeries<F extends IndicatorSeries, S extends I
         super(params);
         this.first = first;
         this.second = second;
+        super.parentName = "[" + this.first.getFullName() + "," + this.second.getFullName() + "]";
         Series st = analyze(this.first, this.second);
         st.bindTimeListener(this);
         log.info("{} [{} , {}] bind on {} .", getName(), this.first.getName(), this.second.getName(), st.getName());

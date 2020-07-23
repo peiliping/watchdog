@@ -26,6 +26,7 @@ public abstract class IndicatorSeries<I extends Element, R extends Element> exte
 
         Validate.isTrue(this.parentSeries == null);
         this.parentSeries = series;
+        super.parentName = series.getFullName();
         series.bindUpsertListener(this);
     }
 
