@@ -1,10 +1,10 @@
 package com.github.hubble.indicator;
 
 
-import com.github.hubble.Series;
-import com.github.hubble.SeriesParams;
-import com.github.hubble.SeriesUpsertListener;
 import com.github.hubble.ele.Element;
+import com.github.hubble.series.Series;
+import com.github.hubble.series.SeriesParams;
+import com.github.hubble.series.SeriesUpsertListener;
 import org.apache.commons.lang3.Validate;
 
 

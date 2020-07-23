@@ -1,4 +1,4 @@
-package com.github.hubble;
+package com.github.hubble.series;
 
 
 import lombok.Builder;

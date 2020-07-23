@@ -1,10 +1,10 @@
 package com.github.hubble.indicator.general;
 
 
-import com.github.hubble.SeriesParams;
 import com.github.hubble.ele.NumberET;
 import com.github.hubble.ele.TernaryNumberET;
 import com.github.hubble.indicator.PairIndicatorSeries;
+import com.github.hubble.series.SeriesParams;
 
 
 public class KDJIS extends PairIndicatorSeries<MAIS, MAIS, TernaryNumberET> {

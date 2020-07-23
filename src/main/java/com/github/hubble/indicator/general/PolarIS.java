@@ -1,11 +1,11 @@
 package com.github.hubble.indicator.general;
 
 
-import com.github.hubble.Series;
-import com.github.hubble.SeriesParams;
 import com.github.hubble.ele.CandleET;
 import com.github.hubble.ele.TernaryNumberET;
 import com.github.hubble.indicator.CacheIndicatorSeries;
+import com.github.hubble.series.Series;
+import com.github.hubble.series.SeriesParams;
 
 
 public class PolarIS extends CacheIndicatorSeries<CandleET, TernaryNumberET, CandleET> {

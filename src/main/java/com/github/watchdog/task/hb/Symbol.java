@@ -1,9 +1,9 @@
 package com.github.watchdog.task.hb;
 
 
-import com.github.hubble.CandleSeries;
-import com.github.hubble.Series;
-import com.github.hubble.SeriesParams;
+import com.github.hubble.series.CandleSeries;
+import com.github.hubble.series.Series;
+import com.github.hubble.series.SeriesParams;
 import com.github.hubble.common.NumCompareFunction;
 import com.github.hubble.ele.CandleET;
 import com.github.hubble.ele.NumberET;

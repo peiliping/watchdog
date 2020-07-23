@@ -1,9 +1,9 @@
 package com.github.hubble.rule.condition;
 
 
-import com.github.hubble.rule.RuleResult;
 import com.github.hubble.rule.IRule;
 import com.github.hubble.rule.ProxyRule;
+import com.github.hubble.rule.RuleResult;
 
 import java.util.List;
 

@@ -1,10 +1,10 @@
 package com.github.hubble.rule.series;
 
 
-import com.github.hubble.Series;
 import com.github.hubble.common.NumCompareFunction;
 import com.github.hubble.ele.NumberET;
 import com.github.hubble.rule.RuleResult;
+import com.github.hubble.series.Series;
 
 import java.util.List;
 

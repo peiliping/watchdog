@@ -1,8 +1,8 @@
 package com.github.hubble.indicator;
 
 
-import com.github.hubble.SeriesParams;
 import com.github.hubble.ele.Element;
+import com.github.hubble.series.SeriesParams;
 import lombok.Getter;
 
 
