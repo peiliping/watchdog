@@ -16,20 +16,20 @@ public class CandleShockSRL extends SeriesRule<CandleET> {
 
     private double ratio;
 
-    private int count;
+    private int step;
 
 
-    public CandleShockSRL(String name, Series<CandleET> series, double ratio, int count) {
+    public CandleShockSRL(String name, Series<CandleET> series, double ratio, int step) {
 
-        this(name, series, ratio, count, RuleResult.class);
+        this(name, series, ratio, step, RuleResult.class);
     }
 
 
-    public CandleShockSRL(String name, Series<CandleET> series, double ratio, int count, Class<? extends RuleResult> clazz) {
+    public CandleShockSRL(String name, Series<CandleET> series, double ratio, int step, Class<? extends RuleResult> clazz) {
 
         super(name, series);
         this.ratio = ratio;
-        this.count = count;
+        this.step = step;
         this.clazz = clazz;
     }
 
@@ -40,7 +40,7 @@ public class CandleShockSRL extends SeriesRule<CandleET> {
             return false;
         }
         List<CandleET> lastN = Lists.newArrayList();
-        long start = super.series.getMaxId() - (this.count - 1) * super.series.getInterval();
+        long start = super.series.getMaxId() - (this.step - 1) * super.series.getInterval();
         for (long i = start; i <= super.series.getMaxId(); i += super.series.getInterval()) {
             CandleET candleET = super.series.get(i);
             if (candleET != null) {

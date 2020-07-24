@@ -1,10 +1,10 @@
 package com.github.hubble.rule;
 
 
-import com.github.hubble.rule.condition.AlternateRule;
-import com.github.hubble.rule.condition.OnceRule;
-import com.github.hubble.rule.condition.OverTurnRule;
-import com.github.hubble.rule.condition.PeriodRule;
+import com.github.hubble.rule.common.AlternateRule;
+import com.github.hubble.rule.common.OnceRule;
+import com.github.hubble.rule.common.OverTurnRule;
+import com.github.hubble.rule.common.PeriodRule;
 import com.github.hubble.rule.logic.AndRule;
 import com.github.hubble.rule.logic.NotRule;
 import com.github.hubble.rule.logic.OrRule;

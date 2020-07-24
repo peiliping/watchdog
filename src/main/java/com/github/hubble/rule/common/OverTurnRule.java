@@ -1,4 +1,4 @@
-package com.github.hubble.rule.condition;
+package com.github.hubble.rule.common;
 
 
 import com.github.hubble.rule.IRule;
