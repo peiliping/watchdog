@@ -6,7 +6,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.hubble.ele.CandleET;
 import com.github.watchdog.stream.AbstractMarketConsumer;
-import com.github.watchdog.task.hb.dataobject.CandleType;
+import com.github.hubble.common.CandleType;
 import com.github.watchdog.task.hb.dataobject.PushMsg;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;

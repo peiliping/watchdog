@@ -19,7 +19,7 @@ import com.github.hubble.rule.series.NumberComparePSR;
 import com.github.hubble.rule.series.direction.CandleShockSRL;
 import com.github.hubble.rule.series.threshold.ThresholdSRL;
 import com.github.watchdog.common.BarkRuleResult;
-import com.github.watchdog.task.hb.dataobject.CandleType;
+import com.github.hubble.common.CandleType;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 

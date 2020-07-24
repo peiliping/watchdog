@@ -25,10 +25,10 @@ public abstract class IRule implements IRuleOb {
 
     protected String name;
 
-    private boolean lastMatchResult = false;
-
     @Setter
     protected Class<? extends RuleResult> clazz = RuleResult.class;
+
+    private boolean lastMatchResult = false;
 
 
     public IRule(String name) {

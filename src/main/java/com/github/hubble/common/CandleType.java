@@ -1,4 +1,4 @@
-package com.github.watchdog.task.hb.dataobject;
+package com.github.hubble.common;
 
 
 public enum CandleType {

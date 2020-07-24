@@ -5,6 +5,7 @@ import com.github.hubble.ele.Element;
 import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 
 import java.util.List;
@@ -13,9 +14,6 @@ import java.util.List;
 @Slf4j
 public class Series<E extends Element> {
 
-
-    @Getter
-    protected String parentName;
 
     @Getter
     protected final String name;
@@ -32,6 +30,9 @@ public class Series<E extends Element> {
 
     @Getter
     protected final long interval;
+
+    @Getter
+    protected String parentName;
 
     @Getter
     protected long maxId = 0L;
@@ -57,7 +58,7 @@ public class Series<E extends Element> {
         if (this.parentName == null) {
             return this.name;
         }
-        return this.parentName + "." + this.name;
+        return StringUtils.joinWith(".", this.parentName, this.name);
     }
 
 
