@@ -18,6 +18,7 @@ public class Series<E extends Element> {
     @Getter
     protected final String name;
 
+    @Getter
     protected final long size;
 
     protected final long mask;

@@ -1,15 +1,11 @@
 package com.github.watchdog.task.hb;
 
 
-import com.github.hubble.series.CandleSeriesManager;
 import com.github.hubble.common.CandleType;
 import com.github.hubble.common.NumCompareFunction;
 import com.github.hubble.ele.CandleET;
-import com.github.hubble.ele.NumberET;
 import com.github.hubble.ele.TernaryNumberET;
-import com.github.hubble.indicator.function.PISFuncs;
-import com.github.hubble.indicator.function.RSVFunction;
-import com.github.hubble.indicator.function.WilliamsRFunction;
+import com.github.hubble.indicator.IndicatorHelper;
 import com.github.hubble.indicator.general.*;
 import com.github.hubble.rule.IRule;
 import com.github.hubble.rule.RuleResult;
@@ -18,6 +14,7 @@ import com.github.hubble.rule.series.NumberComparePSR;
 import com.github.hubble.rule.series.direction.CandleShockSRL;
 import com.github.hubble.rule.series.threshold.ThresholdSRL;
 import com.github.hubble.series.CandleSeries;
+import com.github.hubble.series.CandleSeriesManager;
 import com.github.hubble.series.SeriesParams;
 import com.github.watchdog.common.BarkRuleResult;
 import com.google.common.collect.Maps;
@@ -53,61 +50,24 @@ public class Symbol {
     public void initCandleETSeries(CandleType candleType, List<CandleET> candleETList) {
 
         CandleSeries series = this.basicData.getOrCreateCandleSeries(candleType);
-        SeriesParams base = SeriesParams.builder().size(128).interval(candleType.interval).build();
         if (CandleType.MIN_1 == candleType) {
             CandleShockSRL candleShockSRL = new CandleShockSRL(buildName("ShockRule"), series, this.shockRatio, 5);
             candleShockSRL.setClazz(BarkRuleResult.class);
             addRule(candleType, candleShockSRL.overTurn(false).period(600), null);
         } else {
-            ToNumIS<CandleET> closeSeries = new ToNumIS<>(base.createNew("Close"), candleET -> candleET.getClose());
-            closeSeries.after(series);
+            ToNumIS<CandleET> closeSeries = IndicatorHelper.create_CLOSE_IS(series);
+            PolarIS polarIS = IndicatorHelper.create_POLAR_IS(series, 14);
 
-            MAIS ma05 = new MAIS(base.createNew("MA05"), 5);
-            ma05.after(closeSeries);
-            MAIS ma10 = new MAIS(base.createNew("MA10"), 10);
-            ma10.after(closeSeries);
-            MAIS ma30 = new MAIS(base.createNew("MA30"), 30);
-            ma30.after(closeSeries);
+            MAIS ma05 = IndicatorHelper.create_MA_IS(closeSeries, 5);
+            MAIS ma10 = IndicatorHelper.create_MA_IS(closeSeries, 10);
+            MAIS ma30 = IndicatorHelper.create_MA_IS(closeSeries, 30);
 
-            STDDIS stdd = new STDDIS(base.createNew("STDD"), 20);
-            stdd.after(closeSeries);
-            MAIS ma20 = new MAIS(base.createNew("MA20"), 20);
-            ma20.after(closeSeries);
-            BollingPIS bolling = new BollingPIS(base.createNew("Bolling"), 2, stdd, ma20);
+            BollingPIS bolling = IndicatorHelper.create_Bolling_PIS(closeSeries);
+            MACDPIS macd = IndicatorHelper.create_MACD_PIS(closeSeries);
+            CalculatePIS rsi = IndicatorHelper.create_RSI_PIS(closeSeries);
 
-            EMAIS ema12 = new EMAIS(base.createNew("EMA12"), 12, 2);
-            ema12.after(closeSeries);
-            EMAIS ema26 = new EMAIS(base.createNew("EMA26"), 26, 2);
-            ema26.after(closeSeries);
-            CalculatePIS dif = new CalculatePIS(base.createNew("DIF"), ema12, ema26, PISFuncs.MINUS);
-            EMAIS dea = new EMAIS(base.createNew("DEA"), 9, 2);
-            dea.after(dif);
-            MACDPIS macd = new MACDPIS(base.createNew("MACD"), dif, dea);
-
-            PolarIS polarIS = new PolarIS(base.createNew("POLAR"), 14);
-            polarIS.after(series);
-            ToNumIS<TernaryNumberET> rsvIS = new ToNumIS<>(base.createNew("RSV"), new RSVFunction());
-            rsvIS.after(polarIS);
-            MAIS k = new MAIS(base.createNew("K"), 1);
-            k.after(rsvIS);
-            MAIS d = new MAIS(base.createNew("D"), 3);
-            d.after(k);
-            KDJIS kdj = new KDJIS(base.createNew("KDJ"), k, d);
-
-            ToNumIS<TernaryNumberET> williamsrIS = new ToNumIS<>(base.createNew("WR"), new WilliamsRFunction());
-            williamsrIS.after(polarIS);
-
-            DeltaIS change = new DeltaIS(base.createNew("Change"));
-            change.after(closeSeries);
-            ToNumIS<NumberET> up = new ToNumIS<>(base.createNew("Change-Up"), numberET -> Math.max(numberET.getData(), 0));
-            up.after(change);
-            EMAIS emaUP = new EMAIS(base.createNew("EMA-Change-Up"), 14, 1);
-            emaUP.after(up);
-            ToNumIS<NumberET> total = new ToNumIS<>(base.createNew("Change-Total"), numberET -> Math.abs(numberET.getData()));
-            total.after(change);
-            EMAIS emaTotal = new EMAIS(base.createNew("EMA-Change-Total"), 14, 1);
-            emaTotal.after(total);
-            CalculatePIS calculatePIS = new CalculatePIS(base.createNew("RSI"), emaUP, emaTotal, PISFuncs.PERCENT);
+            KDJIS kdj = IndicatorHelper.create_KDJ_PIS(polarIS);
+            ToNumIS<TernaryNumberET> wr = IndicatorHelper.create_WR_IS(polarIS);
 
             IRule risingRule = new NumberComparePSR(buildName("CSR_MA05VS10"), ma05, ma10, NumCompareFunction.GT)
                     .and(new NumberComparePSR(buildName("CSR_MA10VS30"), ma10, ma30, NumCompareFunction.GT)).overTurn(true);
@@ -116,8 +76,8 @@ public class Symbol {
             addRule(candleType, risingRule.alternateRule(fallingRule), new BarkRuleResult(buildName(" MA趋势走强")));
             addRule(candleType, fallingRule.alternateRule(risingRule), new BarkRuleResult(buildName(" MA趋势走弱")));
 
-            IRule overSellRule = new ThresholdSRL(buildName("TSR_WR_OS"), williamsrIS, 95, NumCompareFunction.GTE).overTurn(true);
-            IRule overBuyRule = new ThresholdSRL(buildName("TSR_WR_OB"), williamsrIS, 5, NumCompareFunction.LTE).overTurn(true);
+            IRule overSellRule = new ThresholdSRL(buildName("TSR_WR_OS"), wr, 95, NumCompareFunction.GTE).overTurn(true);
+            IRule overBuyRule = new ThresholdSRL(buildName("TSR_WR_OB"), wr, 5, NumCompareFunction.LTE).overTurn(true);
             addRule(candleType, overSellRule.alternateRule(overBuyRule), new BarkRuleResult(buildName(" WR提示超卖")));
             addRule(candleType, overBuyRule.alternateRule(overSellRule), new BarkRuleResult(buildName(" WR提示超买")));
         }
