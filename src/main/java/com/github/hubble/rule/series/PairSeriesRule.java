@@ -3,10 +3,7 @@ package com.github.hubble.rule.series;
 
 import com.github.hubble.ele.Element;
 import com.github.hubble.rule.IRule;
-import com.github.hubble.rule.RuleResult;
 import com.github.hubble.series.Series;
-
-import java.util.List;
 
 
 public abstract class PairSeriesRule<E extends Element> extends IRule {
@@ -25,7 +22,7 @@ public abstract class PairSeriesRule<E extends Element> extends IRule {
     }
 
 
-    @Override public boolean prepare(long id, List<RuleResult> results) {
+    @Override public boolean prepare(long id) {
 
         E e1 = this.first.get(id);
         E e2 = this.second.get(id);

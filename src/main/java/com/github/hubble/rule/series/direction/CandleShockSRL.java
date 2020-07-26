@@ -2,15 +2,16 @@ package com.github.hubble.rule.series.direction;
 
 
 import com.github.hubble.ele.CandleET;
-import com.github.hubble.rule.RuleResult;
 import com.github.hubble.rule.series.SeriesRule;
 import com.github.hubble.series.Series;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Comparator;
 import java.util.List;
 
 
+@Slf4j
 public class CandleShockSRL extends SeriesRule<CandleET> {
 
 
@@ -21,20 +22,13 @@ public class CandleShockSRL extends SeriesRule<CandleET> {
 
     public CandleShockSRL(String name, Series<CandleET> series, double ratio, int step) {
 
-        this(name, series, ratio, step, RuleResult.class);
-    }
-
-
-    public CandleShockSRL(String name, Series<CandleET> series, double ratio, int step, Class<? extends RuleResult> clazz) {
-
         super(name, series);
         this.ratio = ratio;
         this.step = step;
-        this.clazz = clazz;
     }
 
 
-    @Override public boolean match(long id, List<RuleResult> results) {
+    @Override public boolean match(long id) {
 
         if (super.series.getMaxId() == 0) {
             return false;
@@ -74,7 +68,7 @@ public class CandleShockSRL extends SeriesRule<CandleET> {
             }
         }
         String msg = String.format("%s %s %s %s%s%%", super.name, currentCandle.getId(), currentCandle.getClose(), direction, tRatio);
-        results.add(createResult(msg));
+        log.info(msg);
         return true;
     }
 }

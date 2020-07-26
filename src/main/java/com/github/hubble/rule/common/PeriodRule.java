@@ -3,10 +3,7 @@ package com.github.hubble.rule.common;
 
 import com.github.hubble.rule.IRule;
 import com.github.hubble.rule.ProxyRule;
-import com.github.hubble.rule.RuleResult;
 import com.github.watchdog.common.Util;
-
-import java.util.List;
 
 
 public class PeriodRule extends ProxyRule {
@@ -24,9 +21,9 @@ public class PeriodRule extends ProxyRule {
     }
 
 
-    @Override public boolean match(long id, List<RuleResult> results) {
+    @Override public boolean match(long id) {
 
-        if (super.rule.matchRule(id, results) && Util.nowSec() - this.lastTS >= this.period) {
+        if (super.rule.matchRule(id) && Util.nowSec() - this.lastTS >= this.period) {
             this.lastTS = Util.nowSec();
             return true;
         }

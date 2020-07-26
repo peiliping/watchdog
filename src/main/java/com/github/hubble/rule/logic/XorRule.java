@@ -3,9 +3,6 @@ package com.github.hubble.rule.logic;
 
 import com.github.hubble.rule.IRule;
 import com.github.hubble.rule.ProxyPairRule;
-import com.github.hubble.rule.RuleResult;
-
-import java.util.List;
 
 
 public class XorRule extends ProxyPairRule {
@@ -17,8 +14,8 @@ public class XorRule extends ProxyPairRule {
     }
 
 
-    @Override public boolean match(long id, List<RuleResult> results) {
+    @Override public boolean match(long id) {
 
-        return super.leftRule.matchRule(id, results) ^ super.rightRule.matchRule(id, results);
+        return super.leftRule.matchRule(id) ^ super.rightRule.matchRule(id);
     }
 }

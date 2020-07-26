@@ -47,9 +47,7 @@ public class RulesManager {
     public void traverseRules(final long id) {
 
         for (Pair<IRule, RuleResult> rule : this.rootRules) {
-            List<RuleResult> results = Lists.newArrayList();
-            if (rule.getKey().matchRule(id, results)) {
-                results.forEach(ruleResult -> ruleResult.call(id));
+            if (rule.getKey().matchRule(id)) {
                 if (rule.getValue() != null) {
                     rule.getValue().call(id);
                 }

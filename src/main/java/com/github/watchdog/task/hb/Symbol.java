@@ -50,7 +50,6 @@ public class Symbol {
         CandleSeries series = this.basicData.getOrCreateCandleSeries(candleType);
         if (CandleType.MIN_1 == candleType) {
             CandleShockSRL candleShockSRL = new CandleShockSRL(buildName("ShockRule"), series, this.shockRatio, 5);
-            candleShockSRL.setClazz(BarkRuleResult.class);
             addRule(candleType, candleShockSRL.overTurn(false).period(600), null);
         } else {
             ToNumIS<CandleET> closeSeries = IndicatorHelper.create_CLOSE_IS(series);

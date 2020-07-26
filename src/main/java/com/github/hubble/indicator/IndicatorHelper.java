@@ -90,11 +90,11 @@ public class IndicatorHelper {
 
     public static MACDPIS create_MACD_PIS(ToNumIS<CandleET> closeIS) {
 
-        EMAIS ema12 = create_EMA_IS(closeIS, 12);
-        EMAIS ema26 = create_EMA_IS(closeIS, 26);
+        EMAIS shortEma = create_EMA_IS(closeIS, 12);
+        EMAIS longEma = create_EMA_IS(closeIS, 26);
 
         SeriesParams difParams = SeriesParams.builder().name("DIF").interval(closeIS.getInterval()).size((int) closeIS.getSize()).build();
-        CalculatePIS dif = new CalculatePIS(difParams, ema12, ema26, PISFuncs.MINUS);
+        CalculatePIS dif = new CalculatePIS(difParams, shortEma, longEma, PISFuncs.MINUS);
         EMAIS dea = create_EMA_IS(dif, 9);
 
         SeriesParams params = SeriesParams.builder().name("MACD").interval(closeIS.getInterval()).size((int) closeIS.getSize()).build();

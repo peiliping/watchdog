@@ -3,9 +3,6 @@ package com.github.hubble.rule.common;
 
 import com.github.hubble.rule.IRule;
 import com.github.hubble.rule.ProxyRule;
-import com.github.hubble.rule.RuleResult;
-
-import java.util.List;
 
 
 public class OverTurnRule extends ProxyRule {
@@ -21,10 +18,10 @@ public class OverTurnRule extends ProxyRule {
     }
 
 
-    @Override public boolean match(long id, List<RuleResult> results) {
+    @Override public boolean match(long id) {
 
         boolean last = this.current;
-        this.current = super.rule.matchRule(id, results);
+        this.current = super.rule.matchRule(id);
         return !last && this.current;
     }
 }

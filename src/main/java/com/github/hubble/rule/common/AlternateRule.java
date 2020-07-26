@@ -4,9 +4,6 @@ package com.github.hubble.rule.common;
 import com.github.hubble.rule.IRule;
 import com.github.hubble.rule.IRuleOb;
 import com.github.hubble.rule.ProxyRule;
-import com.github.hubble.rule.RuleResult;
-
-import java.util.List;
 
 
 public class AlternateRule extends ProxyRule {
@@ -24,9 +21,9 @@ public class AlternateRule extends ProxyRule {
     }
 
 
-    @Override protected boolean match(long id, List<RuleResult> results) {
+    @Override protected boolean match(long id) {
 
-        boolean result = super.rule.matchRule(id, results);
+        boolean result = super.rule.matchRule(id);
         if (this.ruleOb.getLastMatchResult()) {
             this.op = true;
         }

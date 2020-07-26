@@ -11,9 +11,7 @@ import com.github.hubble.rule.logic.OrRule;
 import com.github.hubble.rule.logic.XorRule;
 import com.google.common.collect.Lists;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.Validate;
 
 import java.util.List;
 
@@ -24,9 +22,6 @@ public abstract class IRule implements IRuleOb {
 
 
     protected String name;
-
-    @Setter
-    protected Class<? extends RuleResult> clazz = RuleResult.class;
 
     private boolean lastMatchResult = false;
 
@@ -43,21 +38,21 @@ public abstract class IRule implements IRuleOb {
     }
 
 
-    protected boolean prepare(long id, List<RuleResult> results) {
+    protected boolean prepare(long id) {
 
         return true;
     }
 
 
-    protected abstract boolean match(long id, List<RuleResult> results);
+    protected abstract boolean match(long id);
 
 
-    public final boolean matchRule(long id, List<RuleResult> results) {
+    public final boolean matchRule(long id) {
 
-        if (!prepare(id, results)) {
+        if (!prepare(id)) {
             this.lastMatchResult = false;
         } else {
-            this.lastMatchResult = match(id, results);
+            this.lastMatchResult = match(id);
         }
         if (log.isDebugEnabled()) {
             log.debug("{} match : {} .", this.name, this.lastMatchResult);
@@ -122,17 +117,5 @@ public abstract class IRule implements IRuleOb {
     public IRule alternateRule(IRuleOb ob) {
 
         return new AlternateRule(this.name + "-AlternateRule", this, ob);
-    }
-
-
-    protected RuleResult createResult(String msg) {
-
-        try {
-            return this.clazz.getConstructor(String.class).newInstance(msg);
-        } catch (Exception e) {
-            log.error("Create Rule Result Error : ", e);
-            Validate.isTrue(false, "RuleResult Class Error .");
-        }
-        return null;
     }
 }

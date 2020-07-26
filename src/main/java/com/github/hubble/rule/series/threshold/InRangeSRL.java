@@ -26,7 +26,7 @@ public class InRangeSRL extends SeriesRule<NumberET> {
     }
 
 
-    @Override protected boolean match(long id, List<RuleResult> results) {
+    @Override protected boolean match(long id) {
 
         NumberET num = super.series.get(id);
         return NumCompareFunction.LT.apply(num.getData(), this.up) && NumCompareFunction.GT.apply(num.getData(), this.down);

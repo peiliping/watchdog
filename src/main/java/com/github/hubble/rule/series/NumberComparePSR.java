@@ -3,10 +3,7 @@ package com.github.hubble.rule.series;
 
 import com.github.hubble.common.NumCompareFunction;
 import com.github.hubble.ele.NumberET;
-import com.github.hubble.rule.RuleResult;
 import com.github.hubble.series.Series;
-
-import java.util.List;
 
 
 public class NumberComparePSR extends PairSeriesRule<NumberET> {
@@ -22,7 +19,7 @@ public class NumberComparePSR extends PairSeriesRule<NumberET> {
     }
 
 
-    @Override public boolean match(long id, List<RuleResult> results) {
+    @Override public boolean match(long id) {
 
         NumberET e1 = super.first.get(id);
         NumberET e2 = super.second.get(id);
