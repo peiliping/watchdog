@@ -4,7 +4,6 @@ package com.github.watchdog.task.hb;
 import com.github.hubble.common.CandleType;
 import com.github.hubble.common.NumCompareFunction;
 import com.github.hubble.ele.CandleET;
-import com.github.hubble.ele.TernaryNumberET;
 import com.github.hubble.indicator.IndicatorHelper;
 import com.github.hubble.indicator.general.*;
 import com.github.hubble.rule.IRule;
@@ -15,7 +14,6 @@ import com.github.hubble.rule.series.direction.CandleShockSRL;
 import com.github.hubble.rule.series.threshold.ThresholdSRL;
 import com.github.hubble.series.CandleSeries;
 import com.github.hubble.series.CandleSeriesManager;
-import com.github.hubble.series.SeriesParams;
 import com.github.watchdog.common.BarkRuleResult;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
@@ -64,10 +62,10 @@ public class Symbol {
 
             BollingPIS bolling = IndicatorHelper.create_Bolling_PIS(closeSeries);
             MACDPIS macd = IndicatorHelper.create_MACD_PIS(closeSeries);
-            CalculatePIS rsi = IndicatorHelper.create_RSI_PIS(closeSeries);
+            RSIPIS rsi = IndicatorHelper.create_RSI_PIS(closeSeries);
 
-            KDJIS kdj = IndicatorHelper.create_KDJ_PIS(polarIS);
-            ToNumIS<TernaryNumberET> wr = IndicatorHelper.create_WR_IS(polarIS);
+            KDJPIS kdj = IndicatorHelper.create_KDJ_PIS(polarIS);
+            WRIS wr = IndicatorHelper.create_WR_IS(polarIS);
 
             IRule risingRule = new NumberComparePSR(buildName("CSR_MA05VS10"), ma05, ma10, NumCompareFunction.GT)
                     .and(new NumberComparePSR(buildName("CSR_MA10VS30"), ma10, ma30, NumCompareFunction.GT)).overTurn(true);

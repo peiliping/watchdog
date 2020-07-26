@@ -7,10 +7,10 @@ import com.github.hubble.indicator.PairIndicatorSeries;
 import com.github.hubble.series.SeriesParams;
 
 
-public class KDJIS extends PairIndicatorSeries<MAIS, MAIS, TernaryNumberET> {
+public class KDJPIS extends PairIndicatorSeries<MAIS, MAIS, TernaryNumberET> {
 
 
-    public KDJIS(SeriesParams params, MAIS k, MAIS d) {
+    public KDJPIS(SeriesParams params, MAIS k, MAIS d) {
 
         super(params, k, d);
     }

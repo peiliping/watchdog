@@ -5,8 +5,6 @@ import com.github.hubble.ele.CandleET;
 import com.github.hubble.ele.NumberET;
 import com.github.hubble.ele.TernaryNumberET;
 import com.github.hubble.indicator.function.PISFuncs;
-import com.github.hubble.indicator.function.RSVFunction;
-import com.github.hubble.indicator.function.WilliamsRFunction;
 import com.github.hubble.indicator.general.*;
 import com.github.hubble.series.CandleSeries;
 import com.github.hubble.series.SeriesParams;
@@ -104,7 +102,7 @@ public class IndicatorHelper {
     }
 
 
-    public static CalculatePIS create_RSI_PIS(ToNumIS<CandleET> closeIS) {
+    public static RSIPIS create_RSI_PIS(ToNumIS<CandleET> closeIS) {
 
         SeriesParams base = SeriesParams.builder().interval(closeIS.getInterval()).size((int) closeIS.getSize()).build();
         DeltaIS deltaIS = create_Delta_IS(closeIS);
@@ -117,27 +115,27 @@ public class IndicatorHelper {
         total.after(deltaIS);
         EMAIS emaTotal = create_EMA_IS(total, 14, 1d);
 
-        return new CalculatePIS(base.createNew("RSI"), emaUP, emaTotal, PISFuncs.PERCENT);
+        return new RSIPIS(base.createNew("RSI"), emaUP, emaTotal);
     }
 
 
-    public static ToNumIS<TernaryNumberET> create_WR_IS(PolarIS polarIS) {
-
-        SeriesParams params = SeriesParams.builder().name("WR").interval(polarIS.getInterval()).size((int) polarIS.getSize()).build();
-        ToNumIS<TernaryNumberET> williamsrIS = new ToNumIS<>(params, new WilliamsRFunction());
-        williamsrIS.after(polarIS);
-        return williamsrIS;
-    }
-
-
-    public static KDJIS create_KDJ_PIS(PolarIS polarIS) {
+    public static KDJPIS create_KDJ_PIS(PolarIS polarIS) {
 
         SeriesParams base = SeriesParams.builder().interval(polarIS.getInterval()).size((int) polarIS.getSize()).build();
-        ToNumIS<TernaryNumberET> rsvIS = new ToNumIS<>(base.createNew("RSV"), new RSVFunction());
+        ToNumIS<TernaryNumberET> rsvIS = new ToNumIS<>(base.createNew("RSV"), ele -> (ele.getSecond() - ele.getThird()) / (ele.getFirst() - ele.getThird()) * 100);
         rsvIS.after(polarIS);
 
         MAIS k = create_MA_IS(rsvIS, 1);
         MAIS d = create_MA_IS(k, 3);
-        return new KDJIS(base.createNew("KDJ"), k, d);
+        return new KDJPIS(base.createNew("KDJ"), k, d);
+    }
+
+
+    public static WRIS create_WR_IS(PolarIS polarIS) {
+
+        SeriesParams params = SeriesParams.builder().name("WR").interval(polarIS.getInterval()).size((int) polarIS.getSize()).build();
+        WRIS wr = new WRIS(params);
+        wr.after(polarIS);
+        return wr;
     }
 }
