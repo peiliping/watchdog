@@ -8,7 +8,6 @@ public enum CandleType {
     MIN_15(60 * 15),
     MIN_30(60 * 30),
     MIN_60(60 * 60),
-    HOUR_1(60 * 60),
     HOUR_4(60 * 60 * 4),
     DAY(60 * 60 * 24),
     WEEK(60 * 60 * 24 * 7);
@@ -36,8 +35,6 @@ public enum CandleType {
                 return MIN_30;
             case "60min":
                 return MIN_60;
-            case "1hour":
-                return HOUR_1;
             case "4hour":
                 return HOUR_4;
             case "1day":

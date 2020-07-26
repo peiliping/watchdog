@@ -1,7 +1,6 @@
-package com.github.watchdog.task.hb;
+package com.github.hubble;
 
 
-import com.github.hubble.AbstractHubble;
 import com.github.hubble.common.CandleType;
 import com.github.hubble.common.NumCompareFunction;
 import com.github.hubble.ele.TernaryNumberET;
@@ -16,31 +15,30 @@ import com.github.hubble.series.SeriesParams;
 import com.github.watchdog.common.BarkRuleResult;
 
 
-public class BTC extends AbstractHubble {
+public abstract class AbstractHubbleWithCommonRL extends AbstractHubble {
 
 
-    private double shockRatio;
+    protected double shockRatio;
 
 
-    public BTC(String market, String name) {
+    public AbstractHubbleWithCommonRL(String market, String name) {
 
         super(market, name);
-        this.shockRatio = 0.8;
+        this.shockRatio = 1d;
     }
 
 
-    @Override public AbstractHubble init() {
+    //5分钟震荡达到N%
+    protected void initShockSRL() {
 
-        //大幅度的震荡提醒
         CandleSeries min1_CS = super.candleSeriesManager.getOrCreateCandleSeries(CandleType.MIN_1);
         PolarIS min1_PolarIS = IndicatorHelper.create_POLAR_IS(min1_CS, 5);
         SeriesParams params = SeriesParams.builder().name("ShockRate").interval(min1_CS.getInterval()).size(min1_CS.getSize()).build();
-        ToNumIS<TernaryNumberET> shock = new ToNumIS<>(params, value -> (double) Math.round((value.getFirst() - value.getThird()) / value.getSecond() * 10000) / 100);
-        shock.after(min1_PolarIS);
-        IRule shockRL = new ThresholdSRL(buildName("ShockSRL"), shock, this.shockRatio, NumCompareFunction.GTE).overTurn(false).period(900);
-        BarkRuleResult result = new BarkRuleResult("%s is shocking (> %s)", buildName("price"), this.shockRatio);
-        super.rulesManager.addRule(CandleType.MIN_1, new Affinity(shockRL, result));
-
-        return this;
+        ToNumIS<TernaryNumberET> shockIS = new ToNumIS<>(params, value -> (double) Math.round((value.getFirst() - value.getThird()) / value.getThird() * 10000) / 100);
+        shockIS.after(min1_PolarIS);
+        IRule shockSRL = new ThresholdSRL(buildName("ShockSRL"), shockIS, this.shockRatio, NumCompareFunction.GTE).overTurn(true).period(900);
+        BarkRuleResult result = new BarkRuleResult("%s is shocking (>= %s%%)", buildName("price"), this.shockRatio);
+        super.rulesManager.addRule(CandleType.MIN_1, new Affinity(shockSRL, result));
     }
+
 }
