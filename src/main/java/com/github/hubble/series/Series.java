@@ -18,7 +18,6 @@ public class Series<E extends Element> {
     @Getter
     protected final String name;
 
-    @Getter
     protected final long size;
 
     protected final long mask;
@@ -51,6 +50,12 @@ public class Series<E extends Element> {
         this.upsertListeners = Lists.newArrayList();
         this.timeListeners = Lists.newArrayList();
         this.interval = params.getInterval();
+    }
+
+
+    public int getSize() {
+
+        return (int) size;
     }
 
 

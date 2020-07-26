@@ -1,4 +1,4 @@
-package com.github.hubble.rule.series.direction;
+package com.github.hubble.rule.series;
 
 
 import com.github.hubble.common.NumCompareFunction;

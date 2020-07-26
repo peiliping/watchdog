@@ -17,6 +17,12 @@ public class BarkRuleResult extends RuleResult {
     }
 
 
+    public BarkRuleResult(String message, Object... params) {
+
+        super(String.format(message, params));
+    }
+
+
     @Override public void call(long id) {
 
         super.call(id);
