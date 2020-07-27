@@ -1,6 +1,7 @@
 package com.github.hubble.series;
 
 
+import com.github.hubble.common.CandleType;
 import com.github.hubble.ele.Element;
 import com.google.common.collect.Lists;
 import lombok.Getter;
@@ -29,7 +30,7 @@ public class Series<E extends Element> {
     protected final List<SeriesTimeListener> timeListeners;
 
     @Getter
-    protected final long interval;
+    protected final CandleType candleType;
 
     @Getter
     protected String parentName;
@@ -49,7 +50,7 @@ public class Series<E extends Element> {
         this.elements = (E[]) new Element[(int) this.size];
         this.upsertListeners = Lists.newArrayList();
         this.timeListeners = Lists.newArrayList();
-        this.interval = params.getInterval();
+        this.candleType = params.getCandleType();
     }
 
 
@@ -104,7 +105,7 @@ public class Series<E extends Element> {
 
     public E getBefore(long id) {
 
-        return get(id - this.interval);
+        return get(id - this.candleType.interval);
     }
 
 
@@ -126,8 +127,8 @@ public class Series<E extends Element> {
 
     protected int getPosition(long id) {
 
-        Validate.isTrue(id % this.interval == 0L);
-        long i = id / this.interval;
+        Validate.isTrue((id + this.candleType.offset) % this.candleType.interval == 0L);
+        long i = (id + this.candleType.offset) / this.candleType.interval;
         return (int) (i & this.mask);
     }
 }

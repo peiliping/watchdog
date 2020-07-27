@@ -3,7 +3,6 @@ package com.github.hubble.rule.series;
 
 import com.github.hubble.common.NumCompareFunction;
 import com.github.hubble.ele.NumberET;
-import com.github.hubble.rule.series.SeriesRule;
 import com.github.hubble.series.Series;
 
 
@@ -28,13 +27,13 @@ public class DirectionalSRL extends SeriesRule<NumberET> {
 
     @Override protected boolean match(long id) {
 
-        NumberET first = super.series.get(id - this.step * super.series.getInterval());
+        NumberET first = super.series.get(id - this.step * super.series.getCandleType().interval);
         NumberET last = first;
         if (first == null) {
             return false;
         }
         double c = 0, m = 0;
-        for (long i = first.getId() + super.series.getInterval(); i <= id; i += super.series.getInterval()) {
+        for (long i = first.getId() + super.series.getCandleType().interval; i <= id; i += super.series.getCandleType().interval) {
             NumberET e = super.series.get(i);
             if (e != null) {
                 c++;

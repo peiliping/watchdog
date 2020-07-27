@@ -28,17 +28,16 @@ public abstract class AbstractHubbleWithCommonRL extends AbstractHubble {
     }
 
 
-    //5分钟震荡达到N%
+    // 最近M分钟震荡达到N%
     protected void initShockSRL() {
 
         CandleSeries min1_CS = super.candleSeriesManager.getOrCreateCandleSeries(CandleType.MIN_1);
         PolarIS min1_PolarIS = IndicatorHelper.create_POLAR_IS(min1_CS, 5);
-        SeriesParams params = SeriesParams.builder().name("ShockRate").interval(min1_CS.getInterval()).size(min1_CS.getSize()).build();
+        SeriesParams params = SeriesParams.builder().name("ShockRate").candleType(min1_CS.getCandleType()).size(min1_CS.getSize()).build();
         ToNumIS<TernaryNumberET> shockIS = new ToNumIS<>(params, value -> (double) Math.round((value.getFirst() - value.getThird()) / value.getThird() * 10000) / 100);
         shockIS.after(min1_PolarIS);
-        IRule shockSRL = new ThresholdSRL(buildName("ShockSRL"), shockIS, this.shockRatio, NumCompareFunction.GTE).overTurn(true).period(900);
-        BarkRuleResult result = new BarkRuleResult("%s is shocking (>= %s%%)", buildName("price"), this.shockRatio);
+        IRule shockSRL = new ThresholdSRL(buildName(CandleType.MIN_1, "ShockSRL"), shockIS, this.shockRatio, NumCompareFunction.GTE).overTurn(true).period(900);
+        BarkRuleResult result = new BarkRuleResult("%s.%s is shocking (>= %s%%)", super.market, super.name, this.shockRatio);
         super.rulesManager.addRule(CandleType.MIN_1, new Affinity(shockSRL, result));
     }
-
 }

@@ -15,7 +15,7 @@ public class IndicatorHelper {
 
     public static ToNumIS<CandleET> create_CLOSE_IS(CandleSeries candleSeries) {
 
-        SeriesParams params = SeriesParams.builder().name("Close").interval(candleSeries.getInterval()).size(candleSeries.getSize()).build();
+        SeriesParams params = SeriesParams.builder().name("Close").candleType(candleSeries.getCandleType()).size(candleSeries.getSize()).build();
         ToNumIS<CandleET> closeIS = new ToNumIS<>(params, candleET -> candleET.getClose());
         closeIS.after(candleSeries);
         return closeIS;
@@ -25,7 +25,7 @@ public class IndicatorHelper {
     public static PolarIS create_POLAR_IS(CandleSeries candleSeries, int step) {
 
         String name = String.format("Polar(%s)", step);
-        SeriesParams params = SeriesParams.builder().name(name).interval(candleSeries.getInterval()).size(candleSeries.getSize()).build();
+        SeriesParams params = SeriesParams.builder().name(name).candleType(candleSeries.getCandleType()).size(candleSeries.getSize()).build();
         PolarIS polarIS = new PolarIS(params, step);
         polarIS.after(candleSeries);
         return polarIS;
@@ -35,7 +35,7 @@ public class IndicatorHelper {
     public static MAIS create_MA_IS(IndicatorSeries<?, NumberET> indicatorSeries, int step) {
 
         String name = String.format("MA(%s)", step);
-        SeriesParams params = SeriesParams.builder().name(name).interval(indicatorSeries.getInterval()).size(indicatorSeries.getSize()).build();
+        SeriesParams params = SeriesParams.builder().name(name).candleType(indicatorSeries.getCandleType()).size(indicatorSeries.getSize()).build();
         MAIS ma = new MAIS(params, step);
         ma.after(indicatorSeries);
         return ma;
@@ -45,7 +45,7 @@ public class IndicatorHelper {
     public static EMAIS create_EMA_IS(IndicatorSeries<?, NumberET> indicatorSeries, int step, double multiplier) {
 
         String name = String.format("EMA(%s,%s)", step, multiplier);
-        SeriesParams params = SeriesParams.builder().name(name).interval(indicatorSeries.getInterval()).size(indicatorSeries.getSize()).build();
+        SeriesParams params = SeriesParams.builder().name(name).candleType(indicatorSeries.getCandleType()).size(indicatorSeries.getSize()).build();
         EMAIS ema = new EMAIS(params, step, multiplier);
         ema.after(indicatorSeries);
         return ema;
@@ -60,7 +60,7 @@ public class IndicatorHelper {
 
     public static DeltaIS create_Delta_IS(IndicatorSeries<?, NumberET> indicatorSeries) {
 
-        SeriesParams params = SeriesParams.builder().name("Delta").interval(indicatorSeries.getInterval()).size(indicatorSeries.getSize()).build();
+        SeriesParams params = SeriesParams.builder().name("Delta").candleType(indicatorSeries.getCandleType()).size(indicatorSeries.getSize()).build();
         DeltaIS delta = new DeltaIS(params);
         delta.after(indicatorSeries);
         return delta;
@@ -70,7 +70,7 @@ public class IndicatorHelper {
     public static STDDIS create_STDD_IS(IndicatorSeries<?, NumberET> indicatorSeries, int step) {
 
         String name = String.format("STDD(%s)", step);
-        SeriesParams params = SeriesParams.builder().name(name).interval(indicatorSeries.getInterval()).size(indicatorSeries.getSize()).build();
+        SeriesParams params = SeriesParams.builder().name(name).candleType(indicatorSeries.getCandleType()).size(indicatorSeries.getSize()).build();
         STDDIS stdd = new STDDIS(params, step);
         stdd.after(indicatorSeries);
         return stdd;
@@ -84,7 +84,7 @@ public class IndicatorHelper {
         STDDIS stdd = create_STDD_IS(closeIS, step);
         MAIS ma = create_MA_IS(closeIS, step);
         String name = String.format("Bolling(%s)", multiplier);
-        SeriesParams params = SeriesParams.builder().name(name).interval(closeIS.getInterval()).size(closeIS.getSize()).build();
+        SeriesParams params = SeriesParams.builder().name(name).candleType(closeIS.getCandleType()).size(closeIS.getSize()).build();
         return new BollingPIS(params, multiplier, stdd, ma);
     }
 
@@ -94,18 +94,18 @@ public class IndicatorHelper {
         EMAIS shortEma = create_EMA_IS(closeIS, 12);
         EMAIS longEma = create_EMA_IS(closeIS, 26);
 
-        SeriesParams difParams = SeriesParams.builder().name("DIF").interval(closeIS.getInterval()).size(closeIS.getSize()).build();
+        SeriesParams difParams = SeriesParams.builder().name("DIF").candleType(closeIS.getCandleType()).size(closeIS.getSize()).build();
         CalculatePIS dif = new CalculatePIS(difParams, shortEma, longEma, PISFuncs.MINUS);
         EMAIS dea = create_EMA_IS(dif, 9);
 
-        SeriesParams params = SeriesParams.builder().name("MACD").interval(closeIS.getInterval()).size(closeIS.getSize()).build();
+        SeriesParams params = SeriesParams.builder().name("MACD").candleType(closeIS.getCandleType()).size(closeIS.getSize()).build();
         return new MACDPIS(params, dif, dea);
     }
 
 
     public static RSIPIS create_RSI_PIS(ToNumIS<CandleET> closeIS) {
 
-        SeriesParams base = SeriesParams.builder().interval(closeIS.getInterval()).size(closeIS.getSize()).build();
+        SeriesParams base = SeriesParams.builder().candleType(closeIS.getCandleType()).size(closeIS.getSize()).build();
         DeltaIS deltaIS = create_Delta_IS(closeIS);
 
         ToNumIS<NumberET> up = new ToNumIS<>(base.createNew("Positive"), numberET -> Math.max(numberET.getData(), 0));
@@ -122,7 +122,7 @@ public class IndicatorHelper {
 
     public static KDJPIS create_KDJ_PIS(PolarIS polarIS) {
 
-        SeriesParams base = SeriesParams.builder().interval(polarIS.getInterval()).size(polarIS.getSize()).build();
+        SeriesParams base = SeriesParams.builder().candleType(polarIS.getCandleType()).size(polarIS.getSize()).build();
         ToNumIS<TernaryNumberET> rsvIS = new ToNumIS<>(base.createNew("RSV"), ele -> (ele.getSecond() - ele.getThird()) / (ele.getFirst() - ele.getThird()) * 100);
         rsvIS.after(polarIS);
 
@@ -134,7 +134,7 @@ public class IndicatorHelper {
 
     public static WRIS create_WR_IS(PolarIS polarIS) {
 
-        SeriesParams params = SeriesParams.builder().name("WR").interval(polarIS.getInterval()).size(polarIS.getSize()).build();
+        SeriesParams params = SeriesParams.builder().name("WR").candleType(polarIS.getCandleType()).size(polarIS.getSize()).build();
         WRIS wr = new WRIS(params);
         wr.after(polarIS);
         return wr;

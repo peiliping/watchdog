@@ -3,9 +3,6 @@ package com.github.hubble.series;
 
 import com.github.hubble.common.CandleType;
 import com.github.hubble.ele.CandleET;
-import com.github.hubble.series.CandleSeries;
-import com.github.hubble.series.Series;
-import com.github.hubble.series.SeriesParams;
 import com.google.common.collect.Maps;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
@@ -43,7 +40,7 @@ public class CandleSeriesManager {
             return series;
         }
 
-        SeriesParams params = SeriesParams.builder().name(candleType.name()).size(this.elementSize).interval(candleType.interval).build();
+        SeriesParams params = SeriesParams.builder().name(candleType.name()).size(this.elementSize).candleType(candleType).build();
         series = new CandleSeries(params, StringUtils.joinWith(".", this.market, this.symbol));
         this.candles.put(candleType, series);
         return series;

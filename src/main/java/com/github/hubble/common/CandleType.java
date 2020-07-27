@@ -3,22 +3,24 @@ package com.github.hubble.common;
 
 public enum CandleType {
 
-    MIN_1(60),
-    MIN_5(60 * 5),
-    MIN_15(60 * 15),
-    MIN_30(60 * 30),
-    MIN_60(60 * 60),
-    HOUR_4(60 * 60 * 4),
-    DAY(60 * 60 * 24),
-    WEEK(60 * 60 * 24 * 7);
+    MIN_1(60, 0),
+    MIN_5(60 * 5, 0),
+    MIN_15(60 * 15, 0),
+    MIN_30(60 * 30, 0),
+    MIN_60(60 * 60, 0),
+    HOUR_4(60 * 60 * 4, 0),
+    DAY(60 * 60 * 24, 60 * 60 * 8);
 
 
     public long interval;
 
+    public long offset;
 
-    private CandleType(long interval) {
+
+    private CandleType(long interval, long offset) {
 
         this.interval = interval;
+        this.offset = offset;
     }
 
 
@@ -39,8 +41,6 @@ public enum CandleType {
                 return HOUR_4;
             case "1day":
                 return DAY;
-            case "1week":
-                return WEEK;
         }
         return null;
     }
