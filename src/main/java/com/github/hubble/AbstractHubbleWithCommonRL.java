@@ -13,6 +13,8 @@ import com.github.hubble.indicator.general.WRIS;
 import com.github.hubble.rule.Affinity;
 import com.github.hubble.rule.IRule;
 import com.github.hubble.rule.series.NumberComparePSR;
+import com.github.hubble.rule.series.cross.FallingCrossPSR;
+import com.github.hubble.rule.series.cross.RisingCrossPSR;
 import com.github.hubble.rule.series.threshold.ThresholdSRL;
 import com.github.hubble.series.CandleSeries;
 import com.github.hubble.series.SeriesParams;
@@ -57,12 +59,16 @@ public abstract class AbstractHubbleWithCommonRL extends AbstractHubble {
         MAIS ma30 = IndicatorHelper.create_MA_IS(closeSeries, 30);
 
         IRule risingRule = new NumberComparePSR(buildName(candleType, "NCPSR_MA05VS10"), ma05, ma10, NumCompareFunction.GT)
-                .and(new NumberComparePSR(buildName(candleType, "NCPSR_MA10VS30"), ma10, ma30, NumCompareFunction.GT)).overTurn(true).period(period);
+                .and(new NumberComparePSR(buildName(candleType, "NCPSR_MA10VS30"), ma10, ma30, NumCompareFunction.GT))
+                .and(new RisingCrossPSR(buildName(candleType, "RCPSR_MA05VS10"), ma05, ma10).or(new RisingCrossPSR(buildName(candleType, "RCPSR_MA10VS30"), ma10, ma30)))
+                .overTurn(true).period(period);
         BarkRuleResult rResult = new BarkRuleResult("%s.%s的%s线MA指标呈现多头排列上升趋势", super.market, super.name, candleType.name());
         super.rulesManager.addRule(candleType, new Affinity(risingRule, rResult));
 
         IRule fallingRule = new NumberComparePSR(buildName(candleType, "NCPSR_MA10VS05"), ma10, ma05, NumCompareFunction.GT)
-                .and(new NumberComparePSR(buildName(candleType, "NCPSR__MA30VS05"), ma30, ma05, NumCompareFunction.GT)).overTurn(true).period(period);
+                .and(new NumberComparePSR(buildName(candleType, "NCPSR__MA30VS05"), ma30, ma05, NumCompareFunction.GT))
+                .and(new FallingCrossPSR(buildName(candleType, "FCPSR_MA05VS10"), ma05, ma10).or(new FallingCrossPSR(buildName(candleType, "RCPSR_MA05VS30"), ma05, ma30)))
+                .overTurn(true).period(period);
         BarkRuleResult fResult = new BarkRuleResult("%s.%s的%s线MA指标走弱", super.market, super.name, candleType.name());
         super.rulesManager.addRule(candleType, new Affinity(fallingRule, fResult));
     }
