@@ -8,16 +8,27 @@ import com.github.hubble.indicator.function.PISFuncs;
 import com.github.hubble.indicator.general.*;
 import com.github.hubble.series.CandleSeries;
 import com.github.hubble.series.SeriesParams;
+import com.google.common.collect.Maps;
+
+import java.util.Map;
 
 
 public class IndicatorHelper {
 
 
+    private static Map<String, ToNumIS<CandleET>> CLOSE_IS_CACHE = Maps.newHashMap();
+
+
     public static ToNumIS<CandleET> create_CLOSE_IS(CandleSeries candleSeries) {
 
-        SeriesParams params = SeriesParams.builder().name("Close").candleType(candleSeries.getCandleType()).size(candleSeries.getSize()).build();
-        ToNumIS<CandleET> closeIS = new ToNumIS<>(params, candleET -> candleET.getClose());
-        closeIS.after(candleSeries);
+        String key = candleSeries.getFullName() + "." + "Close";
+        ToNumIS<CandleET> closeIS = CLOSE_IS_CACHE.get(key);
+        if (closeIS == null) {
+            SeriesParams params = SeriesParams.builder().name("Close").candleType(candleSeries.getCandleType()).size(candleSeries.getSize()).build();
+            closeIS = new ToNumIS<>(params, candleET -> candleET.getClose());
+            closeIS.after(candleSeries);
+            CLOSE_IS_CACHE.put(key, closeIS);
+        }
         return closeIS;
     }
 
