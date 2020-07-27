@@ -5,13 +5,12 @@ import com.github.hubble.AbstractHubble;
 import com.github.hubble.AbstractHubbleWithCommonRL;
 import com.github.hubble.common.CandleType;
 import com.github.hubble.common.NumCompareFunction;
-import com.github.hubble.ele.CandleET;
 import com.github.hubble.indicator.IndicatorHelper;
-import com.github.hubble.indicator.general.MAIS;
-import com.github.hubble.indicator.general.ToNumIS;
+import com.github.hubble.indicator.general.PolarIS;
+import com.github.hubble.indicator.general.WRIS;
 import com.github.hubble.rule.Affinity;
 import com.github.hubble.rule.IRule;
-import com.github.hubble.rule.series.NumberComparePSR;
+import com.github.hubble.rule.series.threshold.ThresholdSRL;
 import com.github.hubble.series.CandleSeries;
 import com.github.watchdog.common.BarkRuleResult;
 
@@ -28,29 +27,22 @@ public class BTC extends AbstractHubbleWithCommonRL {
 
     @Override public AbstractHubble init() {
 
-        initShockSRL();
-
+        initShockRL();
+        initMARL(CandleType.MIN_60, 1800);
         {
-            CandleSeries min60_CS = super.candleSeriesManager.getOrCreateCandleSeries(CandleType.MIN_60);
+            CandleType candleType = CandleType.MIN_60;
+            CandleSeries candleSeries = super.candleSeriesManager.getOrCreateCandleSeries(candleType);
+            PolarIS polarIS = IndicatorHelper.create_POLAR_IS(candleSeries, 14);
+            WRIS wr = IndicatorHelper.create_WR_IS(polarIS);
+            IRule overSellRule = new ThresholdSRL(buildName(candleType, "TSRL_WR_OverSell"), wr, 97, NumCompareFunction.GTE).overTurn(true).period(1800);
+            IRule overBuyRule = new ThresholdSRL(buildName(candleType, "TSRL_WR_OverBuy"), wr, 3, NumCompareFunction.LTE).overTurn(true).period(1800);
+
+            BarkRuleResult sResult = new BarkRuleResult("%s.%s的%s线WR指标出现超卖信号", super.market, super.name, candleType.name());
+            BarkRuleResult bResult = new BarkRuleResult("%s.%s的%s线WR指标出现超买信号", super.market, super.name, candleType.name());
+            super.rulesManager.addRule(candleType, new Affinity(overSellRule, sResult));
+            super.rulesManager.addRule(candleType, new Affinity(overBuyRule, bResult));
         }
-        {
-            CandleSeries day_CS = super.candleSeriesManager.getOrCreateCandleSeries(CandleType.DAY);
-            ToNumIS<CandleET> closeSeries = IndicatorHelper.create_CLOSE_IS(day_CS);
-
-            MAIS ma05 = IndicatorHelper.create_MA_IS(closeSeries, 5);
-            MAIS ma10 = IndicatorHelper.create_MA_IS(closeSeries, 10);
-            MAIS ma30 = IndicatorHelper.create_MA_IS(closeSeries, 30);
-
-            IRule risingRule = new NumberComparePSR(buildName(CandleType.DAY, "NCPSR_MA05VS10"), ma05, ma10, NumCompareFunction.GT)
-                    .and(new NumberComparePSR(buildName(CandleType.DAY, "NCPSR_MA10VS30"), ma10, ma30, NumCompareFunction.GT)).overTurn(true).period(3600);
-            BarkRuleResult rResult = new BarkRuleResult("%s.%s的日K线MA指标呈现多头排列上升趋势", super.market, super.name);
-            super.rulesManager.addRule(CandleType.DAY, new Affinity(risingRule, rResult));
-
-            IRule fallingRule = new NumberComparePSR(buildName(CandleType.DAY, "NCPSR_MA10VS05"), ma10, ma05, NumCompareFunction.GT)
-                    .and(new NumberComparePSR(buildName(CandleType.DAY, "NCPSR__MA30VS05"), ma30, ma05, NumCompareFunction.GT)).overTurn(true).period(3600);
-            BarkRuleResult fResult = new BarkRuleResult("%s.%s的日K线MA指标呈现多头排列下跌趋势", super.market, super.name);
-            super.rulesManager.addRule(CandleType.DAY, new Affinity(fallingRule, fResult));
-        }
+        initMARL(CandleType.DAY, 3600);
         return this;
     }
 }
