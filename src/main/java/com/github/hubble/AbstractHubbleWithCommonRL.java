@@ -9,6 +9,7 @@ import com.github.hubble.indicator.IndicatorHelper;
 import com.github.hubble.indicator.general.MAIS;
 import com.github.hubble.indicator.general.PolarIS;
 import com.github.hubble.indicator.general.ToNumIS;
+import com.github.hubble.indicator.general.WRIS;
 import com.github.hubble.rule.Affinity;
 import com.github.hubble.rule.IRule;
 import com.github.hubble.rule.series.NumberComparePSR;
@@ -64,5 +65,21 @@ public abstract class AbstractHubbleWithCommonRL extends AbstractHubble {
                 .and(new NumberComparePSR(buildName(candleType, "NCPSR__MA30VS05"), ma30, ma05, NumCompareFunction.GT)).overTurn(true).period(period);
         BarkRuleResult fResult = new BarkRuleResult("%s.%s的%s线MA指标走弱", super.market, super.name, candleType.name());
         super.rulesManager.addRule(candleType, new Affinity(fallingRule, fResult));
+    }
+
+
+    // 超买超卖信号
+    protected void initWRRL(CandleType candleType, int period) {
+
+        CandleSeries candleSeries = super.candleSeriesManager.getOrCreateCandleSeries(candleType);
+        PolarIS polarIS = IndicatorHelper.create_POLAR_IS(candleSeries, 14);
+        WRIS wr = IndicatorHelper.create_WR_IS(polarIS);
+        IRule overSellRule = new ThresholdSRL(buildName(candleType, "TSRL_WR_OverSell"), wr, 97, NumCompareFunction.GTE).overTurn(true).period(1800);
+        IRule overBuyRule = new ThresholdSRL(buildName(candleType, "TSRL_WR_OverBuy"), wr, 3, NumCompareFunction.LTE).overTurn(true).period(1800);
+
+        BarkRuleResult sResult = new BarkRuleResult("%s.%s的%s线WR指标出现超卖信号", super.market, super.name, candleType.name());
+        BarkRuleResult bResult = new BarkRuleResult("%s.%s的%s线WR指标出现超买信号", super.market, super.name, candleType.name());
+        super.rulesManager.addRule(candleType, new Affinity(overSellRule, sResult));
+        super.rulesManager.addRule(candleType, new Affinity(overBuyRule, bResult));
     }
 }
