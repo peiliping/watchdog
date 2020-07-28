@@ -13,27 +13,46 @@ import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
+import java.util.function.ToDoubleFunction;
 
 
 public class IndicatorHelper {
 
 
-    private static Map<String, ToNumIS<CandleET>> CLOSE_IS_CACHE = Maps.newHashMap();
+    private static Map<String, ToNumIS<CandleET>> CANDLE_TONUM_CACHE = Maps.newHashMap();
 
     private static Map<String, PolarIS> POLAR_IS_CACHE = Maps.newHashMap();
 
 
+    private static ToNumIS<CandleET> create_TONUM_IS(CandleSeries candleSeries, String name, ToDoubleFunction<CandleET> function) {
+
+        String key = StringUtils.joinWith(".", candleSeries.getFullName(), name);
+        ToNumIS<CandleET> is = CANDLE_TONUM_CACHE.get(key);
+        if (is == null) {
+            SeriesParams params = SeriesParams.builder().name(name).candleType(candleSeries.getCandleType()).size(candleSeries.getSize()).build();
+            is = new ToNumIS<>(params, function);
+            is.after(candleSeries);
+            CANDLE_TONUM_CACHE.put(key, is);
+        }
+        return is;
+    }
+
+
     public static ToNumIS<CandleET> create_CLOSE_IS(CandleSeries candleSeries) {
 
-        String key = StringUtils.joinWith(".", candleSeries.getFullName(), "Close");
-        ToNumIS<CandleET> closeIS = CLOSE_IS_CACHE.get(key);
-        if (closeIS == null) {
-            SeriesParams params = SeriesParams.builder().name("Close").candleType(candleSeries.getCandleType()).size(candleSeries.getSize()).build();
-            closeIS = new ToNumIS<>(params, candleET -> candleET.getClose());
-            closeIS.after(candleSeries);
-            CLOSE_IS_CACHE.put(key, closeIS);
-        }
-        return closeIS;
+        return create_TONUM_IS(candleSeries, "Close", candleET -> candleET.getClose());
+    }
+
+
+    public static ToNumIS<CandleET> create_HIGH_IS(CandleSeries candleSeries) {
+
+        return create_TONUM_IS(candleSeries, "High", candleET -> candleET.getHigh());
+    }
+
+
+    public static ToNumIS<CandleET> create_LOW_IS(CandleSeries candleSeries) {
+
+        return create_TONUM_IS(candleSeries, "Low", candleET -> candleET.getLow());
     }
 
 
@@ -105,6 +124,24 @@ public class IndicatorHelper {
         String name = String.format("Bolling(%s)", multiplier);
         SeriesParams params = SeriesParams.builder().name(name).candleType(closeIS.getCandleType()).size(closeIS.getSize()).build();
         return new BollingPIS(params, multiplier, stdd, ma);
+    }
+
+
+    public static ToNumIS<TernaryNumberET> create_Bolling_Up_IS(BollingPIS bollingPIS) {
+
+        SeriesParams params = SeriesParams.builder().name("BollingUp").candleType(bollingPIS.getCandleType()).size(bollingPIS.getSize()).build();
+        ToNumIS<TernaryNumberET> bollingUp = new ToNumIS<>(params, value -> value.getFirst());
+        bollingUp.after(bollingPIS);
+        return bollingUp;
+    }
+
+
+    public static ToNumIS<TernaryNumberET> create_Bolling_Down_IS(BollingPIS bollingPIS) {
+
+        SeriesParams params = SeriesParams.builder().name("BollingDown").candleType(bollingPIS.getCandleType()).size(bollingPIS.getSize()).build();
+        ToNumIS<TernaryNumberET> bollingDown = new ToNumIS<>(params, value -> value.getThird());
+        bollingDown.after(bollingPIS);
+        return bollingDown;
     }
 
 

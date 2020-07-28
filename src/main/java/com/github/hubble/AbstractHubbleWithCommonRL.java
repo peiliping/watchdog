@@ -12,6 +12,7 @@ import com.github.hubble.indicator.general.ToNumIS;
 import com.github.hubble.indicator.specific.WRIS;
 import com.github.hubble.rule.Affinity;
 import com.github.hubble.rule.IRule;
+import com.github.hubble.rule.RuleResult;
 import com.github.hubble.rule.series.NumberComparePSR;
 import com.github.hubble.rule.series.cross.FallingCrossPSR;
 import com.github.hubble.rule.series.cross.RisingCrossPSR;
@@ -83,8 +84,8 @@ public abstract class AbstractHubbleWithCommonRL extends AbstractHubble {
         IRule overSellRule = new ThresholdSRL(buildName(candleType, "TSRL_WR_OverSell"), wr, 100d - threshold, NumCompareFunction.GTE).overTurn(true).period(period);
         IRule overBuyRule = new ThresholdSRL(buildName(candleType, "TSRL_WR_OverBuy"), wr, threshold, NumCompareFunction.LTE).overTurn(true).period(period);
 
-        BarkRuleResult sResult = new BarkRuleResult("%s.%s的%s线WR指标出现超卖信号", super.market, super.name, candleType.name());
-        BarkRuleResult bResult = new BarkRuleResult("%s.%s的%s线WR指标出现超买信号", super.market, super.name, candleType.name());
+        RuleResult sResult = new BarkRuleResult("%s.%s的%s线WR指标出现超卖信号", super.market, super.name, candleType.name());
+        RuleResult bResult = new RuleResult("%s.%s的%s线WR指标出现超买信号", super.market, super.name, candleType.name());
         super.rulesManager.addRule(candleType, new Affinity(overSellRule, sResult));
         super.rulesManager.addRule(candleType, new Affinity(overBuyRule, bResult));
     }

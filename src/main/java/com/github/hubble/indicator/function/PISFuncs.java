@@ -9,14 +9,16 @@ import java.util.function.ToDoubleBiFunction;
 public class PISFuncs {
 
 
-    public static final ToDoubleBiFunction<NumberET, NumberET> PLUS = (numberET, numberET2) -> numberET.getData() + numberET2.getData();
+    public static final ToDoubleBiFunction<NumberET, NumberET> PLUS = (num1, num2) -> num1.getData() + num2.getData();
 
-    public static final ToDoubleBiFunction<NumberET, NumberET> MINUS = (numberET, numberET2) -> numberET.getData() - numberET2.getData();
+    public static final ToDoubleBiFunction<NumberET, NumberET> MINUS = (num1, num2) -> num1.getData() - num2.getData();
 
-    public static final ToDoubleBiFunction<NumberET, NumberET> MULTI = (numberET, numberET2) -> numberET.getData() * numberET2.getData();
+    public static final ToDoubleBiFunction<NumberET, NumberET> MULTI = (num1, num2) -> num1.getData() * num2.getData();
 
-    public static final ToDoubleBiFunction<NumberET, NumberET> DIVIDE = (numberET, numberET2) -> numberET.getData() / numberET2.getData();
+    public static final ToDoubleBiFunction<NumberET, NumberET> DIVIDE = (num1, num2) -> num1.getData() / num2.getData();
 
-    public static final ToDoubleBiFunction<NumberET, NumberET> PERCENT = (numberET, numberET2) -> numberET.getData() / numberET2.getData() * 100;
+    public static final ToDoubleBiFunction<NumberET, NumberET> PERCENT = (num1, num2) -> num1.getData() / num2.getData() * 100;
+
+    public static final ToDoubleBiFunction<NumberET, NumberET> OVERPERCENT = (num1, num2) -> (num1.getData() - num2.getData()) / num2.getData() * 100;
 
 }

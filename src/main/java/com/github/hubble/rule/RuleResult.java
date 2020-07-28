@@ -17,6 +17,12 @@ public class RuleResult {
     }
 
 
+    public RuleResult(String message, Object... params) {
+
+        this(String.format(message, params));
+    }
+
+
     public void call(long id) {
 
         if (this.message != null) {
