@@ -24,12 +24,12 @@ public class CalculatePIS extends PairIndicatorSeries<IndicatorSeries<? extends 
     }
 
 
-    @Override protected void onTime(long timeId) {
+    @Override protected void onTime(long timeSeq) {
 
-        NumberET one = super.first.get(timeId);
-        NumberET two = super.second.get(timeId);
+        NumberET one = super.first.get(timeSeq);
+        NumberET two = super.second.get(timeSeq);
         if (one != null && two != null) {
-            add(new NumberET(timeId, this.function.applyAsDouble(one, two)));
+            add(new NumberET(timeSeq, this.function.applyAsDouble(one, two)));
         }
     }
 }

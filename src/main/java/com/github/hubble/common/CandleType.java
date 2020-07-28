@@ -1,6 +1,9 @@
 package com.github.hubble.common;
 
 
+import org.apache.commons.lang3.Validate;
+
+
 public enum CandleType {
 
     MIN_1(60, 0),
@@ -43,5 +46,11 @@ public enum CandleType {
                 return DAY;
         }
         return null;
+    }
+
+
+    public void validate(long timeSeq) {
+
+        Validate.isTrue((timeSeq + this.offset) % this.interval == 0L);
     }
 }

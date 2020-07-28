@@ -19,26 +19,24 @@ public class Series<E extends Element> {
     @Getter
     protected final String name;
 
+    @Getter
+    protected final CandleType candleType;
+
+    protected final E[] elements;
+
     protected final long size;
 
     protected final long mask;
-
-    protected final E[] elements;
 
     protected final List<SeriesUpsertListener<E>> upsertListeners;
 
     protected final List<SeriesTimeListener> timeListeners;
 
-    @Getter
-    protected final CandleType candleType;
-
-    @Getter
     protected String parentName;
 
-    @Getter
-    protected long maxId = 0L;
+    private long maxId = 0L;
 
-    protected long sequence = 0;
+    private long sequence = 0;
 
 
     public Series(SeriesParams params) {
@@ -69,9 +67,19 @@ public class Series<E extends Element> {
     }
 
 
+    protected int getPosition(long id) {
+
+        this.candleType.validate(id);
+        long i = (id + this.candleType.offset) / this.candleType.interval;
+        return (int) (i & this.mask);
+    }
+
+
     public void add(E element) {
 
-        Validate.isTrue(element.getId() >= this.maxId);
+        if (element.getId() < this.maxId) {
+            return;
+        }
 
         int position = getPosition(element.getId());
         Element lastElement = this.elements[position];
@@ -103,9 +111,27 @@ public class Series<E extends Element> {
     }
 
 
+    public E getLast() {
+
+        return get(this.maxId);
+    }
+
+
     public E getBefore(long id) {
 
         return get(id - this.candleType.interval);
+    }
+
+
+    public E getBefore(long id, int n) {
+
+        return get(id - this.candleType.interval * n);
+    }
+
+
+    public E getAfter(long id) {
+
+        return get(id + this.candleType.interval);
     }
 
 
@@ -122,13 +148,5 @@ public class Series<E extends Element> {
         for (SeriesTimeListener listener : listeners) {
             this.timeListeners.add(listener);
         }
-    }
-
-
-    protected int getPosition(long id) {
-
-        Validate.isTrue((id + this.candleType.offset) % this.candleType.interval == 0L);
-        long i = (id + this.candleType.offset) / this.candleType.interval;
-        return (int) (i & this.mask);
     }
 }

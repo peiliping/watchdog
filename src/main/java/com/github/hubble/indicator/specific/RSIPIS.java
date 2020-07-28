@@ -1,7 +1,9 @@
-package com.github.hubble.indicator.general;
+package com.github.hubble.indicator.specific;
 
 
 import com.github.hubble.indicator.function.PISFuncs;
+import com.github.hubble.indicator.general.CalculatePIS;
+import com.github.hubble.indicator.general.EMAIS;
 import com.github.hubble.series.SeriesParams;
 
 

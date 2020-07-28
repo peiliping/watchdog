@@ -50,10 +50,9 @@ public class CandleSeriesManager {
     public void addCandleETList(CandleType candleType, List<CandleET> candleETList) {
 
         CandleSeries series = this.candles.get(candleType);
+        Validate.notNull(series);
         for (CandleET candleET : candleETList) {
-            if (candleET.getId() >= series.getMaxId()) {
-                series.add(candleET);
-            }
+            series.add(candleET);
         }
     }
 
@@ -62,8 +61,6 @@ public class CandleSeriesManager {
 
         Series<CandleET> series = this.candles.get(candleType);
         Validate.notNull(series);
-        if (candleET.getId() >= series.getMaxId()) {
-            series.add(candleET);
-        }
+        series.add(candleET);
     }
 }

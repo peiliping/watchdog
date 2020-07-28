@@ -1,7 +1,8 @@
-package com.github.hubble.indicator.general;
+package com.github.hubble.indicator.specific;
 
 
 import com.github.hubble.ele.TernaryNumberET;
+import com.github.hubble.indicator.general.ToNumIS;
 import com.github.hubble.series.SeriesParams;
 
 

@@ -28,11 +28,9 @@ public abstract class PairIndicatorSeries<F extends IndicatorSeries, S extends I
         super(params);
         this.first = first;
         this.second = second;
-        super.parentName = "[" + this.first.getFullName() + "," + this.second.getFullName() + "]";
-        Series st = analyze(this.first, this.second);
-        super.parentSeries = st;
-        st.bindTimeListener(this);
-        log.info("{} [{} , {}] bind on {} .", getName(), this.first.getName(), this.second.getName(), st.getName());
+        super.parentSeries = analyze(this.first, this.second);
+        super.parentName = super.parentSeries.getFullName() + "[" + this.first.getFullName() + "," + this.second.getFullName() + "]";
+        super.parentSeries.bindTimeListener(this);
     }
 
 
@@ -85,14 +83,14 @@ public abstract class PairIndicatorSeries<F extends IndicatorSeries, S extends I
     }
 
 
-    @Override public void onTime(long seq, long timeId) {
+    @Override public void onTime(long seq, long timeSeq) {
 
         if (seq > super.lastSequence) {
             super.lastSequence = seq;
-            onTime(timeId);
+            onTime(timeSeq);
         }
     }
 
 
-    protected abstract void onTime(long timeId);
+    protected abstract void onTime(long timeSeq);
 }

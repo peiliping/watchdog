@@ -6,9 +6,11 @@ import com.github.hubble.ele.NumberET;
 import com.github.hubble.ele.TernaryNumberET;
 import com.github.hubble.indicator.function.PISFuncs;
 import com.github.hubble.indicator.general.*;
+import com.github.hubble.indicator.specific.*;
 import com.github.hubble.series.CandleSeries;
 import com.github.hubble.series.SeriesParams;
 import com.google.common.collect.Maps;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
@@ -18,10 +20,12 @@ public class IndicatorHelper {
 
     private static Map<String, ToNumIS<CandleET>> CLOSE_IS_CACHE = Maps.newHashMap();
 
+    private static Map<String, PolarIS> POLAR_IS_CACHE = Maps.newHashMap();
+
 
     public static ToNumIS<CandleET> create_CLOSE_IS(CandleSeries candleSeries) {
 
-        String key = candleSeries.getFullName() + "." + "Close";
+        String key = StringUtils.joinWith(".", candleSeries.getFullName(), "Close");
         ToNumIS<CandleET> closeIS = CLOSE_IS_CACHE.get(key);
         if (closeIS == null) {
             SeriesParams params = SeriesParams.builder().name("Close").candleType(candleSeries.getCandleType()).size(candleSeries.getSize()).build();
@@ -36,9 +40,13 @@ public class IndicatorHelper {
     public static PolarIS create_POLAR_IS(CandleSeries candleSeries, int step) {
 
         String name = String.format("Polar(%s)", step);
-        SeriesParams params = SeriesParams.builder().name(name).candleType(candleSeries.getCandleType()).size(candleSeries.getSize()).build();
-        PolarIS polarIS = new PolarIS(params, step);
-        polarIS.after(candleSeries);
+        String key = StringUtils.joinWith(".", candleSeries.getFullName(), name);
+        PolarIS polarIS = POLAR_IS_CACHE.get(key);
+        if (polarIS == null) {
+            SeriesParams params = SeriesParams.builder().name(name).candleType(candleSeries.getCandleType()).size(candleSeries.getSize()).build();
+            polarIS = new PolarIS(params, step);
+            polarIS.after(candleSeries);
+        }
         return polarIS;
     }
 

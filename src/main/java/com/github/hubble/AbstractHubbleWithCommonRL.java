@@ -9,7 +9,7 @@ import com.github.hubble.indicator.IndicatorHelper;
 import com.github.hubble.indicator.general.MAIS;
 import com.github.hubble.indicator.general.PolarIS;
 import com.github.hubble.indicator.general.ToNumIS;
-import com.github.hubble.indicator.general.WRIS;
+import com.github.hubble.indicator.specific.WRIS;
 import com.github.hubble.rule.Affinity;
 import com.github.hubble.rule.IRule;
 import com.github.hubble.rule.series.NumberComparePSR;

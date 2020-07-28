@@ -8,7 +8,7 @@ import com.github.hubble.common.NumCompareFunction;
 import com.github.hubble.ele.CandleET;
 import com.github.hubble.ele.TernaryNumberET;
 import com.github.hubble.indicator.IndicatorHelper;
-import com.github.hubble.indicator.general.BollingPIS;
+import com.github.hubble.indicator.specific.BollingPIS;
 import com.github.hubble.indicator.general.CalculatePIS;
 import com.github.hubble.indicator.general.ToNumIS;
 import com.github.hubble.rule.Affinity;
@@ -25,7 +25,7 @@ public class BTC extends AbstractHubbleWithCommonRL {
     public BTC(String market, String name) {
 
         super(market, name);
-        super.shockRatio = 0.8d;
+        super.shockRatio = 1d;
     }
 
 
