@@ -9,8 +9,6 @@ import com.github.hubble.series.Series;
 public class DirectionalSRL extends SeriesRule<NumberET> {
 
 
-    protected int step;
-
     protected int atLeast;
 
     protected NumCompareFunction numCompareFunction;
@@ -19,8 +17,7 @@ public class DirectionalSRL extends SeriesRule<NumberET> {
     public DirectionalSRL(String name, Series<NumberET> series, int step, int atLeast, NumCompareFunction numCompareFunction) {
 
         super(name, series);
-        super.continuousStep = step;
-        this.step = step;
+        super.continuousStep = step + 1;
         this.atLeast = atLeast;
         this.numCompareFunction = numCompareFunction;
     }

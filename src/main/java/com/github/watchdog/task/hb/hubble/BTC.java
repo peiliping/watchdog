@@ -33,6 +33,7 @@ public class BTC extends AbstractHubbleWithCommonRL {
     @Override public AbstractHubble init() {
 
         initShockRL();
+
         {
             CandleType candleType = CandleType.MIN_60;
             initMARL(candleType, 1800);
@@ -58,7 +59,8 @@ public class BTC extends AbstractHubbleWithCommonRL {
             BarkRuleResult downResult = new BarkRuleResult("%s.%s的%s线受Bolling指标下轨支撑", super.market, super.name, candleType.name());
             super.rulesManager.addRule(candleType, new Affinity(downSupport, downResult));
         }
-        initMARL(CandleType.HOUR_4, 3600);
+
+        initLongTermRules(CandleType.HOUR_4);
         return this;
     }
 }

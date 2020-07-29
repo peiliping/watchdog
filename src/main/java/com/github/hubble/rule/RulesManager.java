@@ -51,7 +51,9 @@ public class RulesManager {
         }
         for (Affinity affinity : affinities) {
             if (affinity.getRule().matchRule(id)) {
-                affinity.getResult().call(id);
+                if (affinity.getResult() != null) {
+                    affinity.getResult().call(id);
+                }
             }
         }
     }

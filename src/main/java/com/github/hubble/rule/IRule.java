@@ -1,7 +1,6 @@
 package com.github.hubble.rule;
 
 
-import com.github.hubble.rule.common.AlternateRule;
 import com.github.hubble.rule.common.OnceRule;
 import com.github.hubble.rule.common.OverTurnRule;
 import com.github.hubble.rule.common.PeriodRule;
@@ -18,12 +17,12 @@ import java.util.List;
 
 @Getter
 @Slf4j
-public abstract class IRule implements IRuleOb {
+public abstract class IRule {
 
 
     protected String name;
 
-    private boolean lastMatchResult = false;
+    private boolean lastResultMatched = false;
 
 
     public IRule(String name) {
@@ -50,20 +49,14 @@ public abstract class IRule implements IRuleOb {
     public final boolean matchRule(long id) {
 
         if (!prepare(id)) {
-            this.lastMatchResult = false;
+            this.lastResultMatched = false;
         } else {
-            this.lastMatchResult = match(id);
+            this.lastResultMatched = match(id);
         }
         if (log.isDebugEnabled()) {
-            log.debug("{} match : {} .", this.name, this.lastMatchResult);
+            log.debug("{} match : {} .", this.name, this.lastResultMatched);
         }
-        return this.lastMatchResult;
-    }
-
-
-    @Override public boolean getLastMatchResult() {
-
-        return this.lastMatchResult;
+        return this.lastResultMatched;
     }
 
 
@@ -111,11 +104,5 @@ public abstract class IRule implements IRuleOb {
     public IRule once() {
 
         return new OnceRule(this.name + "-OnceRule", this);
-    }
-
-
-    public IRule alternateRule(IRuleOb ob) {
-
-        return new AlternateRule(this.name + "-AlternateRule", this, ob);
     }
 }
