@@ -1,9 +1,8 @@
-package com.github.hubble.rule.series.cross;
+package com.github.hubble.rule.series.pair;
 
 
 import com.github.hubble.common.NumCompareFunction;
 import com.github.hubble.ele.NumberET;
-import com.github.hubble.rule.series.PairSeriesRule;
 import com.github.hubble.series.Series;
 
 
@@ -20,19 +19,7 @@ public abstract class CrossPSR extends PairSeriesRule<NumberET> {
     public CrossPSR(String name, Series<NumberET> first, Series<NumberET> second) {
 
         super(name, first, second);
-    }
-
-
-    @Override public boolean prepare(long id) {
-
-        if (super.prepare(id)) {
-            NumberET e11 = super.first.getBefore(id, 1);
-            NumberET e12 = super.second.getBefore(id, 1);
-            NumberET e21 = super.first.getBefore(id, 2);
-            NumberET e22 = super.second.getBefore(id, 2);
-            return e11 != null && e12 != null && e21 != null && e22 != null;
-        }
-        return false;
+        super.continuousStep = 3;
     }
 
 
@@ -48,5 +35,31 @@ public abstract class CrossPSR extends PairSeriesRule<NumberET> {
             return this.before1.apply(e21.getData(), e22.getData()) && this.before2.apply(e31.getData(), e32.getData());
         }
         return false;
+    }
+
+
+    public static class FallingCrossPSR extends CrossPSR {
+
+
+        public FallingCrossPSR(String name, Series<NumberET> first, Series<NumberET> second) {
+
+            super(name, first, second);
+            super.current = NumCompareFunction.LT;
+            super.before1 = NumCompareFunction.GTE;
+            super.before2 = NumCompareFunction.GT;
+        }
+    }
+
+
+    public static class RisingCrossPSR extends CrossPSR {
+
+
+        public RisingCrossPSR(String name, Series<NumberET> first, Series<NumberET> second) {
+
+            super(name, first, second);
+            super.current = NumCompareFunction.GT;
+            super.before1 = NumCompareFunction.LTE;
+            super.before2 = NumCompareFunction.LT;
+        }
     }
 }

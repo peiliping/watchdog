@@ -11,6 +11,8 @@ public abstract class SeriesRule<E extends Element> extends IRule {
 
     protected Series<E> series;
 
+    protected int continuousStep = 1;
+
 
     public SeriesRule(String name, Series<E> series) {
 
@@ -21,6 +23,16 @@ public abstract class SeriesRule<E extends Element> extends IRule {
 
     @Override protected boolean prepare(long id) {
 
-        return this.series.get(id) != null;
+        if (this.continuousStep == 1) {
+            return this.series.get(id) != null;
+        }
+
+        int x = this.continuousStep;
+        while (x-- > 0) {
+            if (this.series.getBefore(id, x) == null) {
+                return false;
+            }
+        }
+        return true;
     }
 }

@@ -8,18 +8,16 @@ import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
 
+@Getter
 public abstract class AbstractHubble {
 
 
     protected String market;
 
-    @Getter
     protected String name;
 
-    @Getter
     protected CandleSeriesManager candleSeriesManager;
 
-    @Getter
     protected RulesManager rulesManager;
 
 

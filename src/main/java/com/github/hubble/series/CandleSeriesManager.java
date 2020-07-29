@@ -63,4 +63,11 @@ public class CandleSeriesManager {
         Validate.notNull(series);
         series.add(candleET);
     }
+
+
+    public CandleET getCandleET(CandleType candleType) {
+
+        CandleSeries series = this.candles.get(candleType);
+        return series.getLast();
+    }
 }

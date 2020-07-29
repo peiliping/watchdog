@@ -9,38 +9,55 @@ import com.github.hubble.series.Series;
 public class DirectionalSRL extends SeriesRule<NumberET> {
 
 
-    protected double ratio;
-
     protected int step;
+
+    protected int atLeast;
 
     protected NumCompareFunction numCompareFunction;
 
 
-    public DirectionalSRL(String name, Series<NumberET> series, double ratio, int step, NumCompareFunction numCompareFunction) {
+    public DirectionalSRL(String name, Series<NumberET> series, int step, int atLeast, NumCompareFunction numCompareFunction) {
 
         super(name, series);
-        this.ratio = ratio;
+        super.continuousStep = step;
         this.step = step;
+        this.atLeast = atLeast;
         this.numCompareFunction = numCompareFunction;
     }
 
 
     @Override protected boolean match(long id) {
 
-        NumberET first = super.series.get(id - this.step * super.series.getCandleType().interval);
+        int x = super.continuousStep - 1;
+        NumberET first = super.series.getBefore(id, x);
         NumberET last = first;
-        if (first == null) {
-            return false;
+        int m = 0;
+        while (x-- > 0) {
+            NumberET cur = super.series.getBefore(id, x);
+            m += (this.numCompareFunction.apply(cur.getData(), last.getData()) ? 1 : 0);
+            last = cur;
         }
-        double c = 0, m = 0;
-        for (long i = first.getId() + super.series.getCandleType().interval; i <= id; i += super.series.getCandleType().interval) {
-            NumberET e = super.series.get(i);
-            if (e != null) {
-                c++;
-                m = m + (this.numCompareFunction.apply(e.getData(), last.getData()) ? 1 : 0);
-            }
-            last = e;
-        }
-        return ((m / c) >= this.ratio) && this.numCompareFunction.apply(last.getData(), first.getData());
+        return (m >= this.atLeast) && this.numCompareFunction.apply(last.getData(), first.getData());
     }
+
+
+    public static class DownDSRL extends DirectionalSRL {
+
+
+        public DownDSRL(String name, Series<NumberET> series, int step) {
+
+            super(name, series, step, step, NumCompareFunction.LT);
+        }
+    }
+
+
+    public static class UpDSRL extends DirectionalSRL {
+
+
+        public UpDSRL(String name, Series<NumberET> series, int step) {
+
+            super(name, series, step, step, NumCompareFunction.GT);
+        }
+    }
+
 }
