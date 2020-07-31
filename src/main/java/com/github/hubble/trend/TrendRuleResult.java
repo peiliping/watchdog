@@ -10,19 +10,16 @@ public class TrendRuleResult extends RuleResult {
 
     private TrendManager trendManager;
 
-    private CandleType candleType;
 
-
-    public TrendRuleResult(TrendManager trendManager, CandleType candleType) {
+    public TrendRuleResult(TrendManager trendManager) {
 
         super(null);
         this.trendManager = trendManager;
-        this.candleType = candleType;
     }
 
 
-    @Override public void call(long id) {
+    @Override public void call(CandleType candleType, long id) {
 
-        this.trendManager.update(this.candleType);
+        this.trendManager.update(candleType);
     }
 }

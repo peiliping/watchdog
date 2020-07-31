@@ -37,7 +37,10 @@ public class TrendEntity {
     }
 
 
-    public void update() {
+    public boolean update() {
+
+        TrendType old = this.trendType;
+        TrendDegree oldD = this.trendDegree;
 
         if (this.trendRule.getTrendTypeResult(TrendType.UPWARD)) {
             this.trendType = TrendType.UPWARD;
@@ -55,5 +58,7 @@ public class TrendEntity {
         } else {
             this.trendDegree = TrendDegree.UNCERTAIN;
         }
+
+        return old != this.trendType || oldD != this.trendDegree;
     }
 }

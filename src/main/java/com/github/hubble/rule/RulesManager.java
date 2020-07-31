@@ -52,7 +52,7 @@ public class RulesManager {
         for (Affinity affinity : affinities) {
             if (affinity.getRule().matchRule(id)) {
                 if (affinity.getResult() != null) {
-                    affinity.getResult().call(id);
+                    affinity.getResult().call(candleType, id);
                 }
             }
         }

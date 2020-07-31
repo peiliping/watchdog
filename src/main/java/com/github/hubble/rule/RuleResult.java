@@ -1,6 +1,7 @@
 package com.github.hubble.rule;
 
 
+import com.github.hubble.common.CandleType;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -23,7 +24,7 @@ public class RuleResult {
     }
 
 
-    public void call(long id) {
+    public void call(CandleType candleType, long id) {
 
         if (this.message != null) {
             log.info(id + " " + this.message);

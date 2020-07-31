@@ -4,13 +4,14 @@ package com.github.hubble;
 import com.github.hubble.common.CandleType;
 import com.github.hubble.rule.RulesManager;
 import com.github.hubble.series.CandleSeriesManager;
+import com.github.hubble.signal.SignalCallBack;
 import com.github.hubble.trend.TrendManager;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
 
 @Getter
-public abstract class AbstractHubble {
+public abstract class AbstractHubble implements SignalCallBack {
 
 
     protected String market;

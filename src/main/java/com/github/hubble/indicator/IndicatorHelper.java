@@ -80,7 +80,13 @@ public class IndicatorHelper {
     }
 
 
-    public static EMAIS create_EMA_IS(IndicatorSeries<?, NumberET> indicatorSeries, int step, double multiplier) {
+    public static EMAIS create_EMA_IS(IndicatorSeries<?, NumberET> indicatorSeries, int step) {
+
+        return create_EMA_IS(indicatorSeries, step, 2d);
+    }
+
+
+    private static EMAIS create_EMA_IS(IndicatorSeries<?, NumberET> indicatorSeries, int step, double multiplier) {
 
         String name = String.format("EMA(%s,%s)", step, multiplier);
         SeriesParams params = SeriesParams.builder().name(name).candleType(indicatorSeries.getCandleType()).size(indicatorSeries.getSize()).build();
@@ -90,22 +96,7 @@ public class IndicatorHelper {
     }
 
 
-    public static EMAIS create_EMA_IS(IndicatorSeries<?, NumberET> indicatorSeries, int step) {
-
-        return create_EMA_IS(indicatorSeries, step, 2d);
-    }
-
-
-    public static DeltaIS create_Delta_IS(IndicatorSeries<?, NumberET> indicatorSeries) {
-
-        SeriesParams params = SeriesParams.builder().name("Delta").candleType(indicatorSeries.getCandleType()).size(indicatorSeries.getSize()).build();
-        DeltaIS delta = new DeltaIS(params);
-        delta.after(indicatorSeries);
-        return delta;
-    }
-
-
-    public static STDDIS create_STDD_IS(IndicatorSeries<?, NumberET> indicatorSeries, int step) {
+    private static STDDIS create_STDD_IS(IndicatorSeries<?, NumberET> indicatorSeries, int step) {
 
         String name = String.format("STDD(%s)", step);
         SeriesParams params = SeriesParams.builder().name(name).candleType(indicatorSeries.getCandleType()).size(indicatorSeries.getSize()).build();
@@ -115,8 +106,9 @@ public class IndicatorHelper {
     }
 
 
-    public static BollingPIS create_Bolling_PIS(ToNumIS<CandleET> closeIS, int step) {
+    public static BollingPIS create_Bolling_PIS(CandleSeries candleSeries, int step) {
 
+        ToNumIS<CandleET> closeIS = create_CLOSE_IS(candleSeries);
         double multiplier = 2d;
         STDDIS stdd = create_STDD_IS(closeIS, step);
         MAIS ma = create_MA_IS(closeIS, step);
@@ -144,17 +136,12 @@ public class IndicatorHelper {
     }
 
 
-    public static MACDPIS create_MACD_PIS(ToNumIS<CandleET> closeIS) {
+    private static DeltaIS create_Delta_IS(IndicatorSeries<?, NumberET> indicatorSeries) {
 
-        EMAIS shortEma = create_EMA_IS(closeIS, 12);
-        EMAIS longEma = create_EMA_IS(closeIS, 26);
-
-        SeriesParams difParams = SeriesParams.builder().name("DIF").candleType(closeIS.getCandleType()).size(closeIS.getSize()).build();
-        CalculatePIS dif = new CalculatePIS(difParams, shortEma, longEma, PISFuncs.MINUS);
-        EMAIS dea = create_EMA_IS(dif, 9);
-
-        SeriesParams params = SeriesParams.builder().name("MACD").candleType(closeIS.getCandleType()).size(closeIS.getSize()).build();
-        return new MACDPIS(params, dif, dea);
+        SeriesParams params = SeriesParams.builder().name("Delta").candleType(indicatorSeries.getCandleType()).size(indicatorSeries.getSize()).build();
+        DeltaIS delta = new DeltaIS(params);
+        delta.after(indicatorSeries);
+        return delta;
     }
 
 
@@ -175,8 +162,23 @@ public class IndicatorHelper {
     }
 
 
-    public static KDJPIS create_KDJ_PIS(PolarIS polarIS) {
+    public static MACDPIS create_MACD_PIS(ToNumIS<CandleET> closeIS) {
 
+        EMAIS shortEma = create_EMA_IS(closeIS, 12);
+        EMAIS longEma = create_EMA_IS(closeIS, 26);
+
+        SeriesParams difParams = SeriesParams.builder().name("DIF").candleType(closeIS.getCandleType()).size(closeIS.getSize()).build();
+        CalculatePIS dif = new CalculatePIS(difParams, shortEma, longEma, PISFuncs.MINUS);
+        EMAIS dea = create_EMA_IS(dif, 9);
+
+        SeriesParams params = SeriesParams.builder().name("MACD").candleType(closeIS.getCandleType()).size(closeIS.getSize()).build();
+        return new MACDPIS(params, dif, dea);
+    }
+
+
+    public static KDJPIS create_KDJ_PIS(CandleSeries candleSeries, int step) {
+
+        PolarIS polarIS = create_POLAR_IS(candleSeries, step);
         SeriesParams base = SeriesParams.builder().candleType(polarIS.getCandleType()).size(polarIS.getSize()).build();
         ToNumIS<TernaryNumberET> rsvIS = new ToNumIS<>(base.createNew("RSV"), ele -> (ele.getSecond() - ele.getThird()) / (ele.getFirst() - ele.getThird()) * 100);
         rsvIS.after(polarIS);

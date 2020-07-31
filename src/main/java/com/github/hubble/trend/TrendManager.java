@@ -27,12 +27,18 @@ public class TrendManager {
     }
 
 
+    public TrendEntity get(Period period) {
+
+        return this.periodTrendEntityMap.get(period);
+    }
+
+
     public void update(CandleType candleType) {
 
         TrendEntity trendEntity = this.candleTypeTrendEntityMap.get(candleType);
         trendEntity.update();
-        if (log.isDebugEnabled()) {
-            log.debug(trendEntity.toString());
+        if (trendEntity.update()) {
+            log.info(trendEntity.toString());
         }
     }
 

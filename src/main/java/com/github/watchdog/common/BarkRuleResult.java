@@ -1,6 +1,7 @@
 package com.github.watchdog.common;
 
 
+import com.github.hubble.common.CandleType;
 import com.github.hubble.rule.RuleResult;
 import com.github.watchdog.stream.MsgChannel;
 
@@ -23,9 +24,9 @@ public class BarkRuleResult extends RuleResult {
     }
 
 
-    @Override public void call(long id) {
+    @Override public void call(CandleType candleType, long id) {
 
-        super.call(id);
+        super.call(candleType, id);
         this.msgChannel.addResult(super.message);
     }
 }
