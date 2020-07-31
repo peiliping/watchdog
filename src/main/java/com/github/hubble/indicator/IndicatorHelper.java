@@ -115,9 +115,8 @@ public class IndicatorHelper {
     }
 
 
-    public static BollingPIS create_Bolling_PIS(ToNumIS<CandleET> closeIS) {
+    public static BollingPIS create_Bolling_PIS(ToNumIS<CandleET> closeIS, int step) {
 
-        int step = 20;
         double multiplier = 2d;
         STDDIS stdd = create_STDD_IS(closeIS, step);
         MAIS ma = create_MA_IS(closeIS, step);
@@ -188,8 +187,9 @@ public class IndicatorHelper {
     }
 
 
-    public static WRIS create_WR_IS(PolarIS polarIS) {
+    public static WRIS create_WR_IS(CandleSeries candleSeries, int step) {
 
+        PolarIS polarIS = create_POLAR_IS(candleSeries, step);
         SeriesParams params = SeriesParams.builder().name("WR").candleType(polarIS.getCandleType()).size(polarIS.getSize()).build();
         WRIS wr = new WRIS(params);
         wr.after(polarIS);

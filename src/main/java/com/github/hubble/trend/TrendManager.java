@@ -2,7 +2,6 @@ package com.github.hubble.trend;
 
 
 import com.github.hubble.common.CandleType;
-import com.github.hubble.rule.TrendRule;
 import com.github.hubble.trend.constants.Period;
 import com.github.hubble.trend.constants.TrendType;
 import com.google.common.collect.Maps;

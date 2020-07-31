@@ -12,11 +12,14 @@ import com.github.hubble.indicator.function.PISFuncs;
 import com.github.hubble.indicator.general.CalculatePIS;
 import com.github.hubble.indicator.general.ToNumIS;
 import com.github.hubble.indicator.specific.BollingPIS;
+import com.github.hubble.indicator.specific.WRIS;
 import com.github.hubble.rule.Affinity;
 import com.github.hubble.rule.IRule;
 import com.github.hubble.rule.series.threshold.ThresholdSRL;
 import com.github.hubble.series.CandleSeries;
 import com.github.hubble.series.SeriesParams;
+import com.github.hubble.signal.Signal;
+import com.github.hubble.signal.SignalRuleResult;
 import com.github.watchdog.common.BarkRuleResult;
 
 
@@ -33,15 +36,22 @@ public class BTC extends AbstractHubbleWithCommonRL {
     @Override public AbstractHubble init() {
 
         initShockRL();
+        initShortTermRules(CandleType.MIN_5);
+        initMediumTermRules(CandleType.MIN_60);
+        initLongTermRules(CandleType.HOUR_4);
 
         {
             CandleType candleType = CandleType.MIN_60;
-            initMARL(candleType, 1800);
-            initWRRL(candleType, 1800, 5);
-
             CandleSeries candleSeries = super.candleSeriesManager.getOrCreateCandleSeries(candleType);
+
+            WRIS wr = IndicatorHelper.create_WR_IS(candleSeries, 14);
+            IRule overSellRule = new ThresholdSRL(buildName(candleType, "TSRL_WR_OverSell"), wr, 100d - 5, NumCompareFunction.GTE).overTurn(true).period(600);
+            IRule overBuyRule = new ThresholdSRL(buildName(candleType, "TSRL_WR_OverBuy"), wr, 5, NumCompareFunction.LTE).overTurn(true).period(600);
+            super.rulesManager.addRule(candleType, new Affinity(overSellRule, new SignalRuleResult(Signal.INPUT)));
+            super.rulesManager.addRule(candleType, new Affinity(overBuyRule, new SignalRuleResult(Signal.OUTPUT)));
+
             ToNumIS<CandleET> closeSeries = IndicatorHelper.create_CLOSE_IS(candleSeries);
-            BollingPIS bollingPIS = IndicatorHelper.create_Bolling_PIS(closeSeries);
+            BollingPIS bollingPIS = IndicatorHelper.create_Bolling_PIS(closeSeries, 20);
 
             SeriesParams base = SeriesParams.builder().candleType(candleType).size(bollingPIS.getSize()).build();
 
@@ -59,8 +69,6 @@ public class BTC extends AbstractHubbleWithCommonRL {
             BarkRuleResult downResult = new BarkRuleResult("%s.%s的%s线受Bolling指标下轨支撑", super.market, super.name, candleType.name());
             super.rulesManager.addRule(candleType, new Affinity(downSupport, downResult));
         }
-
-        initLongTermRules(CandleType.HOUR_4);
         return this;
     }
 }

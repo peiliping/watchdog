@@ -1,6 +1,8 @@
-package com.github.hubble.rule;
+package com.github.hubble.trend;
 
 
+import com.github.hubble.rule.IRule;
+import com.github.hubble.rule.ProxyPairRule;
 import com.github.hubble.trend.constants.TrendDegree;
 import com.github.hubble.trend.constants.TrendType;
 import org.apache.commons.lang3.Validate;

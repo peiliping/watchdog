@@ -1,8 +1,8 @@
-package com.github.hubble.rule;
+package com.github.hubble.trend;
 
 
 import com.github.hubble.common.CandleType;
-import com.github.hubble.trend.TrendManager;
+import com.github.hubble.rule.RuleResult;
 
 
 public class TrendRuleResult extends RuleResult {
