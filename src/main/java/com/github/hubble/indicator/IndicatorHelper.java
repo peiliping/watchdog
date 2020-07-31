@@ -136,6 +136,16 @@ public class IndicatorHelper {
     }
 
 
+    public static WRIS create_WR_IS(CandleSeries candleSeries, int step) {
+
+        PolarIS polarIS = create_POLAR_IS(candleSeries, step);
+        SeriesParams params = SeriesParams.builder().name("WR").candleType(polarIS.getCandleType()).size(polarIS.getSize()).build();
+        WRIS wr = new WRIS(params);
+        wr.after(polarIS);
+        return wr;
+    }
+
+
     private static DeltaIS create_Delta_IS(IndicatorSeries<?, NumberET> indicatorSeries) {
 
         SeriesParams params = SeriesParams.builder().name("Delta").candleType(indicatorSeries.getCandleType()).size(indicatorSeries.getSize()).build();
@@ -186,15 +196,5 @@ public class IndicatorHelper {
         MAIS k = create_MA_IS(rsvIS, 1);
         MAIS d = create_MA_IS(k, 3);
         return new KDJPIS(base.createNew("KDJ"), k, d);
-    }
-
-
-    public static WRIS create_WR_IS(CandleSeries candleSeries, int step) {
-
-        PolarIS polarIS = create_POLAR_IS(candleSeries, step);
-        SeriesParams params = SeriesParams.builder().name("WR").candleType(polarIS.getCandleType()).size(polarIS.getSize()).build();
-        WRIS wr = new WRIS(params);
-        wr.after(polarIS);
-        return wr;
     }
 }

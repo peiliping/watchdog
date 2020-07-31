@@ -73,11 +73,10 @@ public class MarketConsumer extends AbstractMarketConsumer {
                 CandleET candleET = convert(array.getJSONObject(i));
                 candleETList.add(candleET);
             }
-            hubble.getCandleSeriesManager().addCandleETList(candleType, candleETList);
+            hubble.addCandleETs(candleType, candleETList);
         } else {
             CandleET candleET = convert(JSON.parseObject(pushMsg.getTick()));
-            hubble.getCandleSeriesManager().addCandleET(candleType, candleET);
-            hubble.getRulesManager().traverseRules(candleType, candleET.getId());
+            hubble.addCandleET(candleType, candleET, true);
         }
     }
 

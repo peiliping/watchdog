@@ -48,8 +48,8 @@ public class BTC extends AbstractHubbleWithCommonRL {
             CandleSeries candleSeries = super.candleSeriesManager.getOrCreateCandleSeries(candleType);
 
             WRIS wr = IndicatorHelper.create_WR_IS(candleSeries, 14);
-            IRule overSellRule = new ThresholdSRL(buildName(candleType, "TSRL_WR_OverSell"), wr, 95d, NumCompareFunction.GTE).overTurn(true).period(600);
-            IRule overBuyRule = new ThresholdSRL(buildName(candleType, "TSRL_WR_OverBuy"), wr, 5d, NumCompareFunction.LTE).overTurn(true).period(600);
+            IRule overSellRule = new ThresholdSRL(buildName(candleType, "TSRL_WR_OverSell"), wr, 95d, NumCompareFunction.GTE).overTurn(true).period(120);
+            IRule overBuyRule = new ThresholdSRL(buildName(candleType, "TSRL_WR_OverBuy"), wr, 5d, NumCompareFunction.LTE).overTurn(true).period(120);
             super.rulesManager.addRule(candleType, new Affinity(overSellRule, new SignalRuleResult("超卖", Signal.INPUT, this)));
             super.rulesManager.addRule(candleType, new Affinity(overBuyRule, new SignalRuleResult("超买", Signal.OUTPUT, this)));
 
@@ -60,13 +60,13 @@ public class BTC extends AbstractHubbleWithCommonRL {
             ToNumIS<TernaryNumberET> bollingUp = IndicatorHelper.create_Bolling_Up_IS(bollingPIS);
             ToNumIS<CandleET> highSeries = IndicatorHelper.create_HIGH_IS(candleSeries);
             CalculatePIS overFlow = new CalculatePIS(base.createNew("OverFlow"), highSeries, bollingUp, PISFuncs.OVERPERCENT);
-            IRule upPressure = new ThresholdSRL(buildName(candleType, "Bolling_Up_Pressure"), overFlow, 1d, NumCompareFunction.GTE).overTurn(true).period(3600);
+            IRule upPressure = new ThresholdSRL(buildName(candleType, "Bolling_Up_Pressure"), overFlow, 1d, NumCompareFunction.GTE).overTurn(true).period(120);
             super.rulesManager.addRule(candleType, new Affinity(upPressure, new SignalRuleResult("Bolling上轨压迫", Signal.OUTPUT, this)));
 
             ToNumIS<TernaryNumberET> bollingDown = IndicatorHelper.create_Bolling_Down_IS(bollingPIS);
             ToNumIS<CandleET> lowSeries = IndicatorHelper.create_LOW_IS(candleSeries);
             CalculatePIS dive = new CalculatePIS(base.createNew("Dive"), lowSeries, bollingDown, PISFuncs.OVERPERCENT);
-            IRule downSupport = new ThresholdSRL(buildName(candleType, "Bolling_Down_Support"), dive, -0.2d, NumCompareFunction.LTE).overTurn(true).period(3600);
+            IRule downSupport = new ThresholdSRL(buildName(candleType, "Bolling_Down_Support"), dive, -0.2d, NumCompareFunction.LTE).overTurn(true).period(120);
             super.rulesManager.addRule(candleType, new Affinity(downSupport, new SignalRuleResult("Bolling下轨支撑", Signal.INPUT, this)));
         }
         return this;
@@ -80,6 +80,5 @@ public class BTC extends AbstractHubbleWithCommonRL {
         TrendEntity mt = super.trendManager.get(Period.MEDIUM);
         TrendEntity lt = super.trendManager.get(Period.LONG);
         log.warn("{}.{} Spark : {} {} , {} {} {}", super.market, super.name, currentPrice, signal, st.toString(), mt.toString(), lt.toString());
-
     }
 }

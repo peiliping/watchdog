@@ -36,9 +36,11 @@ public class TrendManager {
     public void update(CandleType candleType) {
 
         TrendEntity trendEntity = this.candleTypeTrendEntityMap.get(candleType);
-        trendEntity.update();
         if (trendEntity.update()) {
-            log.info(trendEntity.toString());
+            log.warn(trendEntity.toString());
+        }
+        if (log.isDebugEnabled()) {
+            log.debug(trendEntity.toString());
         }
     }
 

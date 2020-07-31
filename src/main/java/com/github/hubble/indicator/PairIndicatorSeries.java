@@ -29,7 +29,7 @@ public abstract class PairIndicatorSeries<F extends IndicatorSeries, S extends I
         this.first = first;
         this.second = second;
         super.parentSeries = analyze(this.first, this.second);
-        super.parentName = super.parentSeries.getFullName() + "[" + this.first.getFullName() + "," + this.second.getFullName() + "]";
+        super.parentName = super.parentSeries.getFullName() + ".[" + this.first.getFullName() + "," + this.second.getFullName() + "]";
         super.parentSeries.bindTimeListener(this);
     }
 
