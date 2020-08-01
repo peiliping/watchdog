@@ -1,4 +1,4 @@
-package com.github.watchdog.task.hb.dataobject;
+package com.github.watchdog.task.hb;
 
 
 import lombok.Getter;

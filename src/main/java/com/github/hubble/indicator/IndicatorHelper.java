@@ -136,6 +136,15 @@ public class IndicatorHelper {
     }
 
 
+    public static BollingBandWidthIS create_Bolling_Band_Width_IS(BollingPIS bollingPIS) {
+
+        SeriesParams params = SeriesParams.builder().name("BollingBandWidth").candleType(bollingPIS.getCandleType()).size(bollingPIS.getSize()).build();
+        BollingBandWidthIS bollingBandWidth = new BollingBandWidthIS(params);
+        bollingBandWidth.after(bollingPIS);
+        return bollingBandWidth;
+    }
+
+
     public static WRIS create_WR_IS(CandleSeries candleSeries, int step) {
 
         PolarIS polarIS = create_POLAR_IS(candleSeries, step);
