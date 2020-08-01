@@ -12,11 +12,13 @@ import com.github.watchdog.task.hb.dataobject.PushMsg;
 import com.github.watchdog.task.hb.hubble.BTC;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Map;
 
 
+@Slf4j
 public class MarketConsumer extends AbstractMarketConsumer {
 
 
@@ -73,6 +75,7 @@ public class MarketConsumer extends AbstractMarketConsumer {
                 CandleET candleET = convert(array.getJSONObject(i));
                 candleETList.add(candleET);
             }
+            log.info("Load history data from : " + candleETList.get(0).getId());
             hubble.addCandleETs(candleType, candleETList);
         } else {
             CandleET candleET = convert(JSON.parseObject(pushMsg.getTick()));
