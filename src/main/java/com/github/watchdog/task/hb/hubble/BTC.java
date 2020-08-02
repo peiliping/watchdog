@@ -4,16 +4,20 @@ package com.github.watchdog.task.hb.hubble;
 import com.github.hubble.AbstractHubble;
 import com.github.hubble.AbstractHubbleWithCommonRL;
 import com.github.hubble.common.CandleType;
+import com.github.hubble.common.NumCompareFunction;
 import com.github.hubble.indicator.IndicatorHelper;
 import com.github.hubble.indicator.general.PolarIS;
 import com.github.hubble.indicator.specific.BollingPIS;
+import com.github.hubble.indicator.specific.RSIPIS;
 import com.github.hubble.rule.Affinity;
 import com.github.hubble.rule.IRule;
+import com.github.hubble.rule.series.threshold.ThresholdSRL;
 import com.github.hubble.series.CandleSeries;
 import com.github.hubble.signal.Signal;
 import com.github.hubble.signal.SignalRuleResult;
 import com.github.hubble.trend.TrendEntity;
 import com.github.hubble.trend.constants.Period;
+import com.github.watchdog.stream.MsgChannel;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -42,6 +46,12 @@ public class BTC extends AbstractHubbleWithCommonRL {
             BollingPIS bollingPIS = IndicatorHelper.create_Bolling_PIS(candleSeries, 20);
             IRule bollingDownSupport = new BollingDownSupportPSR(buildName(candleType, "Bolling_Down_Support"), polarIS, bollingPIS).overTurn(true);
             super.rulesManager.addRule(candleType, new Affinity(bollingDownSupport, new SignalRuleResult("Bolling下轨支撑", Signal.INPUT, this)));
+
+            RSIPIS rsiPIS = IndicatorHelper.create_RSI_PIS(candleSeries, 10);
+            IRule rsiOverRising = new ThresholdSRL(buildName(candleType, "RSI_OverRising"), rsiPIS, 75, NumCompareFunction.GT).overTurn(true).period(900);
+            IRule rsiOverFalling = new ThresholdSRL(buildName(candleType, "RSI_OverFalling"), rsiPIS, 25, NumCompareFunction.LT).overTurn(true).period(900);
+            super.rulesManager.addRule(candleType, new Affinity(rsiOverRising, new SignalRuleResult("RSI过度拉升", Signal.OUTPUT, this)));
+            super.rulesManager.addRule(candleType, new Affinity(rsiOverFalling, new SignalRuleResult("RSI过度下跌", Signal.INPUT, this)));
         }
         {
             CandleType candleType = CandleType.MIN_30;
@@ -62,5 +72,7 @@ public class BTC extends AbstractHubbleWithCommonRL {
         TrendEntity mt = super.trendManager.get(Period.MEDIUM);
         TrendEntity lt = super.trendManager.get(Period.LONG);
         log.warn("{}.{} Spark : {} {} , {} {} {}", super.market, super.name, currentPrice, signal, st.toString(), mt.toString(), lt.toString());
+        String msg = String.format("%s.%s Spark : %s %s , %s %s %s");
+        MsgChannel.getInstance().addResult(msg);
     }
 }

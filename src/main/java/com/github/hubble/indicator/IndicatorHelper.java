@@ -112,7 +112,7 @@ public class IndicatorHelper {
         double multiplier = 2d;
         STDDIS stdd = create_STDD_IS(closeIS, step);
         MAIS ma = create_MA_IS(closeIS, step);
-        String name = String.format("Bolling(%s)", multiplier);
+        String name = String.format("Bolling(%s)", step);
         SeriesParams params = SeriesParams.builder().name(name).candleType(closeIS.getCandleType()).size(closeIS.getSize()).build();
         return new BollingPIS(params, multiplier, stdd, ma);
     }
@@ -148,7 +148,8 @@ public class IndicatorHelper {
     public static WRIS create_WR_IS(CandleSeries candleSeries, int step) {
 
         PolarIS polarIS = create_POLAR_IS(candleSeries, step);
-        SeriesParams params = SeriesParams.builder().name("WR").candleType(polarIS.getCandleType()).size(polarIS.getSize()).build();
+        String name = String.format("WR(%s)", step);
+        SeriesParams params = SeriesParams.builder().name(name).candleType(polarIS.getCandleType()).size(polarIS.getSize()).build();
         WRIS wr = new WRIS(params);
         wr.after(polarIS);
         return wr;
@@ -164,20 +165,22 @@ public class IndicatorHelper {
     }
 
 
-    public static RSIPIS create_RSI_PIS(ToNumIS<CandleET> closeIS) {
+    public static RSIPIS create_RSI_PIS(CandleSeries candleSeries, int step) {
 
+        ToNumIS<CandleET> closeIS = create_CLOSE_IS(candleSeries);
         SeriesParams base = SeriesParams.builder().candleType(closeIS.getCandleType()).size(closeIS.getSize()).build();
         DeltaIS deltaIS = create_Delta_IS(closeIS);
 
         ToNumIS<NumberET> up = new ToNumIS<>(base.createNew("Positive"), numberET -> Math.max(numberET.getData(), 0));
         up.after(deltaIS);
-        EMAIS emaUP = create_EMA_IS(up, 14, 1d);
+        EMAIS emaUP = create_EMA_IS(up, step, 1d);
 
         ToNumIS<NumberET> total = new ToNumIS<>(base.createNew("Total"), numberET -> Math.abs(numberET.getData()));
         total.after(deltaIS);
-        EMAIS emaTotal = create_EMA_IS(total, 14, 1d);
+        EMAIS emaTotal = create_EMA_IS(total, step, 1d);
 
-        return new RSIPIS(base.createNew("RSI"), emaUP, emaTotal);
+        String name = String.format("RSI(%s)", step);
+        return new RSIPIS(base.createNew(name), emaUP, emaTotal);
     }
 
 
