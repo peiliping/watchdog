@@ -12,7 +12,6 @@ import java.util.Map;
 
 
 @Getter
-@ToString
 public class TrendEntity {
 
 
@@ -60,5 +59,11 @@ public class TrendEntity {
         }
 
         return old != this.trendType || oldD != this.trendDegree;
+    }
+
+
+    @Override public String toString() {
+
+        return String.format("TE{P=%s,TT=%s,TD=%s}", this.period.name, this.trendType.name, this.trendDegree.name);
     }
 }

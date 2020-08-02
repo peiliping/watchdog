@@ -25,6 +25,6 @@ public class SignalRuleResult extends RuleResult {
     public void call(CandleType candleType, long id) {
 
         super.call(candleType, id);
-        this.callBack.spark(candleType, this.signal);
+        this.callBack.spark(candleType, this.signal, super.message);
     }
 }

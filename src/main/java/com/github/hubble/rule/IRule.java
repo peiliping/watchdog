@@ -4,6 +4,7 @@ package com.github.hubble.rule;
 import com.github.hubble.rule.common.OnceRule;
 import com.github.hubble.rule.common.OverTurnRule;
 import com.github.hubble.rule.common.PeriodRule;
+import com.github.hubble.rule.common.TTLRule;
 import com.github.hubble.rule.logic.AndRule;
 import com.github.hubble.rule.logic.NotRule;
 import com.github.hubble.rule.logic.OrRule;
@@ -89,9 +90,15 @@ public abstract class IRule {
 
 
     //常用组合
-    public IRule period(long second) {
+    public IRule ttl(long second) {
 
-        return new PeriodRule(this.name + "-PeriodRule", this, second);
+        return new TTLRule(this.name + "-TTLRule", this, second);
+    }
+
+
+    public IRule period() {
+
+        return new PeriodRule(this.name + "-PeriodRule", this);
     }
 
 

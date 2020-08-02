@@ -3,8 +3,15 @@ package com.github.hubble.trend.constants;
 
 public enum Period {
 
-    LONG,
-    MEDIUM,
-    SHORT;
+    SHORT("S"),
+    MEDIUM("M"),
+    LONG("L");
 
+    public String name;
+
+
+    private Period(String n) {
+
+        this.name = n;
+    }
 }

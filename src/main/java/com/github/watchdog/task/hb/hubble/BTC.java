@@ -43,13 +43,14 @@ public class BTC extends AbstractHubbleWithCommonRL {
             CandleType candleType = CandleType.MIN_15;
             CandleSeries candleSeries = super.candleSeriesManager.getOrCreateCandleSeries(candleType);
             PolarIS polarIS = IndicatorHelper.create_POLAR_IS(candleSeries, 1);
+
             BollingPIS bollingPIS = IndicatorHelper.create_Bolling_PIS(candleSeries, 20);
             IRule bollingDownSupport = new BollingDownSupportPSR(buildName(candleType, "Bolling_Down_Support"), polarIS, bollingPIS).overTurn(true);
             super.rulesManager.addRule(candleType, new Affinity(bollingDownSupport, new SignalRuleResult("Bolling下轨支撑", Signal.INPUT, this)));
 
             RSIPIS rsiPIS = IndicatorHelper.create_RSI_PIS(candleSeries, 10);
-            IRule rsiOverRising = new ThresholdSRL(buildName(candleType, "RSI_OverRising"), rsiPIS, 75, NumCompareFunction.GT).overTurn(true).period(900);
-            IRule rsiOverFalling = new ThresholdSRL(buildName(candleType, "RSI_OverFalling"), rsiPIS, 25, NumCompareFunction.LT).overTurn(true).period(900);
+            IRule rsiOverRising = new ThresholdSRL(buildName(candleType, "RSI_OverRising"), rsiPIS, 75, NumCompareFunction.GT).overTurn(true).period();
+            IRule rsiOverFalling = new ThresholdSRL(buildName(candleType, "RSI_OverFalling"), rsiPIS, 25, NumCompareFunction.LT).overTurn(true).period();
             super.rulesManager.addRule(candleType, new Affinity(rsiOverRising, new SignalRuleResult("RSI过度拉升", Signal.OUTPUT, this)));
             super.rulesManager.addRule(candleType, new Affinity(rsiOverFalling, new SignalRuleResult("RSI过度下跌", Signal.INPUT, this)));
         }
@@ -65,14 +66,13 @@ public class BTC extends AbstractHubbleWithCommonRL {
     }
 
 
-    @Override public void spark(CandleType candleType, Signal signal) {
+    @Override public void spark(CandleType candleType, Signal signal, String message) {
 
         double currentPrice = super.candleSeriesManager.getOrCreateCandleSeries(candleType).getLast().getClose();
         TrendEntity st = super.trendManager.get(Period.SHORT);
         TrendEntity mt = super.trendManager.get(Period.MEDIUM);
         TrendEntity lt = super.trendManager.get(Period.LONG);
-        log.warn("{}.{} Spark : {} {} , {} {} {}", super.market, super.name, currentPrice, signal, st.toString(), mt.toString(), lt.toString());
-        String msg = String.format("%s.%s Spark : %s %s , %s %s %s");
+        String msg = String.format("%s.%s(%s %s) %s, %s %s %s", super.market, super.name, currentPrice, signal, message, st.toString(), mt.toString(), lt.toString());
         MsgChannel.getInstance().addResult(msg);
     }
 }
