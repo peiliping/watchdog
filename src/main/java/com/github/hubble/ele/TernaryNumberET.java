@@ -33,4 +33,10 @@ public class TernaryNumberET extends Element {
                || this.second != that.second
                || this.third != that.third;
     }
+
+
+    public boolean isInBox(double t) {
+
+        return this.third <= t && this.first >= t;
+    }
 }

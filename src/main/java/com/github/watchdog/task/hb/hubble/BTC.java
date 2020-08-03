@@ -59,8 +59,12 @@ public class BTC extends AbstractHubbleWithCommonRL {
             CandleSeries candleSeries = super.candleSeriesManager.getOrCreateCandleSeries(candleType);
             PolarIS polarIS = IndicatorHelper.create_POLAR_IS(candleSeries, 1);
             BollingPIS bollingPIS = IndicatorHelper.create_Bolling_PIS(candleSeries, 20);
-            IRule bollingMiddleRising = new BollingMiddleRisingPSR(buildName(candleType, "Bolling_Middle_Rising"), polarIS, bollingPIS).overTurn(true);
-            super.rulesManager.addRule(candleType, new Affinity(bollingMiddleRising, new SignalRuleResult("Bolling中轨突破", Signal.INPUT, this)));
+            IRule bollingMidRising = new BollingMidRisingPSR(buildName(candleType, "Bolling_Middle_Rising"), polarIS, bollingPIS).overTurn(true);
+            IRule bollingMidSupport = new BollingMidSupportPSR(buildName(candleType, "Bolling_Middle_Support"), polarIS, bollingPIS).overTurn(true);
+            IRule bollingMidPressure = new BollingMidPressurePSR(buildName(candleType, "Bolling_Middle_Pressure"), polarIS, bollingPIS).overTurn(true);
+            super.rulesManager.addRule(candleType, new Affinity(bollingMidRising, new SignalRuleResult("Bolling中轨突破", Signal.INPUT, this)));
+            super.rulesManager.addRule(candleType, new Affinity(bollingMidSupport, new SignalRuleResult("Bolling中轨支撑", Signal.INPUT, this)));
+            super.rulesManager.addRule(candleType, new Affinity(bollingMidPressure, new SignalRuleResult("Bolling中轨压迫", Signal.OUTPUT, this)));
         }
         return this;
     }
