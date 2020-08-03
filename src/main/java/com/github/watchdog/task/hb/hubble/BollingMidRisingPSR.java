@@ -33,7 +33,7 @@ public class BollingMidRisingPSR extends PairSeriesRule<TernaryNumberET> {
         //倒数第三个k线的最高价需要在中轨之下
         TernaryNumberET polar3 = super.first.getBefore(id, 2);
         TernaryNumberET bolling3 = super.second.getBefore(id, 2);
-        if (polar3.getFirst() > bolling3.getSecond()) {
+        if (polar3.getFirst() >= bolling3.getSecond()) {
             return false;
         }
         return true;

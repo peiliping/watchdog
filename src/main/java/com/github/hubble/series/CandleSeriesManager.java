@@ -15,19 +15,13 @@ import java.util.Map;
 public class CandleSeriesManager {
 
 
-    protected String market;
-
-    protected String symbol;
-
     protected int elementSize;
 
     protected Map<CandleType, CandleSeries> candles = Maps.newHashMap();
 
 
-    public CandleSeriesManager(String market, String symbol, int elementSize) {
+    public CandleSeriesManager(int elementSize) {
 
-        this.market = market;
-        this.symbol = symbol;
         this.elementSize = elementSize;
     }
 
@@ -40,7 +34,7 @@ public class CandleSeriesManager {
         }
 
         SeriesParams params = SeriesParams.builder().name(candleType.name()).size(this.elementSize).candleType(candleType).build();
-        series = new CandleSeries(params, this.symbol);
+        series = new CandleSeries(params);
         this.candles.put(candleType, series);
         return series;
     }

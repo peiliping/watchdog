@@ -27,13 +27,13 @@ public class BollingDownSupportPSR extends PairSeriesRule<TernaryNumberET> {
         //倒数第二个k线的最低价需要超过下轨
         TernaryNumberET polar2 = super.first.getBefore(id, 1);
         TernaryNumberET bolling2 = super.second.getBefore(id, 1);
-        if (polar2.getThird() < bolling2.getThird()) {
+        if (polar2.getThird() <= bolling2.getThird()) {
             return false;
         }
         //倒数第三个k线的最低价需要超过下轨
         TernaryNumberET polar3 = super.first.getBefore(id, 2);
         TernaryNumberET bolling3 = super.second.getBefore(id, 2);
-        if (polar3.getThird() < bolling3.getThird()) {
+        if (polar3.getThird() <= bolling3.getThird()) {
             return false;
         }
         //倒数第四个k线的最低价需要低于下轨

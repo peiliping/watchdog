@@ -12,7 +12,7 @@ public class BollingMidPressurePSR extends PairSeriesRule<TernaryNumberET> {
     public BollingMidPressurePSR(String name, Series<TernaryNumberET> polars, Series<TernaryNumberET> bolling) {
 
         super(name, polars, bolling);
-        super.continuousStep = 3;
+        super.continuousStep = 5;
     }
 
 

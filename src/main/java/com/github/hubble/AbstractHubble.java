@@ -32,7 +32,7 @@ public abstract class AbstractHubble implements SignalCallBack {
 
         this.market = market;
         this.name = name;
-        this.candleSeriesManager = new CandleSeriesManager(market, name, 128);
+        this.candleSeriesManager = new CandleSeriesManager(128);
         this.rulesManager = new RulesManager();
         this.trendManager = new TrendManager();
     }

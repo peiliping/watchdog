@@ -12,7 +12,7 @@ public class BollingMidSupportPSR extends PairSeriesRule<TernaryNumberET> {
     public BollingMidSupportPSR(String name, Series<TernaryNumberET> polars, Series<TernaryNumberET> bolling) {
 
         super(name, polars, bolling);
-        super.continuousStep = 3;
+        super.continuousStep = 5;
     }
 
 
@@ -27,7 +27,7 @@ public class BollingMidSupportPSR extends PairSeriesRule<TernaryNumberET> {
         //倒数第二个k线的最低价需要超过中轨
         TernaryNumberET polar2 = super.first.getBefore(id, 1);
         TernaryNumberET bolling2 = super.second.getBefore(id, 1);
-        if (polar2.getThird() >= bolling2.getSecond()) {
+        if (polar2.getThird() <= bolling2.getSecond()) {
             return false;
         }
         //倒数第三个k线需要穿过中轨
