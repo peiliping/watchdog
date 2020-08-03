@@ -2,6 +2,7 @@ package com.github.hubble.trend;
 
 
 import com.github.hubble.common.CandleType;
+import com.github.hubble.indicator.specific.BollingPIS;
 import com.github.hubble.trend.constants.Period;
 import com.github.hubble.trend.constants.TrendType;
 import com.google.common.collect.Maps;
@@ -19,9 +20,9 @@ public class TrendManager {
     private Map<Period, TrendEntity> periodTrendEntityMap = Maps.newHashMap();
 
 
-    public void init(CandleType candleType, Period period, TrendRule trendRule, Map<TrendType, TrendRule> degreeRules) {
+    public void init(CandleType candleType, Period period, TrendRule trendRule, Map<TrendType, TrendRule> degreeRules, BollingPIS bolling) {
 
-        TrendEntity trendEntity = new TrendEntity(period, trendRule, degreeRules);
+        TrendEntity trendEntity = new TrendEntity(period, trendRule, degreeRules, bolling);
         this.candleTypeTrendEntityMap.put(candleType, trendEntity);
         this.periodTrendEntityMap.put(period, trendEntity);
     }
@@ -37,7 +38,7 @@ public class TrendManager {
 
         TrendEntity trendEntity = this.candleTypeTrendEntityMap.get(candleType);
         if (trendEntity.update()) {
-            log.warn(trendEntity.toString());
+            log.info(trendEntity.toString());
         }
         if (log.isDebugEnabled()) {
             log.debug(trendEntity.toString());

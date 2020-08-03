@@ -73,6 +73,12 @@ public class Util {
     }
 
 
+    public static double formatPercent(double a, double b, double c) {
+
+        return ((double) Math.round((a - b) / c * 10000)) / 100;
+    }
+
+
     public static byte[] compressGzip(String str) {
 
         if (str == null || str.length() == 0) {
