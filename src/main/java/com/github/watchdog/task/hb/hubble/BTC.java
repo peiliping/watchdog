@@ -87,16 +87,15 @@ public class BTC extends AbstractHubbleWithCommonRL {
         String msg = String.format("%s.%s(%s %s) %s, %s %s %s", super.market, super.name, currentPrice, signal, message, st.toString(), mt.toString(), lt.toString());
         MsgChannel.getInstance().addResult(msg);
 
-        int r = super.trendManager.ratioByTrend();
         switch (signal) {
             case BLIND:
             case CALL:
             case SHOW_HAND:
-                super.positionManager.handleSignal(OperateSignal.INPUT, r);
+                super.positionManager.handleSignal(OperateSignal.INPUT, currentPrice);
                 break;
             case FOLD:
             case MUCK:
-                super.positionManager.handleSignal(OperateSignal.OUTPUT, r);
+                super.positionManager.handleSignal(OperateSignal.OUTPUT, currentPrice);
                 break;
             default:
 

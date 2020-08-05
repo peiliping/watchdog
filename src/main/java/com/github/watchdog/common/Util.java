@@ -4,14 +4,17 @@ package com.github.watchdog.common;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import com.google.common.io.Files;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.apache.commons.lang3.Validate;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.zip.GZIPInputStream;
@@ -113,6 +116,18 @@ public class Util {
             log.error("un compress gzip error : ", e);
         }
         return "";
+    }
+
+
+    public static void writeFile(String path, byte[] content) {
+
+        try {
+            File file = new File(path);
+            Files.write(content, file);
+        } catch (IOException e) {
+            log.error("write file error : ", e);
+            Validate.isTrue(false);
+        }
     }
 
 
