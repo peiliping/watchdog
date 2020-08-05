@@ -19,6 +19,4 @@ public class PISFuncs {
 
     public static final ToDoubleBiFunction<NumberET, NumberET> PERCENT = (num1, num2) -> num1.getData() / num2.getData() * 100;
 
-    public static final ToDoubleBiFunction<NumberET, NumberET> OVERPERCENT = (num1, num2) -> (num1.getData() - num2.getData()) / num2.getData() * 100;
-
 }

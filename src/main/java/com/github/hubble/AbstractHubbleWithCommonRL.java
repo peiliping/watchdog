@@ -9,7 +9,6 @@ import com.github.hubble.indicator.IndicatorHelper;
 import com.github.hubble.indicator.general.EMAIS;
 import com.github.hubble.indicator.general.PolarIS;
 import com.github.hubble.indicator.general.ToNumIS;
-import com.github.hubble.indicator.specific.BollingPIS;
 import com.github.hubble.rule.Affinity;
 import com.github.hubble.rule.IRule;
 import com.github.hubble.rule.series.DirectionalSRL;
@@ -47,7 +46,7 @@ public abstract class AbstractHubbleWithCommonRL extends AbstractHubble {
         CandleSeries min1_CS = super.candleSeriesManager.getOrCreateCandleSeries(CandleType.MIN_1);
         PolarIS min1_PolarIS = IndicatorHelper.create_POLAR_IS(min1_CS, 5);
         SeriesParams params = SeriesParams.builder().name("ShockRate").candleType(min1_CS.getCandleType()).size(min1_CS.getSize()).build();
-        ToNumIS<TernaryNumberET> shockIS = new ToNumIS<>(params, value -> Util.formatPercent(value.getFirst(), value.getThird(), value.getThird()));
+        ToNumIS<TernaryNumberET> shockIS = new ToNumIS<>(params, value -> Util.formatPercent(value.getFirst() - value.getThird(), value.getThird()));
         shockIS.after(min1_PolarIS);
         IRule shockSRL = new ThresholdSRL(buildName(CandleType.MIN_1, "ShockSRL"), shockIS, this.shockRatio, NumCompareFunction.GTE).overTurn(true).ttl(900);
         BarkRuleResult result = new BarkRuleResult("%s.%s is shocking (>= %s%%)", super.market, super.name, this.shockRatio);
@@ -77,8 +76,7 @@ public abstract class AbstractHubbleWithCommonRL extends AbstractHubble {
         degreeRules.put(TrendType.DOWNWARD, degreeRule);
         super.rulesManager.addRule(candleType, new Affinity(degreeRule, new TrendRuleResult(super.trendManager)));
 
-        BollingPIS bollingPIS = IndicatorHelper.create_Bolling_PIS(candleSeries, 20);
-        super.trendManager.init(candleType, Period.SHORT, trendRule, degreeRules, bollingPIS);
+        super.trendManager.init(candleType, Period.SHORT, trendRule, degreeRules);
     }
 
 
@@ -105,8 +103,7 @@ public abstract class AbstractHubbleWithCommonRL extends AbstractHubble {
         degreeRules.put(TrendType.DOWNWARD, degreeRule);
         super.rulesManager.addRule(candleType, new Affinity(degreeRule, new TrendRuleResult(super.trendManager)));
 
-        BollingPIS bollingPIS = IndicatorHelper.create_Bolling_PIS(candleSeries, 20);
-        super.trendManager.init(candleType, Period.MEDIUM, trendRule, degreeRules, bollingPIS);
+        super.trendManager.init(candleType, Period.MEDIUM, trendRule, degreeRules);
     }
 
 
@@ -137,7 +134,6 @@ public abstract class AbstractHubbleWithCommonRL extends AbstractHubble {
         degreeRules.put(TrendType.DOWNWARD, degreeRule);
         super.rulesManager.addRule(candleType, new Affinity(degreeRule, new TrendRuleResult(super.trendManager)));
 
-        BollingPIS bollingPIS = IndicatorHelper.create_Bolling_PIS(candleSeries, 20);
-        super.trendManager.init(candleType, Period.LONG, trendRule, degreeRules, bollingPIS);
+        super.trendManager.init(candleType, Period.LONG, trendRule, degreeRules);
     }
 }

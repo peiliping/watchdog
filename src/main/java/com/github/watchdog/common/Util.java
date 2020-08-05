@@ -73,9 +73,9 @@ public class Util {
     }
 
 
-    public static double formatPercent(double a, double b, double c) {
+    public static double formatPercent(double a, double b) {
 
-        return ((double) Math.round((a - b) / c * 10000)) / 100;
+        return ((double) Math.round(a / b * 10000)) / 100;
     }
 
 

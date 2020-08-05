@@ -58,7 +58,7 @@ public class CandleSeriesManager {
     }
 
 
-    public CandleET getCandleET(CandleType candleType) {
+    public CandleET getLastCandleET(CandleType candleType) {
 
         CandleSeries series = this.candles.get(candleType);
         return series.getLast();

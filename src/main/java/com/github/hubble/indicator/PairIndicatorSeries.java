@@ -80,6 +80,7 @@ public abstract class PairIndicatorSeries<F extends IndicatorSeries, S extends I
 
     @Override protected final void onChange(NumberET ele, boolean updateOrInsert, Series<NumberET> series) {
 
+        Validate.isTrue(false, "forbid");
     }
 
 

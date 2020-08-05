@@ -39,4 +39,22 @@ public class TernaryNumberET extends Element {
 
         return this.third <= t && this.first >= t;
     }
+
+
+    public boolean notInBox(double t) {
+
+        return !isInBox(t);
+    }
+
+
+    public boolean isUnderBox(double t) {
+
+        return this.third > t;
+    }
+
+
+    public boolean isOverBox(double t) {
+
+        return this.first < t;
+    }
 }
