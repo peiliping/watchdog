@@ -13,6 +13,7 @@ import com.github.hubble.rule.Affinity;
 import com.github.hubble.rule.IRule;
 import com.github.hubble.rule.series.threshold.ThresholdSRL;
 import com.github.hubble.series.CandleSeries;
+import com.github.hubble.signal.OperateSignal;
 import com.github.hubble.signal.Signal;
 import com.github.hubble.signal.SignalRuleResult;
 import com.github.hubble.trend.TrendEntity;
@@ -85,5 +86,20 @@ public class BTC extends AbstractHubbleWithCommonRL {
         TrendEntity lt = super.trendManager.get(Period.LONG);
         String msg = String.format("%s.%s(%s %s) %s, %s %s %s", super.market, super.name, currentPrice, signal, message, st.toString(), mt.toString(), lt.toString());
         MsgChannel.getInstance().addResult(msg);
+
+        int r = super.trendManager.ratioByTrend();
+        switch (signal) {
+            case BLIND:
+            case CALL:
+            case SHOW_HAND:
+                super.positionManager.handleSignal(OperateSignal.INPUT, r);
+                break;
+            case FOLD:
+            case MUCK:
+                super.positionManager.handleSignal(OperateSignal.OUTPUT, r);
+                break;
+            default:
+
+        }
     }
 }

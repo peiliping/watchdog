@@ -44,6 +44,7 @@ public abstract class AbstractHubbleWithCommonRL extends AbstractHubble {
     protected void initShockRL() {
 
         CandleSeries min1_CS = super.candleSeriesManager.getOrCreateCandleSeries(CandleType.MIN_1);
+
         PolarIS min1_PolarIS = IndicatorHelper.create_POLAR_IS(min1_CS, 5);
         SeriesParams params = SeriesParams.builder().name("ShockRate").candleType(min1_CS.getCandleType()).size(min1_CS.getSize()).build();
         ToNumIS<TernaryNumberET> shockIS = new ToNumIS<>(params, value -> Util.formatPercent(value.getFirst() - value.getThird(), value.getThird()));
@@ -51,6 +52,8 @@ public abstract class AbstractHubbleWithCommonRL extends AbstractHubble {
         IRule shockSRL = new ThresholdSRL(buildName(CandleType.MIN_1, "ShockSRL"), shockIS, this.shockRatio, NumCompareFunction.GTE).overTurn(true).ttl(900);
         BarkRuleResult result = new BarkRuleResult("%s.%s is shocking (>= %s%%)", super.market, super.name, this.shockRatio);
         super.rulesManager.addRule(CandleType.MIN_1, new Affinity(shockSRL, result));
+
+        min1_CS.bindUpsertListener(super.positionManager);
     }
 
 
