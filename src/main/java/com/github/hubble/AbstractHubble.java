@@ -3,6 +3,7 @@ package com.github.hubble;
 
 import com.github.hubble.common.CandleType;
 import com.github.hubble.ele.CandleET;
+import com.github.hubble.position.BasePositionManager;
 import com.github.hubble.position.PositionManager;
 import com.github.hubble.rule.RulesManager;
 import com.github.hubble.series.CandleSeriesManager;
@@ -28,7 +29,7 @@ public abstract class AbstractHubble implements SignalCallBack {
 
     protected TrendManager trendManager;
 
-    protected PositionManager positionManager;
+    protected BasePositionManager positionManager;
 
 
     public AbstractHubble(String market, String name) {
@@ -38,7 +39,6 @@ public abstract class AbstractHubble implements SignalCallBack {
         this.candleSeriesManager = new CandleSeriesManager(128);
         this.rulesManager = new RulesManager();
         this.trendManager = new TrendManager();
-        this.positionManager = new PositionManager();
     }
 
 

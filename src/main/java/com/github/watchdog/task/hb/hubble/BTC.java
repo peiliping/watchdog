@@ -9,11 +9,11 @@ import com.github.hubble.indicator.IndicatorHelper;
 import com.github.hubble.indicator.general.PolarIS;
 import com.github.hubble.indicator.specific.BollingPIS;
 import com.github.hubble.indicator.specific.RSIPIS;
+import com.github.hubble.position.PositionManager;
 import com.github.hubble.rule.Affinity;
 import com.github.hubble.rule.IRule;
 import com.github.hubble.rule.series.threshold.ThresholdSRL;
 import com.github.hubble.series.CandleSeries;
-import com.github.hubble.signal.OperateSignal;
 import com.github.hubble.signal.Signal;
 import com.github.hubble.signal.SignalRuleResult;
 import com.github.hubble.trend.TrendEntity;
@@ -30,6 +30,7 @@ public class BTC extends AbstractHubbleWithCommonRL {
 
         super(market, name);
         super.shockRatio = 1d;
+        super.positionManager = new PositionManager();
     }
 
 
@@ -86,19 +87,6 @@ public class BTC extends AbstractHubbleWithCommonRL {
         TrendEntity lt = super.trendManager.get(Period.LONG);
         String msg = String.format("%s.%s(%s %s) %s, %s %s %s", super.market, super.name, currentPrice, signal, message, st.toString(), mt.toString(), lt.toString());
         MsgChannel.getInstance().addResult(msg);
-
-        switch (signal) {
-            case BLIND:
-            case CALL:
-            case SHOW_HAND:
-                super.positionManager.handleSignal(OperateSignal.INPUT, currentPrice);
-                break;
-            case FOLD:
-            case MUCK:
-                super.positionManager.handleSignal(OperateSignal.OUTPUT, currentPrice);
-                break;
-            default:
-
-        }
+        super.positionManager.handleSignal(signal, currentPrice);
     }
 }

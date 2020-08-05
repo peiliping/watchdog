@@ -1,116 +1,112 @@
 package com.github.hubble.position;
 
 
-import com.github.hubble.ele.CandleET;
-import com.github.hubble.series.Series;
-import com.github.hubble.series.SeriesUpsertListener;
-import com.github.hubble.signal.OperateSignal;
+import com.github.hubble.signal.Signal;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 
-public class PositionManager implements SeriesUpsertListener<CandleET> {
+@Slf4j
+public class PositionManager extends BasePositionManager {
 
 
     private final double unit = 0.005d;
 
-    private final double feeRatio = 0.002d;
-
-    private final double stopLossRatio = 0.02;
-
-    private double cash = 1000d;
-
-    private double invest = 0d;
-
     private TreeMap<Double, Order> orderBooks = Maps.newTreeMap();
 
 
-    public void handleSignal(OperateSignal signal, double price) {
+    public PositionManager() {
 
-        if (OperateSignal.INPUT == signal && checkForBuy(1)) {
-            if (this.orderBooks.containsKey(price)) {
-                return;
-            }
-            buy(price, this.unit);
-        } else if (OperateSignal.OUTPUT == signal && checkForSell(1)) {
-            double k = stopProfit(price);
-            if (k > 0) {
-                sell(price, k, true);
-            }
+        super(0.002d, 0.02d, 0.02d);
+    }
+
+
+    @Override
+    public void handleSignal(Signal signal, double price) {
+
+        switch (signal) {
+            case BLIND:
+            case CALL:
+                buy(price, this.unit);
+                break;
+            case SHOW_HAND:
+                buy(price, this.unit * 2);
+                break;
+            case FOLD:
+                stopProfitOrders(price, 0.01d);
+                break;
+            case MUCK:
+                stopProfitOrders(price, 0d);
+                break;
         }
     }
 
 
-    private void buy(double price, double vol) {
+    @Override protected boolean buy(double price, double vol) {
 
-        this.invest += vol;
-        this.cash -= price * vol * (1 + this.feeRatio);
-        this.orderBooks.put(price, Order.builder().price(price).volume(vol).build());
-    }
-
-
-    private void sell(double price, double vol, boolean fromLowest) {
-
-        this.invest -= vol;
-        this.cash += price * vol * (1 - this.feeRatio);
-        while (vol > 0) {
-            Map.Entry<Double, Order> entry = fromLowest ? this.orderBooks.pollFirstEntry() : this.orderBooks.pollLastEntry();
-            Order tmpOrder = entry.getValue();
-            if (vol >= tmpOrder.getVolume()) {
-                vol -= tmpOrder.getVolume();
-            } else {
-                this.orderBooks.put(entry.getKey(), Order.builder().price(entry.getKey()).volume(tmpOrder.getVolume() - vol).build());
-            }
-        }
-    }
-
-
-    private boolean checkForSell(int ratio) {
-
-        return this.invest >= this.unit * ratio;
-    }
-
-
-    private boolean checkForBuy(int ratio) {
-
-        if (this.cash < 100d) {
+        if (this.orderBooks.containsKey(price)) {
             return false;
         }
-        double k = this.unit * ratio * (1 + this.feeRatio);
-        if (this.cash < k) {
-            return false;
+        boolean r = super.buy(price, vol);
+        if (r) {
+            this.orderBooks.put(price, Order.builder().price(price).volume(vol).build());
         }
-        return true;
+        return r;
     }
 
 
-    private double stopProfit(double price) {
+    @Override protected boolean sell(double price, double vol, boolean fromLowest) {
+
+        boolean r = super.sell(price, vol, fromLowest);
+        if (r) {
+            while (vol > 0) {
+                Map.Entry<Double, Order> entry = fromLowest ? this.orderBooks.pollFirstEntry() : this.orderBooks.pollLastEntry();
+                Order tmpOrder = entry.getValue();
+                if (vol >= tmpOrder.getVolume()) {
+                    vol -= tmpOrder.getVolume();
+                } else {
+                    Order order = Order.builder().price(entry.getKey()).volume(tmpOrder.getVolume() - vol).build();
+                    this.orderBooks.put(entry.getKey(), order);
+                }
+            }
+        }
+        return r;
+    }
+
+
+    @Override protected void stopProfitOrders(double price, double ratio) {
 
         final List<Order> stopProfitOrders = Lists.newArrayList();
-        double limit = price / (1 + this.feeRatio * 2.5);
+        double totalSellVol = 0;
+        double limit = price / (1 + ratio);
         for (Map.Entry<Double, Order> entry : this.orderBooks.headMap(limit, true).entrySet()) {
             stopProfitOrders.add(entry.getValue());
+            totalSellVol += entry.getValue().getVolume();
         }
         if (stopProfitOrders.isEmpty()) {
-            return 0d;
+            return;
         }
-        return stopProfitOrders.stream().mapToDouble(Order::getVolume).sum();
+        sell(price, totalSellVol, true);
     }
 
 
-    @Override public void onChange(long seq, CandleET ele, boolean updateOrInsert, Series<CandleET> series) {
+    @Override protected void stopLossOrders(double price, double ratio) {
 
         final List<Order> stopLossOrders = Lists.newArrayList();
-        double limit = ele.getClose() / (1 - this.stopLossRatio);
+        double totalSellVol = 0;
+        double limit = price / (1 - ratio);
         for (Map.Entry<Double, Order> entry : this.orderBooks.tailMap(limit, true).entrySet()) {
             stopLossOrders.add(entry.getValue());
+            totalSellVol += entry.getValue().getVolume();
         }
-        for (Order order : stopLossOrders) {
-            sell(ele.getClose(), order.getVolume(), false);
+        if (stopLossOrders.isEmpty()) {
+            return;
         }
+        sell(price, totalSellVol, false);
     }
 }
