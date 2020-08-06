@@ -4,8 +4,8 @@ package com.github.hubble;
 import com.github.hubble.common.CandleType;
 import com.github.hubble.ele.CandleET;
 import com.github.hubble.position.BasePositionManager;
-import com.github.hubble.position.PositionManager;
 import com.github.hubble.rule.RulesManager;
+import com.github.hubble.series.CandleSeries;
 import com.github.hubble.series.CandleSeriesManager;
 import com.github.hubble.signal.SignalCallBack;
 import com.github.hubble.trend.TrendManager;
@@ -42,7 +42,14 @@ public abstract class AbstractHubble implements SignalCallBack {
     }
 
 
-    public abstract AbstractHubble init();//Candle,Indicator,Rule
+    public abstract AbstractHubble init();
+
+
+    protected void bindPositionManager(CandleType candleType) {
+
+        CandleSeries candleSeries = this.candleSeriesManager.getOrCreateCandleSeries(candleType);
+        candleSeries.bindUpsertListener(this.positionManager);
+    }
 
 
     public void addCandleETs(CandleType candleType, List<CandleET> candleETList) {

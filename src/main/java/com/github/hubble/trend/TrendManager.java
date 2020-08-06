@@ -43,12 +43,4 @@ public class TrendManager {
             log.debug(trendEntity.toString());
         }
     }
-
-
-    public int ratioByTrend() {
-
-        TrendEntity lt = get(Period.LONG);
-        TrendEntity mt = get(Period.MEDIUM);
-        return lt.toRatio() + mt.toRatio();
-    }
 }

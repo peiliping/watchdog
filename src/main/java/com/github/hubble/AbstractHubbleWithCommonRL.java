@@ -30,30 +30,28 @@ import java.util.Map;
 public abstract class AbstractHubbleWithCommonRL extends AbstractHubble {
 
 
-    protected double shockRatio;
+    protected double shockRatio = 1d;
 
 
     public AbstractHubbleWithCommonRL(String market, String name) {
 
         super(market, name);
-        this.shockRatio = 1d;
     }
 
 
     // 最近M分钟震荡达到N%
-    protected void initShockRL() {
+    protected void initShockRL(int step, double shockRatio) {
 
-        CandleSeries min1_CS = super.candleSeriesManager.getOrCreateCandleSeries(CandleType.MIN_1);
-
-        PolarIS min1_PolarIS = IndicatorHelper.create_POLAR_IS(min1_CS, 5);
-        SeriesParams params = SeriesParams.builder().name("ShockRate").candleType(min1_CS.getCandleType()).size(min1_CS.getSize()).build();
+        this.shockRatio = shockRatio;
+        CandleType candleType = CandleType.MIN_1;
+        CandleSeries candleSeries = super.candleSeriesManager.getOrCreateCandleSeries(candleType);
+        PolarIS polarIs = IndicatorHelper.create_POLAR_IS(candleSeries, step);
+        SeriesParams params = SeriesParams.builder().name("ShockRate").candleType(candleSeries.getCandleType()).size(candleSeries.getSize()).build();
         ToNumIS<TernaryNumberET> shockIS = new ToNumIS<>(params, value -> Util.formatPercent(value.getFirst() - value.getThird(), value.getThird()));
-        shockIS.after(min1_PolarIS);
-        IRule shockSRL = new ThresholdSRL(buildName(CandleType.MIN_1, "ShockSRL"), shockIS, this.shockRatio, NumCompareFunction.GTE).overTurn(true).ttl(900);
+        shockIS.after(polarIs);
+        IRule shockSRL = new ThresholdSRL(buildName(candleType, "ShockSRL"), shockIS, this.shockRatio, NumCompareFunction.GTE).overTurn(true).ttl(600);
         BarkRuleResult result = new BarkRuleResult("%s.%s is shocking (>= %s%%)", super.market, super.name, this.shockRatio);
-        super.rulesManager.addRule(CandleType.MIN_1, new Affinity(shockSRL, result));
-
-        min1_CS.bindUpsertListener(super.positionManager);
+        super.rulesManager.addRule(candleType, new Affinity(shockSRL, result));
     }
 
 

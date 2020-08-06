@@ -56,12 +56,12 @@ public abstract class BasePositionManager implements SeriesUpsertListener<Candle
     }
 
 
-    protected boolean sell(double price, double vol, boolean fromLowest) {
+    protected boolean sell(double price, double vol) {
 
         if (check4Sell(vol)) {
             this.invest -= vol;
             this.cash += price * vol * (1 - this.feeRatio);
-            log.info("sell out : {} , {} , {} ", price, vol, fromLowest);
+            log.info("sell out : {} , {} ", price, vol);
             return true;
         }
         return false;

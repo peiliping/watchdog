@@ -44,18 +44,6 @@ public class IndicatorHelper {
     }
 
 
-    public static ToNumIS<CandleET> create_HIGH_IS(CandleSeries candleSeries) {
-
-        return create_TONUM_IS(candleSeries, "High", candleET -> candleET.getHigh());
-    }
-
-
-    public static ToNumIS<CandleET> create_LOW_IS(CandleSeries candleSeries) {
-
-        return create_TONUM_IS(candleSeries, "Low", candleET -> candleET.getLow());
-    }
-
-
     public static PolarIS create_POLAR_IS(CandleSeries candleSeries, int step) {
 
         String name = String.format("Polar(%s)", step);

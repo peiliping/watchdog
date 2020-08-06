@@ -8,21 +8,24 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 
 @Slf4j
 public class PositionManager extends BasePositionManager {
 
 
+    private final AtomicLong sequenceId;
+
     private final double unit = 0.005d;
 
-    private TreeMap<Double, Order> orderBooks = Maps.newTreeMap();
+    private Map<Long, Order> orderBooks = Maps.newHashMap();
 
 
     public PositionManager() {
 
-        super(0.002d, 0.02d, 0.02d);
+        super(0.002d, 0.02d, 0.05d);
+        this.sequenceId = new AtomicLong(1);
     }
 
 
@@ -31,82 +34,81 @@ public class PositionManager extends BasePositionManager {
 
         switch (signal) {
             case BLIND:
+                buy(price, this.unit, null);
+                buy(price * 1.0001d, this.unit, 0.01d);
             case CALL:
-                buy(price, this.unit);
+                buy(price, this.unit, null);
                 break;
             case SHOW_HAND:
-                buy(price, this.unit * 2);
+                buy(price, this.unit * 4, null);
                 break;
             case FOLD:
-                stopProfitOrders(price, 0.01d);
+                stopProfitOrders(price, 0.003d);
                 break;
             case MUCK:
-                stopProfitOrders(price, 0d);
+                stopProfitOrders(price, -0.015d);
                 break;
         }
     }
 
 
-    @Override protected boolean buy(double price, double vol) {
+    protected boolean buy(double price, double vol, Double expectedProfitRate) {
 
-        if (this.orderBooks.containsKey(price)) {
-            return false;
-        }
         boolean r = super.buy(price, vol);
         if (r) {
-            this.orderBooks.put(price, Order.builder().price(price).volume(vol).build());
+            Order od = Order.builder().id(this.sequenceId.getAndIncrement()).price(price).volume(vol)
+                    .expectedProfitPrice(expectedProfitRate != null ? price * (1 + expectedProfitRate) : null).build();
+            this.orderBooks.put(od.getId(), od);
         }
         return r;
     }
 
 
-    @Override protected boolean sell(double price, double vol, boolean fromLowest) {
+    protected boolean sell(double price, Order od) {
 
-        boolean r = super.sell(price, vol, fromLowest);
-        if (r) {
-            while (vol > 0) {
-                Map.Entry<Double, Order> entry = fromLowest ? this.orderBooks.pollFirstEntry() : this.orderBooks.pollLastEntry();
-                Order tmpOrder = entry.getValue();
-                if (vol >= tmpOrder.getVolume()) {
-                    vol -= tmpOrder.getVolume();
-                } else {
-                    Order order = Order.builder().price(entry.getKey()).volume(tmpOrder.getVolume() - vol).build();
-                    this.orderBooks.put(entry.getKey(), order);
-                }
+        if (this.orderBooks.containsKey(od.getId())) {
+            boolean r = super.sell(price, od.getVolume());
+            if (r) {
+                this.orderBooks.remove(od.getId());
+                return true;
             }
         }
-        return r;
+        return false;
     }
 
 
     @Override protected void stopProfitOrders(double price, double ratio) {
 
-        final List<Order> stopProfitOrders = Lists.newArrayList();
-        double totalSellVol = 0;
+        final List<Order> stopOrders = Lists.newArrayList();
         double limit = price / (1 + ratio);
-        for (Map.Entry<Double, Order> entry : this.orderBooks.headMap(limit, true).entrySet()) {
-            stopProfitOrders.add(entry.getValue());
-            totalSellVol += entry.getValue().getVolume();
+        for (Map.Entry<Long, Order> entry : this.orderBooks.entrySet()) {
+            Order od = entry.getValue();
+            if (od.getPrice() <= limit) {
+                stopOrders.add(od);
+            } else if (od.getExpectedProfitPrice() != null) {
+                if (od.getExpectedProfitPrice() >= price) {
+                    stopOrders.add(od);
+                }
+            }
         }
-        if (stopProfitOrders.isEmpty()) {
-            return;
+        for (Order order : stopOrders) {
+            sell(price, order);
         }
-        sell(price, totalSellVol, true);
     }
 
 
     @Override protected void stopLossOrders(double price, double ratio) {
 
-        final List<Order> stopLossOrders = Lists.newArrayList();
-        double totalSellVol = 0;
+        final List<Order> stopOrders = Lists.newArrayList();
         double limit = price / (1 - ratio);
-        for (Map.Entry<Double, Order> entry : this.orderBooks.tailMap(limit, true).entrySet()) {
-            stopLossOrders.add(entry.getValue());
-            totalSellVol += entry.getValue().getVolume();
+        for (Map.Entry<Long, Order> entry : this.orderBooks.entrySet()) {
+            Order od = entry.getValue();
+            if (od.getPrice() >= limit) {
+                stopOrders.add(od);
+            }
         }
-        if (stopLossOrders.isEmpty()) {
-            return;
+        for (Order order : stopOrders) {
+            sell(price, order);
         }
-        sell(price, totalSellVol, false);
     }
 }
