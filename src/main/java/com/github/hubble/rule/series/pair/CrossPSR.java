@@ -9,17 +9,15 @@ import com.github.hubble.series.Series;
 public abstract class CrossPSR extends PairSeriesRule<NumberET> {
 
 
-    protected NumCompareFunction current;
+    protected NumCompareFunction f1;
 
-    protected NumCompareFunction before1;
-
-    protected NumCompareFunction before2;
+    protected NumCompareFunction f2;
 
 
     public CrossPSR(String name, Series<NumberET> first, Series<NumberET> second) {
 
         super(name, first, second);
-        super.continuousStep = 3;
+        super.continuousStep = 4;
     }
 
 
@@ -27,12 +25,14 @@ public abstract class CrossPSR extends PairSeriesRule<NumberET> {
 
         NumberET e11 = super.first.get(id);
         NumberET e12 = super.second.get(id);
-        if (this.current.apply(e11.getData(), e12.getData())) {
+        if (this.f1.apply(e11.getData(), e12.getData())) {
             NumberET e21 = super.first.getBefore(id, 1);
             NumberET e22 = super.second.getBefore(id, 1);
             NumberET e31 = super.first.getBefore(id, 2);
             NumberET e32 = super.second.getBefore(id, 2);
-            return this.before1.apply(e21.getData(), e22.getData()) && this.before2.apply(e31.getData(), e32.getData());
+            NumberET e41 = super.first.getBefore(id, 3);
+            NumberET e42 = super.second.getBefore(id, 3);
+            return this.f1.apply(e21.getData(), e22.getData()) && this.f1.apply(e31.getData(), e32.getData()) && this.f2.apply(e41.getData(), e42.getData());
         }
         return false;
     }
@@ -44,9 +44,8 @@ public abstract class CrossPSR extends PairSeriesRule<NumberET> {
         public FallingCrossPSR(String name, Series<NumberET> first, Series<NumberET> second) {
 
             super(name, first, second);
-            super.current = NumCompareFunction.LT;
-            super.before1 = NumCompareFunction.GTE;
-            super.before2 = NumCompareFunction.GT;
+            super.f1 = NumCompareFunction.LT;
+            super.f2 = NumCompareFunction.GT;
         }
     }
 
@@ -57,9 +56,8 @@ public abstract class CrossPSR extends PairSeriesRule<NumberET> {
         public RisingCrossPSR(String name, Series<NumberET> first, Series<NumberET> second) {
 
             super(name, first, second);
-            super.current = NumCompareFunction.GT;
-            super.before1 = NumCompareFunction.LTE;
-            super.before2 = NumCompareFunction.LT;
+            super.f1 = NumCompareFunction.GT;
+            super.f2 = NumCompareFunction.LT;
         }
     }
 }

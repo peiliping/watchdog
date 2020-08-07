@@ -24,7 +24,7 @@ public class PositionManager extends BasePositionManager {
 
     public PositionManager() {
 
-        super(0.002d, 0.02d, 0.05d);
+        super(0.002d, 0.02d, 0.025d);
         this.sequenceId = new AtomicLong(1);
     }
 
@@ -35,18 +35,19 @@ public class PositionManager extends BasePositionManager {
         switch (signal) {
             case BLIND:
                 buy(price, this.unit, null);
-                buy(price * 1.0001d, this.unit, 0.01d);
+                buy(price, this.unit, 0.01d);
+                break;
             case CALL:
-                buy(price, this.unit, null);
+                buy(price, this.unit, 0.01d);
                 break;
             case SHOW_HAND:
-                buy(price, this.unit * 4, null);
+                buy(price, this.unit * 4, 0.05d);
                 break;
             case FOLD:
-                stopProfitOrders(price, 0.003d);
+                stopProfitOrders(price, 0.01d);
                 break;
             case MUCK:
-                stopProfitOrders(price, -0.015d);
+                stopProfitOrders(price, -super.stopLossRatio);
                 break;
         }
     }
@@ -86,7 +87,7 @@ public class PositionManager extends BasePositionManager {
             if (od.getPrice() <= limit) {
                 stopOrders.add(od);
             } else if (od.getExpectedProfitPrice() != null) {
-                if (od.getExpectedProfitPrice() >= price) {
+                if (od.getExpectedProfitPrice() <= price) {
                     stopOrders.add(od);
                 }
             }

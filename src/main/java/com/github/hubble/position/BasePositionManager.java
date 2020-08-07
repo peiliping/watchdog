@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class BasePositionManager implements SeriesUpsertListener<CandleET> {
 
 
-    protected final long miniId = Util.nowSec() / 60 * 60;
+    protected final long miniId = (Util.nowSec() / 60 + 1) * 60;
 
     protected final double feeRatio;
 
