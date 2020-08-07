@@ -44,6 +44,12 @@ public class IndicatorHelper {
     }
 
 
+    public static ToNumIS<CandleET> create_LOWEST_IS(CandleSeries candleSeries) {
+
+        return create_TONUM_IS(candleSeries, "Low", candleET -> candleET.getLow());
+    }
+
+
     public static PolarIS create_POLAR_IS(CandleSeries candleSeries, int step) {
 
         String name = String.format("Polar(%s)", step);
@@ -144,7 +150,7 @@ public class IndicatorHelper {
     }
 
 
-    private static DeltaIS create_Delta_IS(IndicatorSeries<?, NumberET> indicatorSeries) {
+    public static DeltaIS create_Delta_IS(IndicatorSeries<?, NumberET> indicatorSeries) {
 
         SeriesParams params = SeriesParams.builder().name("Delta").candleType(indicatorSeries.getCandleType()).size(indicatorSeries.getSize()).build();
         DeltaIS delta = new DeltaIS(params);

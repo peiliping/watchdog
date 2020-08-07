@@ -1,6 +1,8 @@
 package com.github.hubble.position;
 
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.github.hubble.ele.CandleET;
 import com.github.hubble.series.Series;
 import com.github.hubble.series.SeriesUpsertListener;
@@ -24,6 +26,8 @@ public abstract class BasePositionManager implements SeriesUpsertListener<Candle
     protected double stopLossRatio;
 
     protected double stopProfitRatio;
+
+    protected String statePath;
 
 
     public BasePositionManager(double feeRatio, double stopLossRatio, double stopProfitRatio) {
@@ -89,6 +93,32 @@ public abstract class BasePositionManager implements SeriesUpsertListener<Candle
         stopProfitOrders(ele.getClose(), this.stopProfitRatio);
         if (!updateOrInsert) {
             log.info("cash : {} , invest : {} , total : {}", this.cash, this.invest, this.cash + this.invest * ele.getClose());
+            if (this.statePath != null) {
+                Util.writeFile(this.statePath, saveState().toJSONString().getBytes());
+            }
         }
+    }
+
+
+    public JSONObject recoveryState() {
+
+        log.info("loading state .");
+        String json = Util.readFile(this.statePath);
+        if (json != null) {
+            JSONObject jsonObject = JSON.parseObject(json);
+            this.cash = jsonObject.getDouble("cash");
+            this.invest = jsonObject.getDouble("invest");
+            return jsonObject;
+        }
+        return null;
+    }
+
+
+    protected JSONObject saveState() {
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("cash", this.cash);
+        jsonObject.put("invest", this.invest);
+        return jsonObject;
     }
 }

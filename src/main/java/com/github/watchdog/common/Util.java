@@ -17,6 +17,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -128,6 +130,22 @@ public class Util {
             log.error("write file error : ", e);
             Validate.isTrue(false);
         }
+    }
+
+
+    public static String readFile(String path) {
+
+        File file = new File(path);
+        if (file.exists()) {
+            try {
+                List<String> l = Files.readLines(file, Charset.defaultCharset());
+                return l.get(0);
+            } catch (IOException e) {
+                log.error("read file error : ", e);
+                Validate.isTrue(false);
+            }
+        }
+        return null;
     }
 
 

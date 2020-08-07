@@ -1,6 +1,9 @@
 package com.github.hubble.position;
 
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.github.hubble.signal.Signal;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -19,12 +22,13 @@ public class PositionManager extends BasePositionManager {
 
     private final double unit = 0.005d;
 
-    private Map<Long, Order> orderBooks = Maps.newHashMap();
+    private final Map<Long, Order> orderBooks = Maps.newHashMap();
 
 
     public PositionManager() {
 
         super(0.002d, 0.02d, 0.025d);
+        super.statePath = "/root/watchdog2/state";
         this.sequenceId = new AtomicLong(1);
     }
 
@@ -34,14 +38,14 @@ public class PositionManager extends BasePositionManager {
 
         switch (signal) {
             case BLIND:
-                buy(price, this.unit, null);
-                buy(price, this.unit, 0.01d);
+                buy(price, this.unit, null, signal);
+                buy(price, this.unit, 0.01d, signal);
                 break;
             case CALL:
-                buy(price, this.unit, 0.01d);
+                buy(price, this.unit, 0.01d, signal);
                 break;
             case SHOW_HAND:
-                buy(price, this.unit * 4, 0.05d);
+                buy(price, this.unit * 4, 0.05d, signal);
                 break;
             case FOLD:
                 stopProfitOrders(price, 0.01d);
@@ -53,11 +57,11 @@ public class PositionManager extends BasePositionManager {
     }
 
 
-    protected boolean buy(double price, double vol, Double expectedProfitRate) {
+    protected boolean buy(double price, double vol, Double expectedProfitRate, Signal signal) {
 
         boolean r = super.buy(price, vol);
         if (r) {
-            Order od = Order.builder().id(this.sequenceId.getAndIncrement()).price(price).volume(vol)
+            Order od = Order.builder().id(this.sequenceId.getAndIncrement()).price(price).volume(vol).signal(signal)
                     .expectedProfitPrice(expectedProfitRate != null ? price * (1 + expectedProfitRate) : null).build();
             this.orderBooks.put(od.getId(), od);
         }
@@ -111,5 +115,30 @@ public class PositionManager extends BasePositionManager {
         for (Order order : stopOrders) {
             sell(price, order);
         }
+    }
+
+
+    @Override public JSONObject recoveryState() {
+
+        JSONObject jsonObject = super.recoveryState();
+        if (jsonObject == null) {
+            return null;
+        }
+        this.sequenceId.set(jsonObject.getLong("sequenceId"));
+        String orders = jsonObject.getString("orderBooks");
+        this.orderBooks.putAll(JSON.parseObject(orders, new TypeReference<Map<Long, Order>>() {
+
+
+        }));
+        return jsonObject;
+    }
+
+
+    @Override protected JSONObject saveState() {
+
+        JSONObject jsonObject = super.saveState();
+        jsonObject.put("sequenceId", this.sequenceId);
+        jsonObject.put("orderBooks", this.orderBooks);
+        return jsonObject;
     }
 }

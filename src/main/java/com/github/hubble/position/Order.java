@@ -1,12 +1,15 @@
 package com.github.hubble.position;
 
 
-import lombok.Builder;
-import lombok.Getter;
+import com.github.hubble.signal.Signal;
+import lombok.*;
 
 
 @Getter
+@Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Order {
 
 
@@ -15,6 +18,8 @@ public class Order {
     private double price;
 
     private double volume;
+
+    private Signal signal;
 
     private Double expectedProfitPrice;
 }
