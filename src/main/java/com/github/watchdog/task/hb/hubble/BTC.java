@@ -16,6 +16,11 @@ import com.github.hubble.rule.series.threshold.ThresholdSRL;
 import com.github.hubble.series.CandleSeries;
 import com.github.hubble.signal.Signal;
 import com.github.hubble.signal.SignalRuleResult;
+import com.github.hubble.trend.TrendBGRule;
+import com.github.hubble.trend.TrendEntity;
+import com.github.hubble.trend.constants.Period;
+import com.github.hubble.trend.constants.TrendDegree;
+import com.github.hubble.trend.constants.TrendType;
 import com.github.watchdog.stream.MsgChannel;
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,14 +44,20 @@ public class BTC extends AbstractHubbleWithCommonRL {
 
         bindPositionManager(CandleType.MIN_1);
         initShockRL(5, 1d);
+        initShortTermRules(CandleType.MIN_30);
+        initMediumTermRules(CandleType.MIN_60);
+        initLongTermRules(CandleType.HOUR_4);
         {
             CandleType candleType = CandleType.MIN_15;
             CandleSeries candleSeries = super.candleSeriesManager.getOrCreateCandleSeries(candleType);
             PolarIS polarIS = IndicatorHelper.create_POLAR_IS(candleSeries, 1);
             BollingPIS bollingPIS = IndicatorHelper.create_Bolling_PIS(candleSeries, 20);
             IRule bollingDownSupport = new BollingDownSupportPSR(buildName(candleType, "Bolling_Down_Support"), polarIS, bollingPIS).overTurn(true).period();
-            IRule bollingMidSupport = new BollingMidSupportPSR(buildName(candleType, "Bolling_Middle_Support"), polarIS, bollingPIS).overTurn(true).period();
             super.rulesManager.addRule(candleType, new Affinity(bollingDownSupport, new SignalRuleResult("Bolling下轨支撑", Signal.BLIND, this)));
+
+            TrendEntity trendEntity = super.trendManager.get(Period.SHORT);
+            IRule mTE = new TrendBGRule("MTE_NOT_TOO_BAD", trendEntity, entity -> TrendType.DOWNWARD != entity.getTrendType() || TrendDegree.POSITIVE == entity.getTrendDegree());
+            IRule bollingMidSupport = new BollingMidSupportPSR(buildName(candleType, "Bolling_Middle_Support"), polarIS, bollingPIS).and(mTE).overTurn(true).period();
             super.rulesManager.addRule(candleType, new Affinity(bollingMidSupport, new SignalRuleResult("Bolling中轨支撑", Signal.CALL, this)));
 
             RSIPIS rsiPIS = IndicatorHelper.create_RSI_PIS(candleSeries, 10);

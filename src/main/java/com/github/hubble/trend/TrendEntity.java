@@ -62,18 +62,6 @@ public class TrendEntity {
     }
 
 
-    public int toRatio() {
-
-        if (TrendType.UPWARD == this.trendType && TrendDegree.POSITIVE == this.trendDegree) {
-            return 1;
-        }
-        if (TrendType.DOWNWARD == this.trendType && TrendDegree.NEGATIVE == this.trendDegree) {
-            return -1;
-        }
-        return 0;
-    }
-
-
     @Override public String toString() {
 
         return String.format("TE{P=%s,TT=%s,TD=%s}", this.period.name, this.trendType.name, this.trendDegree.name);
