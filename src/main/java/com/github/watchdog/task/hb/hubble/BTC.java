@@ -49,8 +49,8 @@ public class BTC extends AbstractHubbleWithCommonRL {
         bindPositionManager(CandleType.MIN_1);
         initShockRL(5, 1d);
         initShortTermRules(CandleType.MIN_30);
-        initMediumTermRules(CandleType.MIN_60);
-        initLongTermRules(CandleType.HOUR_4);
+        //initMediumTermRules(CandleType.MIN_60);
+        //initLongTermRules(CandleType.HOUR_4);
         {
             CandleType candleType = CandleType.MIN_15;
             CandleSeries candleSeries = super.candleSeriesManager.getOrCreateCandleSeries(candleType);
@@ -73,7 +73,7 @@ public class BTC extends AbstractHubbleWithCommonRL {
             super.rulesManager.addRule(candleType, new Affinity(rsiOverFalling, new SignalRuleResult("RSI下跌过度", Signal.CALL, this)));
 
             IRule rsiMoreRising = new ThresholdSRL(buildName(candleType, "RSI_MoreRising"), rsiPIS, 75, NumCompareFunction.GTE).overTurn(true).period();
-            IRule rsiOverRising = new ThresholdSRL(buildName(candleType, "RSI_OverRising"), rsiPIS, 80, NumCompareFunction.GTE).overTurn(true).period();
+            IRule rsiOverRising = new ThresholdSRL(buildName(candleType, "RSI_OverRising"), rsiPIS, 85, NumCompareFunction.GTE).overTurn(true).period();
             super.rulesManager.addRule(candleType, new Affinity(rsiMoreRising, new SignalRuleResult("RSI拉升较多", Signal.FOLD, this)));
             super.rulesManager.addRule(candleType, new Affinity(rsiOverRising, new SignalRuleResult("RSI拉升过度", Signal.MUCK, this)));
         }

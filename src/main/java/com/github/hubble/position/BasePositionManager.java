@@ -9,6 +9,7 @@ import com.github.hubble.series.SeriesUpsertListener;
 import com.github.hubble.signal.Signal;
 import com.github.watchdog.common.Util;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 
 @Slf4j
@@ -104,7 +105,7 @@ public abstract class BasePositionManager implements SeriesUpsertListener<Candle
 
         log.info("loading state .");
         String json = Util.readFile(this.statePath);
-        if (json != null) {
+        if (StringUtils.isNotEmpty(json)) {
             JSONObject jsonObject = JSON.parseObject(json);
             this.cash = jsonObject.getDouble("cash");
             this.invest = jsonObject.getDouble("invest");
@@ -119,6 +120,7 @@ public abstract class BasePositionManager implements SeriesUpsertListener<Candle
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("cash", this.cash);
         jsonObject.put("invest", this.invest);
+        jsonObject.put("timestamp", Util.nowSec());
         return jsonObject;
     }
 }

@@ -48,7 +48,7 @@ public class PositionManager extends BasePositionManager {
                 buy(price, this.unit * 4, 0.05d, signal);
                 break;
             case FOLD:
-                stopProfitOrders(price, 0.01d);
+                stopProfitOrders(price, 0.008d);
                 break;
             case MUCK:
                 stopProfitOrders(price, -super.stopLossRatio);

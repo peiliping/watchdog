@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.LoggerFactory;
 
@@ -139,7 +140,7 @@ public class Util {
         if (file.exists()) {
             try {
                 List<String> l = Files.readLines(file, Charset.defaultCharset());
-                return l.get(0);
+                return StringUtils.join(l);
             } catch (IOException e) {
                 log.error("read file error : ", e);
                 Validate.isTrue(false);
