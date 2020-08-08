@@ -35,7 +35,7 @@ public class BTC extends AbstractHubbleWithCommonRL {
     public BTC(String market, String name) {
 
         super(market, name);
-        super.positionManager = new PositionManager();
+        super.positionManager = new PositionManager("/root/watchdog2/state");
         super.positionManager.recoveryState();
     }
 

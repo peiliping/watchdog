@@ -13,7 +13,7 @@ import lombok.*;
 public class Order {
 
 
-    private long id;
+    private Long id;
 
     private double price;
 

@@ -140,7 +140,7 @@ public class Util {
         if (file.exists()) {
             try {
                 List<String> l = Files.readLines(file, Charset.defaultCharset());
-                return StringUtils.join(l);
+                return StringUtils.join(l, "");
             } catch (IOException e) {
                 log.error("read file error : ", e);
                 Validate.isTrue(false);

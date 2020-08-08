@@ -22,13 +22,13 @@ public class PositionManager extends BasePositionManager {
 
     private final double unit = 0.005d;
 
-    private final Map<Long, Order> orderBooks = Maps.newHashMap();
+    private final Map<String, Order> orderBooks = Maps.newHashMap();
 
 
-    public PositionManager() {
+    public PositionManager(String path) {
 
         super(0.002d, 0.02d, 0.025d);
-        super.statePath = "/root/watchdog2/state";
+        super.statePath = path;
         this.sequenceId = new AtomicLong(1);
     }
 
@@ -45,7 +45,7 @@ public class PositionManager extends BasePositionManager {
                 buy(price, this.unit, 0.01d, signal);
                 break;
             case SHOW_HAND:
-                buy(price, this.unit * 4, 0.05d, signal);
+                //TODO
                 break;
             case FOLD:
                 stopProfitOrders(price, 0.008d);
@@ -63,7 +63,7 @@ public class PositionManager extends BasePositionManager {
         if (r) {
             Order od = Order.builder().id(this.sequenceId.getAndIncrement()).price(price).volume(vol).signal(signal)
                     .expectedProfitPrice(expectedProfitRate != null ? price * (1 + expectedProfitRate) : null).build();
-            this.orderBooks.put(od.getId(), od);
+            this.orderBooks.put(od.getId().toString(), od);
         }
         return r;
     }
@@ -71,10 +71,10 @@ public class PositionManager extends BasePositionManager {
 
     protected boolean sell(double price, Order od) {
 
-        if (this.orderBooks.containsKey(od.getId())) {
+        if (this.orderBooks.containsKey(od.getId().toString())) {
             boolean r = super.sell(price, od.getVolume());
             if (r) {
-                this.orderBooks.remove(od.getId());
+                this.orderBooks.remove(od.getId().toString());
                 return true;
             }
         }
@@ -86,7 +86,7 @@ public class PositionManager extends BasePositionManager {
 
         final List<Order> stopOrders = Lists.newArrayList();
         double limit = price / (1 + ratio);
-        for (Map.Entry<Long, Order> entry : this.orderBooks.entrySet()) {
+        for (Map.Entry<String, Order> entry : this.orderBooks.entrySet()) {
             Order od = entry.getValue();
             if (od.getPrice() <= limit) {
                 stopOrders.add(od);
@@ -106,7 +106,7 @@ public class PositionManager extends BasePositionManager {
 
         final List<Order> stopOrders = Lists.newArrayList();
         double limit = price / (1 - ratio);
-        for (Map.Entry<Long, Order> entry : this.orderBooks.entrySet()) {
+        for (Map.Entry<String, Order> entry : this.orderBooks.entrySet()) {
             Order od = entry.getValue();
             if (od.getPrice() >= limit) {
                 stopOrders.add(od);
@@ -126,7 +126,7 @@ public class PositionManager extends BasePositionManager {
         }
         this.sequenceId.set(jsonObject.getLong("sequenceId"));
         String orders = jsonObject.getString("orderBooks");
-        this.orderBooks.putAll(JSON.parseObject(orders, new TypeReference<Map<Long, Order>>() {
+        this.orderBooks.putAll(JSON.parseObject(orders, new TypeReference<Map<String, Order>>() {
 
 
         }));

@@ -103,8 +103,8 @@ public abstract class BasePositionManager implements SeriesUpsertListener<Candle
 
     public JSONObject recoveryState() {
 
-        log.info("loading state .");
         String json = Util.readFile(this.statePath);
+        log.info("loading state ." + json);
         if (StringUtils.isNotEmpty(json)) {
             JSONObject jsonObject = JSON.parseObject(json);
             this.cash = jsonObject.getDouble("cash");
@@ -120,7 +120,6 @@ public abstract class BasePositionManager implements SeriesUpsertListener<Candle
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("cash", this.cash);
         jsonObject.put("invest", this.invest);
-        jsonObject.put("timestamp", Util.nowSec());
         return jsonObject;
     }
 }

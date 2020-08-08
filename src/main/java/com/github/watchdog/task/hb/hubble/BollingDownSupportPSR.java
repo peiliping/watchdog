@@ -9,7 +9,8 @@ import com.github.hubble.series.Series;
 public class BollingDownSupportPSR extends PairSeriesRule<TernaryNumberET> {
 
 
-    public BollingDownSupportPSR(String name, Series<TernaryNumberET> polars, Series<TernaryNumberET> bolling) {
+    public
+    BollingDownSupportPSR(String name, Series<TernaryNumberET> polars, Series<TernaryNumberET> bolling) {
 
         super(name, polars, bolling);
         super.continuousStep = 5;
@@ -30,22 +31,17 @@ public class BollingDownSupportPSR extends PairSeriesRule<TernaryNumberET> {
         if (polar2.getThird() <= bolling2.getThird()) {
             return false;
         }
-        //倒数第三个k线的最低价需要超过下轨
+
+        //倒数第三个k线的最低价需要低于下轨
         TernaryNumberET polar3 = super.first.getBefore(id, 2);
         TernaryNumberET bolling3 = super.second.getBefore(id, 2);
-        if (polar3.getThird() <= bolling3.getThird()) {
+        if (polar3.getThird() > bolling3.getThird()) {
             return false;
         }
         //倒数第四个k线的最低价需要低于下轨
         TernaryNumberET polar4 = super.first.getBefore(id, 3);
         TernaryNumberET bolling4 = super.second.getBefore(id, 3);
         if (polar4.getThird() > bolling4.getThird()) {
-            return false;
-        }
-        //倒数第五个k线的最低价需要低于下轨
-        TernaryNumberET polar5 = super.first.getBefore(id, 4);
-        TernaryNumberET bolling5 = super.second.getBefore(id, 4);
-        if (polar5.getThird() > bolling5.getThird()) {
             return false;
         }
         return true;
