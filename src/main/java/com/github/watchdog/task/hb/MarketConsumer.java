@@ -4,10 +4,10 @@ package com.github.watchdog.task.hb;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.github.hubble.AbstractHubble;
 import com.github.hubble.common.CandleType;
 import com.github.hubble.ele.CandleET;
 import com.github.watchdog.stream.AbstractMarketConsumer;
+import com.github.watchdog.stream.MsgChannel;
 import com.github.watchdog.task.hb.hubble.BTC;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -21,20 +21,55 @@ import java.util.Map;
 public class MarketConsumer extends AbstractMarketConsumer {
 
 
-    private Map<String, AbstractHubble> symbols = Maps.newHashMap();
+    private Map<CandleType, List<CandleET>> buffer = Maps.newHashMap();
+
+    private Map<CandleType, Boolean> getHistoryData = Maps.newHashMap();
+
+    private boolean increment = false;
 
 
     public MarketConsumer(String config) {
 
         super(config);
         super.marketName = "Huobi";
+        super.hubble = new BTC(super.marketName, "btcusdt");
+        super.hubble.init();
+        initCandleType();
+    }
 
-        AbstractHubble btc = new BTC(super.marketName, "btcusdt");
-        this.symbols.put(btc.getName(), btc.init());
+
+    private void initCandleType() {
+
+        for (CandleType candleType : Candles.candles) {
+            this.getHistoryData.put(candleType, false);
+        }
+    }
+
+
+    private void checkOpenIncrement() {
+
+        for (Map.Entry<CandleType, Boolean> entry : this.getHistoryData.entrySet()) {
+            if (!entry.getValue()) {
+                return;
+            }
+        }
+        if (!this.buffer.isEmpty()) {
+            for (Map.Entry<CandleType, List<CandleET>> entry : this.buffer.entrySet()) {
+                super.hubble.addCandleETs(entry.getKey(), entry.getValue());
+            }
+            this.buffer.clear();
+        }
+        this.increment = true;
     }
 
 
     @Override protected void handle(String msg) {
+
+        if (MsgChannel.CMD_RESTART.equals(msg)) {
+            initCandleType();
+            this.increment = false;
+            return;
+        }
 
         PushMsg pushMsg = JSON.parseObject(msg, PushMsg.class);
 
@@ -53,17 +88,14 @@ public class MarketConsumer extends AbstractMarketConsumer {
         String[] items = keyStr.split("\\.");
         String pairCodeName = items[1], type = items[2], step = items[3];
 
+        if (!super.hubble.getName().equals(pairCodeName)) {
+            return;
+        }
         if (!"kline".equals(type)) {
             return;
         }
-
         CandleType candleType = CandleType.of(step);
-        if (candleType == null) {
-            return;
-        }
-
-        AbstractHubble hubble = this.symbols.get(pairCodeName);
-        if (hubble == null) {
+        if (candleType == null || !this.getHistoryData.containsKey(candleType)) {
             return;
         }
 
@@ -74,14 +106,28 @@ public class MarketConsumer extends AbstractMarketConsumer {
                 CandleET candleET = convert(array.getJSONObject(i));
                 candleETList.add(candleET);
             }
-            if (log.isDebugEnabled()) {
-                log.debug("Load history data from : " + candleETList.get(0).getId());
-            }
-            hubble.addCandleETs(candleType, candleETList);
+            super.hubble.addCandleETs(candleType, candleETList);
+            this.getHistoryData.put(candleType, true);
+            checkOpenIncrement();
         } else {
             CandleET candleET = convert(JSON.parseObject(pushMsg.getTick()));
-            hubble.addCandleET(candleType, candleET, true);
+            if (this.increment) {
+                super.hubble.addCandleET(candleType, candleET, true);
+            } else {
+                getQFromBuffer(candleType).add(candleET);
+            }
         }
+    }
+
+
+    private List<CandleET> getQFromBuffer(CandleType candleType) {
+
+        List<CandleET> queue = this.buffer.get(candleType);
+        if (queue == null) {
+            queue = Lists.newArrayList();
+            this.buffer.put(candleType, queue);
+        }
+        return queue;
     }
 
 

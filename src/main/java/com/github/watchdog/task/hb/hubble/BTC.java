@@ -25,6 +25,7 @@ import com.github.hubble.trend.constants.Period;
 import com.github.hubble.trend.constants.TrendDegree;
 import com.github.hubble.trend.constants.TrendType;
 import com.github.watchdog.stream.MsgChannel;
+import com.github.watchdog.task.hb.Candles;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -42,12 +43,12 @@ public class BTC extends AbstractHubbleWithCommonRL {
 
     @Override public AbstractHubble init() {
 
-        for (CandleType ct : CandleType.values()) {
+        for (CandleType ct : Candles.candles) {
             super.candleSeriesManager.getOrCreateCandleSeries(ct);
         }
 
         bindPositionManager(CandleType.MIN_1);
-        initShockRL(5, 1d);
+        initShockRL(CandleType.MIN_1, 5, 1d);
         initShortTermRules(CandleType.MIN_30);
         //initMediumTermRules(CandleType.MIN_60);
         //initLongTermRules(CandleType.HOUR_4);

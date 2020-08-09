@@ -2,6 +2,7 @@ package com.github.watchdog.ws;
 
 
 import com.github.watchdog.common.Util;
+import com.github.watchdog.stream.MsgChannel;
 import com.github.watchdog.ws.handler.BinaryFrameHandler;
 import com.github.watchdog.ws.handler.TextFrameHandler;
 import io.netty.bootstrap.Bootstrap;
@@ -134,7 +135,8 @@ public class NettyClient {
 
         Channel tmpChannel = this.channel;
         if (tmpChannel != null && tmpChannel.isActive()) {
-            for (String item : subscribeItems) {
+            MsgChannel.getInstance().addInput(MsgChannel.CMD_RESTART);
+            for (String item : this.subscribeItems) {
                 log.info("subscribe : " + item);
                 TextWebSocketFrame frame = new TextWebSocketFrame(item);
                 tmpChannel.writeAndFlush(frame);

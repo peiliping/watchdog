@@ -40,10 +40,9 @@ public abstract class AbstractHubbleWithCommonRL extends AbstractHubble {
 
 
     // 最近M分钟震荡达到N%
-    protected void initShockRL(int step, double shockRatio) {
+    protected void initShockRL(CandleType candleType, int step, double shockRatio) {
 
         this.shockRatio = shockRatio;
-        CandleType candleType = CandleType.MIN_1;
         CandleSeries candleSeries = super.candleSeriesManager.getOrCreateCandleSeries(candleType);
         PolarIS polarIs = IndicatorHelper.create_POLAR_IS(candleSeries, step);
         SeriesParams params = SeriesParams.builder().name("ShockRate").candleType(candleSeries.getCandleType()).size(candleSeries.getSize()).build();
