@@ -24,4 +24,4 @@ java -jar target/watchdog-1.0-SNAPSHOT.jar \
 	--subscribe $subs \
 	> /tmp/x.log
 
-## grep Binary x.log  | grep -v ping | awk '{print $13}' > r.log
+## grep Binary x.log  | grep -v ping | awk '{print $13}' > history.log

@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
+import java.text.DecimalFormat;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
@@ -21,6 +22,8 @@ public abstract class BasePositionManager implements SeriesUpsertListener<Candle
 
     @Getter
     protected final AtomicBoolean status = new AtomicBoolean(false);
+
+    protected final DecimalFormat formatter = new DecimalFormat("0.00000000");
 
     protected final double feeRatio;
 
@@ -97,9 +100,25 @@ public abstract class BasePositionManager implements SeriesUpsertListener<Candle
         stopLossOrders(ele.getClose(), this.stopLossRatio);
         stopProfitOrders(ele.getClose(), this.stopProfitRatio);
         if (!updateOrInsert) {
-            log.warn("id : {} , cash : {} , invest : {} , total : {}", ele.getId(), this.cash, this.invest, this.cash + this.invest * ele.getClose());
-            Util.writeFile(this.statePath, saveState().toJSONString().getBytes());
+            saveState(ele.getClose());
         }
+    }
+
+
+    protected void saveState(double price) {
+
+        log.warn("cash : {} , invest : {} , total : {}", this.formatter.format(this.cash), this.formatter.format(this.invest),
+                 this.formatter.format(this.cash + this.invest * price));
+        Util.writeFile(this.statePath, snapshotState().toJSONString().getBytes());
+    }
+
+
+    protected JSONObject snapshotState() {
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("cash", this.cash);
+        jsonObject.put("invest", this.invest);
+        return jsonObject;
     }
 
 
@@ -114,14 +133,5 @@ public abstract class BasePositionManager implements SeriesUpsertListener<Candle
             return jsonObject;
         }
         return null;
-    }
-
-
-    protected JSONObject saveState() {
-
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("cash", this.cash);
-        jsonObject.put("invest", this.invest);
-        return jsonObject;
     }
 }

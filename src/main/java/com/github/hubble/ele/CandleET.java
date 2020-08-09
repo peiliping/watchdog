@@ -1,8 +1,11 @@
 package com.github.hubble.ele;
 
 
+import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.ToString;
+
+import java.util.List;
 
 
 @Getter
@@ -48,6 +51,22 @@ public class CandleET extends Element {
                || this.amount != that.amount
                || this.volume != that.volume
                || this.count != that.count;
+    }
+
+
+    public List<CandleET> split4BackTest() {
+
+        List<CandleET> OLHC = Lists.newArrayList();
+        OLHC.add(new CandleET(this.getId(), this.getOpen(), this.getOpen(), this.getOpen(), this.getOpen(), this.getAmount(), this.getVolume(), this.getCount()));
+        if (this.getClose() > this.getOpen()) {
+            OLHC.add(new CandleET(this.getId(), this.getOpen(), this.getLow(), this.getOpen(), this.getLow(), this.getAmount(), this.getVolume(), this.getCount()));
+            OLHC.add(new CandleET(this.getId(), this.getOpen(), this.getLow(), this.getHigh(), this.getHigh(), this.getAmount(), this.getVolume(), this.getCount()));
+        } else {
+            OLHC.add(new CandleET(this.getId(), this.getOpen(), this.getOpen(), this.getHigh(), this.getHigh(), this.getAmount(), this.getVolume(), this.getCount()));
+            OLHC.add(new CandleET(this.getId(), this.getOpen(), this.getLow(), this.getHigh(), this.getLow(), this.getAmount(), this.getVolume(), this.getCount()));
+        }
+        OLHC.add(this);
+        return OLHC;
     }
 }
 

@@ -27,7 +27,7 @@ public class PositionManager extends BasePositionManager {
 
     public PositionManager(String path) {
 
-        super(0.002d, 0.02d, 0.025d);
+        super(0.002d, 0.02d, 0.02d);
         super.statePath = path;
         this.sequenceId = new AtomicLong(1);
     }
@@ -54,6 +54,7 @@ public class PositionManager extends BasePositionManager {
                 stopProfitOrders(price, -super.stopLossRatio);
                 break;
         }
+        saveState(price);
     }
 
 
@@ -134,9 +135,9 @@ public class PositionManager extends BasePositionManager {
     }
 
 
-    @Override protected JSONObject saveState() {
+    @Override protected JSONObject snapshotState() {
 
-        JSONObject jsonObject = super.saveState();
+        JSONObject jsonObject = super.snapshotState();
         jsonObject.put("sequenceId", this.sequenceId);
         jsonObject.put("orderBooks", this.orderBooks);
         return jsonObject;

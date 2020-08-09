@@ -6,10 +6,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.github.hubble.AbstractHubble;
 import com.github.hubble.common.CandleType;
 import com.github.hubble.ele.CandleET;
-import com.github.hubble.rule.RulesManager;
 import com.github.hubble.series.CandleSeriesManager;
 import com.github.watchdog.task.hb.hubble.BTC;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.Files;
 import org.apache.commons.lang3.StringUtils;
@@ -29,11 +27,15 @@ public class BackTest {
 
     public static void main(String[] args) throws IOException {
 
-        AbstractHubble btc = new BTC("Huobi", "btcusdt", "/tmp/state");
-        btc.init();
+        //清理历史状态
+        String statePath = "/tmp/state";
+        File stateFile = new File(statePath);
+        stateFile.delete();
 
-        RulesManager rsm = btc.getRulesManager();
+        //初始化
+        AbstractHubble btc = new BTC("Huobi", "btcusdt", statePath).init();
 
+        //k线建立桥接关系
         CandleSeriesManager csm = btc.getCandleSeriesManager();
         for (CandleType candleType : Candles.candles) {
             if (CandleType.MIN_1 != candleType) {
@@ -41,8 +43,10 @@ public class BackTest {
             }
         }
 
+        //加载历史K线数据
+        String dataFilePath = "/tmp/history.log";
         TreeMap<Long, CandleET> candleETTreeMap = Maps.newTreeMap();
-        File file = new File("/tmp/r.log");
+        File file = new File(dataFilePath);
         List<String> lines = Files.readLines(file, Charset.defaultCharset());
         for (String line : lines) {
             if (StringUtils.isNotBlank(line)) {
@@ -50,31 +54,24 @@ public class BackTest {
             }
         }
 
+        //先加载一些数据预热
         long splitTime = 1596384000;
         SortedMap<Long, CandleET> first = candleETTreeMap.headMap(splitTime);
         for (Map.Entry<Long, CandleET> entry : first.entrySet()) {
             btc.addCandleET(CandleType.MIN_1, entry.getValue(), false);
         }
 
+        //启动仓位管理
         btc.getPositionManager().getStatus().set(true);
 
+        //模拟k线数据增量获取
         SortedMap<Long, CandleET> second = candleETTreeMap.tailMap(splitTime);
         for (Map.Entry<Long, CandleET> entry : second.entrySet()) {
-            CandleET cet = entry.getValue();
-            List<CandleET> OLHC = Lists.newArrayList();
-            OLHC.add(new CandleET(cet.getId(), cet.getOpen(), cet.getOpen(), cet.getOpen(), cet.getOpen(), cet.getAmount(), cet.getVolume(), cet.getCount()));
-            if (cet.getClose() > cet.getOpen()) {
-                OLHC.add(new CandleET(cet.getId(), cet.getOpen(), cet.getLow(), cet.getOpen(), cet.getLow(), cet.getAmount(), cet.getVolume(), cet.getCount()));
-                OLHC.add(new CandleET(cet.getId(), cet.getOpen(), cet.getLow(), cet.getHigh(), cet.getHigh(), cet.getAmount(), cet.getVolume(), cet.getCount()));
-            } else {
-                OLHC.add(new CandleET(cet.getId(), cet.getOpen(), cet.getLow(), cet.getHigh(), cet.getHigh(), cet.getAmount(), cet.getVolume(), cet.getCount()));
-                OLHC.add(new CandleET(cet.getId(), cet.getOpen(), cet.getLow(), cet.getOpen(), cet.getLow(), cet.getAmount(), cet.getVolume(), cet.getCount()));
-            }
-            OLHC.add(cet);
+            List<CandleET> OLHC = entry.getValue().split4BackTest();
             for (CandleET candleET : OLHC) {
                 btc.addCandleET(CandleType.MIN_1, candleET, false);
                 for (CandleType candleType : Candles.candles) {
-                    rsm.traverseRules(candleType, candleType.convert(candleET.getId()));
+                    btc.getRulesManager().traverseRules(candleType, candleType.convert(candleET.getId()));
                 }
             }
         }
