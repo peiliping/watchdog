@@ -94,15 +94,13 @@ public abstract class BasePositionManager implements SeriesUpsertListener<Candle
         stopProfitOrders(ele.getClose(), this.stopProfitRatio);
         if (!updateOrInsert) {
             log.info("cash : {} , invest : {} , total : {}", this.cash, this.invest, this.cash + this.invest * ele.getClose());
-            if (this.statePath != null) {
-                Util.writeFile(this.statePath, saveState().toJSONString().getBytes());
-            }
+            Util.writeFile(this.statePath, saveState().toJSONString().getBytes());
         }
     }
 
 
     public JSONObject recoveryState() {
-
+        
         String json = Util.readFile(this.statePath);
         log.info("loading state ." + json);
         if (StringUtils.isNotEmpty(json)) {

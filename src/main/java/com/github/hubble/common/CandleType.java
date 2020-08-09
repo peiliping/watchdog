@@ -53,4 +53,10 @@ public enum CandleType {
 
         Validate.isTrue((timeSeq + this.offset) % this.interval == 0L);
     }
+
+
+    public long convert(long timeSeq) {
+
+        return (timeSeq + this.offset) / this.interval * this.interval;
+    }
 }

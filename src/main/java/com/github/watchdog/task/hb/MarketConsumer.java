@@ -32,7 +32,7 @@ public class MarketConsumer extends AbstractMarketConsumer {
 
         super(config);
         super.marketName = "Huobi";
-        super.hubble = new BTC(super.marketName, "btcusdt");
+        super.hubble = new BTC(super.marketName, "btcusdt", "/root/watchdog2/state");
         super.hubble.init();
         initCandleType();
     }

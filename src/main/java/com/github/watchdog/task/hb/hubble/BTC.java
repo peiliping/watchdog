@@ -33,19 +33,16 @@ import lombok.extern.slf4j.Slf4j;
 public class BTC extends AbstractHubbleWithCommonRL {
 
 
-    public BTC(String market, String name) {
+    public BTC(String market, String name, String path) {
 
-        super(market, name);
-        super.positionManager = new PositionManager("/root/watchdog2/state");
+        super(market, name, Candles.candles);
+        super.positionManager = new PositionManager(path);
         super.positionManager.recoveryState();
+
     }
 
 
     @Override public AbstractHubble init() {
-
-        for (CandleType ct : Candles.candles) {
-            super.candleSeriesManager.getOrCreateCandleSeries(ct);
-        }
 
         bindPositionManager(CandleType.MIN_1);
         initShockRL(CandleType.MIN_1, 5, 1d);
@@ -54,7 +51,7 @@ public class BTC extends AbstractHubbleWithCommonRL {
         //initLongTermRules(CandleType.HOUR_4);
         {
             CandleType candleType = CandleType.MIN_15;
-            CandleSeries candleSeries = super.candleSeriesManager.getOrCreateCandleSeries(candleType);
+            CandleSeries candleSeries = super.candleSeriesManager.getCandleSeries(candleType);
             PolarIS polarIS = IndicatorHelper.create_POLAR_IS(candleSeries, 1);
             BollingPIS bollingPIS = IndicatorHelper.create_Bolling_PIS(candleSeries, 20);
             IRule bollingDownSupport = new BollingDownSupportPSR(buildName(candleType, "Bolling_Down_Support"), polarIS, bollingPIS).overTurn(true).period();
@@ -90,7 +87,7 @@ public class BTC extends AbstractHubbleWithCommonRL {
 
     @Override public void spark(CandleType candleType, Signal signal, String message) {
 
-        double currentPrice = super.candleSeriesManager.getOrCreateCandleSeries(candleType).getLast().getClose();
+        double currentPrice = super.candleSeriesManager.getCandleSeries(candleType).getLast().getClose();
         super.positionManager.handleSignal(signal, currentPrice);
         String msg = String.format("%s.%s(%s %s) %s", super.market, super.name, currentPrice, signal, message);
         MsgChannel.getInstance().addResult(msg);

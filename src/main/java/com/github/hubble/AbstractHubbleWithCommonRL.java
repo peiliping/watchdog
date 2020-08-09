@@ -25,6 +25,7 @@ import com.github.watchdog.common.Util;
 import com.google.common.collect.Maps;
 
 import java.util.Map;
+import java.util.Set;
 
 
 public abstract class AbstractHubbleWithCommonRL extends AbstractHubble {
@@ -33,9 +34,9 @@ public abstract class AbstractHubbleWithCommonRL extends AbstractHubble {
     protected double shockRatio = 1d;
 
 
-    public AbstractHubbleWithCommonRL(String market, String name) {
+    public AbstractHubbleWithCommonRL(String market, String name, Set<CandleType> candleTypeSet) {
 
-        super(market, name);
+        super(market, name, candleTypeSet);
     }
 
 
@@ -43,7 +44,7 @@ public abstract class AbstractHubbleWithCommonRL extends AbstractHubble {
     protected void initShockRL(CandleType candleType, int step, double shockRatio) {
 
         this.shockRatio = shockRatio;
-        CandleSeries candleSeries = super.candleSeriesManager.getOrCreateCandleSeries(candleType);
+        CandleSeries candleSeries = super.candleSeriesManager.getCandleSeries(candleType);
         PolarIS polarIs = IndicatorHelper.create_POLAR_IS(candleSeries, step);
         SeriesParams params = SeriesParams.builder().name("ShockRate").candleType(candleSeries.getCandleType()).size(candleSeries.getSize()).build();
         ToNumIS<TernaryNumberET> shockIS = new ToNumIS<>(params, value -> Util.formatPercent(value.getFirst() - value.getThird(), value.getThird()));
@@ -56,7 +57,7 @@ public abstract class AbstractHubbleWithCommonRL extends AbstractHubble {
 
     protected void initShortTermRules(CandleType candleType) {
 
-        CandleSeries candleSeries = super.candleSeriesManager.getOrCreateCandleSeries(candleType);
+        CandleSeries candleSeries = super.candleSeriesManager.getCandleSeries(candleType);
         ToNumIS<CandleET> closeSeries = IndicatorHelper.create_CLOSE_IS(candleSeries);
 
         EMAIS ma05 = IndicatorHelper.create_EMA_IS(closeSeries, 5);
@@ -82,7 +83,7 @@ public abstract class AbstractHubbleWithCommonRL extends AbstractHubble {
 
     protected void initMediumTermRules(CandleType candleType) {
 
-        CandleSeries candleSeries = super.candleSeriesManager.getOrCreateCandleSeries(candleType);
+        CandleSeries candleSeries = super.candleSeriesManager.getCandleSeries(candleType);
         ToNumIS<CandleET> closeSeries = IndicatorHelper.create_CLOSE_IS(candleSeries);
 
         EMAIS ma05 = IndicatorHelper.create_EMA_IS(closeSeries, 5);
@@ -109,9 +110,8 @@ public abstract class AbstractHubbleWithCommonRL extends AbstractHubble {
 
     protected void initLongTermRules(CandleType candleType) {
 
-        CandleSeries candleSeries = super.candleSeriesManager.getOrCreateCandleSeries(candleType);
+        CandleSeries candleSeries = super.candleSeriesManager.getCandleSeries(candleType);
         ToNumIS<CandleET> closeSeries = IndicatorHelper.create_CLOSE_IS(candleSeries);
-
         EMAIS ma05 = IndicatorHelper.create_EMA_IS(closeSeries, 5);
         EMAIS ma10 = IndicatorHelper.create_EMA_IS(closeSeries, 10);
         EMAIS ma25 = IndicatorHelper.create_EMA_IS(closeSeries, 25);

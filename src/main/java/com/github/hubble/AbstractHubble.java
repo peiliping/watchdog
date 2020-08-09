@@ -13,6 +13,7 @@ import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
+import java.util.Set;
 
 
 @Getter
@@ -32,11 +33,11 @@ public abstract class AbstractHubble implements SignalCallBack {
     protected BasePositionManager positionManager;
 
 
-    public AbstractHubble(String market, String name) {
+    public AbstractHubble(String market, String name, Set<CandleType> candleTypeSet) {
 
         this.market = market;
         this.name = name;
-        this.candleSeriesManager = new CandleSeriesManager(128);
+        this.candleSeriesManager = new CandleSeriesManager(128, candleTypeSet);
         this.rulesManager = new RulesManager();
         this.trendManager = new TrendManager();
     }
@@ -47,7 +48,7 @@ public abstract class AbstractHubble implements SignalCallBack {
 
     protected void bindPositionManager(CandleType candleType) {
 
-        CandleSeries candleSeries = this.candleSeriesManager.getOrCreateCandleSeries(candleType);
+        CandleSeries candleSeries = this.candleSeriesManager.getCandleSeries(candleType);
         candleSeries.bindUpsertListener(this.positionManager);
     }
 

@@ -9,6 +9,7 @@ import org.apache.commons.lang3.Validate;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 @Getter
@@ -20,13 +21,16 @@ public class CandleSeriesManager {
     protected Map<CandleType, CandleSeries> candles = Maps.newHashMap();
 
 
-    public CandleSeriesManager(int elementSize) {
+    public CandleSeriesManager(int elementSize, Set<CandleType> candleTypeSet) {
 
         this.elementSize = elementSize;
+        for (CandleType ct : candleTypeSet) {
+            getOrCreateCandleSeries(ct);
+        }
     }
 
 
-    public CandleSeries getOrCreateCandleSeries(CandleType candleType) {
+    private CandleSeries getOrCreateCandleSeries(CandleType candleType) {
 
         CandleSeries series = this.candles.get(candleType);
         if (series != null) {
@@ -37,6 +41,12 @@ public class CandleSeriesManager {
         series = new CandleSeries(params);
         this.candles.put(candleType, series);
         return series;
+    }
+
+
+    public CandleSeries getCandleSeries(CandleType candleType) {
+
+        return this.candles.get(candleType);
     }
 
 
@@ -62,5 +72,12 @@ public class CandleSeriesManager {
 
         CandleSeries series = this.candles.get(candleType);
         return series.getLast();
+    }
+
+
+    public void candleSeriesBridge(CandleType sourceType, CandleType targetType) {
+
+        SeriesAggListener aggListener = new SeriesAggListener(this.candles.get(targetType));
+        this.candles.get(sourceType).bindUpsertListener(aggListener);
     }
 }
