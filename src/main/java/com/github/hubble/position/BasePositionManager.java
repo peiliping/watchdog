@@ -8,15 +8,19 @@ import com.github.hubble.series.Series;
 import com.github.hubble.series.SeriesUpsertListener;
 import com.github.hubble.signal.Signal;
 import com.github.watchdog.common.Util;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 @Slf4j
 public abstract class BasePositionManager implements SeriesUpsertListener<CandleET> {
 
 
-    protected final long miniId = (Util.nowSec() / 60 + 1) * 60;
+    @Getter
+    protected final AtomicBoolean status = new AtomicBoolean(false);
 
     protected final double feeRatio;
 
@@ -87,20 +91,20 @@ public abstract class BasePositionManager implements SeriesUpsertListener<Candle
 
     @Override public void onChange(long seq, CandleET ele, boolean updateOrInsert, Series<CandleET> series) {
 
-        if (ele.getId() < this.miniId) {
+        if (!this.status.get()) {
             return;
         }
         stopLossOrders(ele.getClose(), this.stopLossRatio);
         stopProfitOrders(ele.getClose(), this.stopProfitRatio);
         if (!updateOrInsert) {
-            log.info("cash : {} , invest : {} , total : {}", this.cash, this.invest, this.cash + this.invest * ele.getClose());
+            log.warn("id : {} , cash : {} , invest : {} , total : {}", ele.getId(), this.cash, this.invest, this.cash + this.invest * ele.getClose());
             Util.writeFile(this.statePath, saveState().toJSONString().getBytes());
         }
     }
 
 
     public JSONObject recoveryState() {
-        
+
         String json = Util.readFile(this.statePath);
         log.info("loading state ." + json);
         if (StringUtils.isNotEmpty(json)) {

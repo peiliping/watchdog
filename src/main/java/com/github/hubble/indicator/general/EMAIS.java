@@ -24,6 +24,7 @@ public class EMAIS extends CacheIndicatorSeries<NumberET, NumberET, NumberET> {
 
         if (!super.cache.isFull()) {
             super.cache.add(ele);
+            add(new NumberET(ele.getId(), ele.getData()));
             if (super.cache.isFull()) {
                 Double result = null;
                 for (NumberET item : super.cache.getList()) {

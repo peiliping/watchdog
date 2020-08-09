@@ -75,9 +75,10 @@ public class CandleSeriesManager {
     }
 
 
-    public void candleSeriesBridge(CandleType sourceType, CandleType targetType) {
+    public SeriesAggListener candleSeriesBridge(CandleType sourceType, CandleType targetType) {
 
         SeriesAggListener aggListener = new SeriesAggListener(this.candles.get(targetType));
         this.candles.get(sourceType).bindUpsertListener(aggListener);
+        return aggListener;
     }
 }

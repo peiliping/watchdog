@@ -21,6 +21,7 @@ import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.net.URI;
 import java.util.concurrent.Executors;
@@ -137,10 +138,12 @@ public class NettyClient {
         if (tmpChannel != null && tmpChannel.isActive()) {
             MsgChannel.getInstance().addInput(MsgChannel.CMD_RESTART);
             for (String item : this.subscribeItems) {
-                log.info("subscribe : " + item);
-                TextWebSocketFrame frame = new TextWebSocketFrame(item);
-                tmpChannel.writeAndFlush(frame);
-                Util.sleepMS(this.config.getSubscribeInterval());
+                if (StringUtils.isNotBlank(item)) {
+                    log.info("subscribe : " + item);
+                    TextWebSocketFrame frame = new TextWebSocketFrame(item);
+                    tmpChannel.writeAndFlush(frame);
+                    Util.sleepMS(this.config.getSubscribeInterval());
+                }
             }
         }
     }

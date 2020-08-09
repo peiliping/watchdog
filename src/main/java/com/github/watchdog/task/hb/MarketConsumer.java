@@ -60,6 +60,7 @@ public class MarketConsumer extends AbstractMarketConsumer {
             this.buffer.clear();
         }
         this.increment = true;
+        super.hubble.getPositionManager().getStatus().set(true);
     }
 
 
@@ -68,6 +69,7 @@ public class MarketConsumer extends AbstractMarketConsumer {
         if (MsgChannel.CMD_RESTART.equals(msg)) {
             initCandleType();
             this.increment = false;
+            super.hubble.getPositionManager().getStatus().set(false);
             return;
         }
 
@@ -131,7 +133,7 @@ public class MarketConsumer extends AbstractMarketConsumer {
     }
 
 
-    private CandleET convert(JSONObject data) {
+    public static CandleET convert(JSONObject data) {
 
         return new CandleET(data.getLong("id"),
                             data.getDouble("open"), data.getDouble("low"), data.getDouble("high"), data.getDouble("close"),

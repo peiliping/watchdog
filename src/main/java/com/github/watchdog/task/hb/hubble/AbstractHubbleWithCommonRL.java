@@ -1,6 +1,7 @@
-package com.github.hubble;
+package com.github.watchdog.task.hb.hubble;
 
 
+import com.github.hubble.AbstractHubble;
 import com.github.hubble.common.CandleType;
 import com.github.hubble.common.NumCompareFunction;
 import com.github.hubble.ele.CandleET;
