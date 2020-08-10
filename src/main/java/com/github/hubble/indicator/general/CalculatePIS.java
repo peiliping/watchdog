@@ -13,7 +13,7 @@ import java.util.function.ToDoubleBiFunction;
 public class CalculatePIS extends PairIndicatorSeries<IndicatorSeries<? extends Element, NumberET>, IndicatorSeries<? extends Element, NumberET>, NumberET> {
 
 
-    protected ToDoubleBiFunction<NumberET, NumberET> function;
+    protected final ToDoubleBiFunction<NumberET, NumberET> function;
 
 
     public CalculatePIS(SeriesParams params, IndicatorSeries<? extends Element, NumberET> first, IndicatorSeries<? extends Element, NumberET> second,

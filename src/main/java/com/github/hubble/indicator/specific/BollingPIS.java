@@ -12,7 +12,7 @@ import com.github.hubble.series.SeriesParams;
 public class BollingPIS extends PairIndicatorSeries<STDDIS, MAIS, TernaryNumberET> {
 
 
-    private double multiplier;
+    private final double multiplier;
 
 
     public BollingPIS(SeriesParams params, double multiplier, STDDIS stdd, MAIS ma) {

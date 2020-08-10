@@ -12,9 +12,9 @@ import java.util.LinkedList;
 public class LastNQueue<E extends Element> {
 
 
-    private LinkedList<E> list = Lists.newLinkedList();
+    private final LinkedList<E> list = Lists.newLinkedList();
 
-    private int capacity;
+    private final int capacity;
 
 
     public LastNQueue(int capacity) {

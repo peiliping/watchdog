@@ -13,7 +13,7 @@ import java.util.function.ToDoubleFunction;
 public class ToNumIS<I extends Element> extends IndicatorSeries<I, NumberET> {
 
 
-    protected ToDoubleFunction<I> function;
+    protected final ToDoubleFunction<I> function;
 
 
     public ToNumIS(SeriesParams params, ToDoubleFunction<I> function) {

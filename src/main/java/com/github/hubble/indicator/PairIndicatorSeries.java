@@ -18,9 +18,9 @@ public abstract class PairIndicatorSeries<F extends IndicatorSeries, S extends I
         extends IndicatorSeries<NumberET, R> implements SeriesTimeListener {
 
 
-    protected F first;
+    protected final F first;
 
-    protected S second;
+    protected final S second;
 
 
     public PairIndicatorSeries(SeriesParams params, F first, S second) {

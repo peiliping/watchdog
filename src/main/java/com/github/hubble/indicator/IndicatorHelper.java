@@ -19,9 +19,9 @@ import java.util.function.ToDoubleFunction;
 public class IndicatorHelper {
 
 
-    private static Map<String, ToNumIS<CandleET>> CANDLE_TONUM_CACHE = Maps.newHashMap();
+    private static final Map<String, ToNumIS<CandleET>> CANDLE_TONUM_CACHE = Maps.newHashMap();
 
-    private static Map<String, PolarIS> POLAR_IS_CACHE = Maps.newHashMap();
+    private static final Map<String, PolarIS> POLAR_IS_CACHE = Maps.newHashMap();
 
 
     private static ToNumIS<CandleET> create_TONUM_IS(CandleSeries candleSeries, String name, ToDoubleFunction<CandleET> function) {

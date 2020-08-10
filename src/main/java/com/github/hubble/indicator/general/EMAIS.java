@@ -10,7 +10,7 @@ import com.github.hubble.series.SeriesParams;
 public class EMAIS extends CacheIndicatorSeries<NumberET, NumberET, NumberET> {
 
 
-    private double multiplier;
+    private final double multiplier;
 
 
     public EMAIS(SeriesParams params, int step, double multiplier) {

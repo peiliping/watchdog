@@ -11,7 +11,7 @@ import com.github.hubble.series.SeriesParams;
 public class ConstIS<I extends Element> extends IndicatorSeries<I, NumberET> {
 
 
-    private double value;
+    private final double value;
 
 
     public ConstIS(SeriesParams params, double value) {

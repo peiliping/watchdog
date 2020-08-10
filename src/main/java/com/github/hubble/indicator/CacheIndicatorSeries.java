@@ -10,7 +10,7 @@ public abstract class CacheIndicatorSeries<I extends Element, R extends Element,
 
 
     @Getter
-    protected LastNQueue<C> cache;
+    protected final LastNQueue<C> cache;
 
 
     public CacheIndicatorSeries(SeriesParams params, int cacheSize) {
