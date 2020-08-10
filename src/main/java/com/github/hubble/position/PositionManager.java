@@ -27,7 +27,7 @@ public class PositionManager extends BasePositionManager {
 
     public PositionManager(String path) {
 
-        super(0.002d, 0.02d, 0.02d);
+        super(0.002d, 0.04d, 0.025d);
         super.statePath = path;
         this.sequenceId = new AtomicLong(1);
     }
@@ -42,16 +42,16 @@ public class PositionManager extends BasePositionManager {
                 buy(price, this.unit, 0.01d, signal);
                 break;
             case CALL:
-                buy(price, this.unit, 0.01d, signal);
+                buy(price, this.unit, 0.015d, signal);
                 break;
             case SHOW_HAND:
                 //TODO
                 break;
             case FOLD:
-                stopProfitOrders(price, 0.008d);
+                stopProfitOrders(price, 0.01d);
                 break;
             case MUCK:
-                stopProfitOrders(price, -super.stopLossRatio);
+                stopProfitOrders(price, -this.stopLossRatio);
                 break;
         }
         saveState(price);

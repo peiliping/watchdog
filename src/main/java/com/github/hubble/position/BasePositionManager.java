@@ -72,6 +72,7 @@ public abstract class BasePositionManager implements SeriesUpsertListener<Candle
 
         if (check4Sell(vol)) {
             this.invest -= vol;
+            this.invest = Double.valueOf(this.formatter.format(this.invest));
             this.cash += price * vol * (1 - this.feeRatio);
             log.info("sell out : {} , {} ", price, vol);
             return true;

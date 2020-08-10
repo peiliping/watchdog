@@ -55,7 +55,7 @@ public class BackTest {
         }
 
         //先加载一些数据预热
-        long splitTime = 1596384000;
+        long splitTime = 1593619200;
         SortedMap<Long, CandleET> first = candleETTreeMap.headMap(splitTime);
         for (Map.Entry<Long, CandleET> entry : first.entrySet()) {
             btc.addCandleET(CandleType.MIN_1, entry.getValue(), false);
