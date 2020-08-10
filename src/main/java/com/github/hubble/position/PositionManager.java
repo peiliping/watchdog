@@ -61,7 +61,7 @@ public class PositionManager extends BasePositionManager {
 
         boolean r = super.buy(price, vol);
         if (r) {
-            Order od = Order.builder().id(this.sequenceId.getAndIncrement()).price(price).volume(vol).signal(signal)
+            Order od = Order.builder().id(this.sequenceId.getAndIncrement()).timeSequence(clock.get()).price(price).volume(vol).signal(signal)
                     .expectedProfitPrice(expectedProfitRate != null ? price * (1 + expectedProfitRate) : null).build();
             this.orderBooks.put(od.getId().toString(), od);
         }
@@ -74,6 +74,7 @@ public class PositionManager extends BasePositionManager {
         if (this.orderBooks.containsKey(od.getId().toString())) {
             boolean r = super.sell(price, od.getVolume());
             if (r) {
+                od.end(clock.get(), price);
                 this.orderBooks.remove(od.getId().toString());
                 return true;
             }

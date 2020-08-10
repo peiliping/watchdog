@@ -7,16 +7,13 @@
             <pattern>%d{HH:mm:ss.SSS} %class %-5level %msg%n</pattern>
         </encoder>
     </appender>
-    <appender name="main" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <Encoding>UTF-8</Encoding>
+    <appender name="main" class="ch.qos.logback.core.FileAppender">
+        <encoding>UTF-8</encoding>
         <file>${LOG_HOME}/watchdog.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>${LOG_HOME}/watchdog.log-%d{yyyy-MM-dd}</FileNamePattern>
-            <MaxHistory>7</MaxHistory>
-        </rollingPolicy>
         <layout class="ch.qos.logback.classic.PatternLayout">
             <pattern>%d{HH:mm:ss.SSS} %class %-5level %msg%n</pattern>
         </layout>
+        <append>false</append>
     </appender>
 
     <root level="INFO">

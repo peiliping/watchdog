@@ -3,6 +3,7 @@ package com.github.hubble.position;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.github.hubble.common.Clock;
 import com.github.hubble.ele.CandleET;
 import com.github.hubble.series.Series;
 import com.github.hubble.series.SeriesUpsertListener;
@@ -24,6 +25,8 @@ public abstract class BasePositionManager implements SeriesUpsertListener<Candle
     protected final AtomicBoolean status = new AtomicBoolean(false);
 
     protected final DecimalFormat formatter = new DecimalFormat("0.00000000");
+
+    protected final Clock clock = new Clock();
 
     protected final double feeRatio;
 
@@ -95,6 +98,7 @@ public abstract class BasePositionManager implements SeriesUpsertListener<Candle
 
     @Override public void onChange(long seq, CandleET ele, boolean updateOrInsert, Series<CandleET> series) {
 
+        this.clock.update(ele.getId());
         if (!this.status.get()) {
             return;
         }
