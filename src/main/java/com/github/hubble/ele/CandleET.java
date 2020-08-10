@@ -56,17 +56,17 @@ public class CandleET extends Element {
 
     public List<CandleET> split4BackTest() {
 
-        List<CandleET> OLHC = Lists.newArrayList();
-        OLHC.add(new CandleET(this.getId(), this.getOpen(), this.getOpen(), this.getOpen(), this.getOpen(), this.getAmount(), this.getVolume(), this.getCount()));
+        List<CandleET> olhc = Lists.newArrayList();
+        olhc.add(new CandleET(this.getId(), this.getOpen(), this.getOpen(), this.getOpen(), this.getOpen(), this.getAmount(), this.getVolume(), this.getCount()));
         if (this.getClose() > this.getOpen()) {
-            OLHC.add(new CandleET(this.getId(), this.getOpen(), this.getLow(), this.getOpen(), this.getLow(), this.getAmount(), this.getVolume(), this.getCount()));
-            OLHC.add(new CandleET(this.getId(), this.getOpen(), this.getLow(), this.getHigh(), this.getHigh(), this.getAmount(), this.getVolume(), this.getCount()));
+            olhc.add(new CandleET(this.getId(), this.getOpen(), this.getLow(), this.getOpen(), this.getLow(), this.getAmount(), this.getVolume(), this.getCount()));
+            olhc.add(new CandleET(this.getId(), this.getOpen(), this.getLow(), this.getHigh(), this.getHigh(), this.getAmount(), this.getVolume(), this.getCount()));
         } else {
-            OLHC.add(new CandleET(this.getId(), this.getOpen(), this.getOpen(), this.getHigh(), this.getHigh(), this.getAmount(), this.getVolume(), this.getCount()));
-            OLHC.add(new CandleET(this.getId(), this.getOpen(), this.getLow(), this.getHigh(), this.getLow(), this.getAmount(), this.getVolume(), this.getCount()));
+            olhc.add(new CandleET(this.getId(), this.getOpen(), this.getOpen(), this.getHigh(), this.getHigh(), this.getAmount(), this.getVolume(), this.getCount()));
+            olhc.add(new CandleET(this.getId(), this.getOpen(), this.getLow(), this.getHigh(), this.getLow(), this.getAmount(), this.getVolume(), this.getCount()));
         }
-        OLHC.add(this);
-        return OLHC;
+        olhc.add(this);
+        return olhc;
     }
 }
 

@@ -8,7 +8,7 @@ import com.github.hubble.rule.RuleResult;
 public class TrendRuleResult extends RuleResult {
 
 
-    private TrendManager trendManager;
+    private final TrendManager trendManager;
 
 
     public TrendRuleResult(TrendManager trendManager) {

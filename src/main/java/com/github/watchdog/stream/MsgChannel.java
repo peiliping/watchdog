@@ -13,9 +13,9 @@ public class MsgChannel {
 
     public static final String CMD_RESTART = "$RESTART$";
 
-    private LinkedBlockingQueue<String> input = new LinkedBlockingQueue<>();
+    private final LinkedBlockingQueue<String> input = new LinkedBlockingQueue<>();
 
-    private LinkedBlockingQueue<String> result = new LinkedBlockingQueue<>();
+    private final LinkedBlockingQueue<String> result = new LinkedBlockingQueue<>();
 
     private static MsgChannel instance;
 

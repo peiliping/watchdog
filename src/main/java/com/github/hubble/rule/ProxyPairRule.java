@@ -9,9 +9,9 @@ import java.util.List;
 public abstract class ProxyPairRule extends IRule {
 
 
-    protected IRule leftRule;
+    protected final IRule leftRule;
 
-    protected IRule rightRule;
+    protected final IRule rightRule;
 
 
     public ProxyPairRule(String name, IRule leftRule, IRule rightRule) {

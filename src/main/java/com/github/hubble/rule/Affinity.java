@@ -8,9 +8,9 @@ import lombok.Getter;
 public class Affinity {
 
 
-    private IRule rule;
+    private final IRule rule;
 
-    private RuleResult result;
+    private final RuleResult result;
 
 
     public Affinity(IRule rule, RuleResult result) {

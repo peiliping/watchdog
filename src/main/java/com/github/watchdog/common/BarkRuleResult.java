@@ -9,7 +9,7 @@ import com.github.watchdog.stream.MsgChannel;
 public class BarkRuleResult extends RuleResult {
 
 
-    private MsgChannel msgChannel = MsgChannel.getInstance();
+    private final MsgChannel msgChannel = MsgChannel.getInstance();
 
 
     public BarkRuleResult(String message) {

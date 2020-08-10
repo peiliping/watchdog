@@ -21,9 +21,9 @@ import java.util.Map;
 public class MarketConsumer extends AbstractMarketConsumer {
 
 
-    private Map<CandleType, List<CandleET>> buffer = Maps.newHashMap();
+    private final Map<CandleType, List<CandleET>> buffer = Maps.newHashMap();
 
-    private Map<CandleType, Boolean> getHistoryData = Maps.newHashMap();
+    private final Map<CandleType, Boolean> getHistoryData = Maps.newHashMap();
 
     private boolean increment = false;
 

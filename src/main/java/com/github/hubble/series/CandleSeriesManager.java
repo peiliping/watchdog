@@ -16,9 +16,9 @@ import java.util.Set;
 public class CandleSeriesManager {
 
 
-    protected int elementSize;
+    protected final Map<CandleType, CandleSeries> candles = Maps.newHashMap();
 
-    protected Map<CandleType, CandleSeries> candles = Maps.newHashMap();
+    protected final int elementSize;
 
 
     public CandleSeriesManager(int elementSize, Set<CandleType> candleTypeSet) {

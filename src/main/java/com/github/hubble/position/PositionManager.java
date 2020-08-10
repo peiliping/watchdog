@@ -18,18 +18,17 @@ import java.util.concurrent.atomic.AtomicLong;
 public class PositionManager extends BasePositionManager {
 
 
-    private final AtomicLong sequenceId;
+    private final Map<String, Order> orderBooks = Maps.newHashMap();
+
+    private final AtomicLong sequenceId = new AtomicLong(1);
 
     private final double unit = 0.005d;
-
-    private final Map<String, Order> orderBooks = Maps.newHashMap();
 
 
     public PositionManager(String path) {
 
-        super(0.002d, 0.04d, 0.025d);
+        super(0.002d, 0.03d, 0.025d);
         super.statePath = path;
-        this.sequenceId = new AtomicLong(1);
     }
 
 
@@ -42,10 +41,10 @@ public class PositionManager extends BasePositionManager {
                 buy(price, this.unit, 0.01d, signal);
                 break;
             case CALL:
-                buy(price, this.unit, 0.015d, signal);
+                buy(price, this.unit, 0.01d, signal);
                 break;
             case SHOW_HAND:
-                //TODO
+                buy(price, this.unit * 4, null, signal);
                 break;
             case FOLD:
                 stopProfitOrders(price, 0.01d);

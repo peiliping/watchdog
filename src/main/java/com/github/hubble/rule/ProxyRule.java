@@ -9,7 +9,7 @@ import java.util.List;
 public abstract class ProxyRule extends IRule {
 
 
-    protected IRule rule;
+    protected final IRule rule;
 
 
     public ProxyRule(String name, IRule rule) {

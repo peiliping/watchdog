@@ -9,9 +9,9 @@ import java.util.function.Function;
 public class TrendBGRule extends IRule {
 
 
-    protected TrendEntity trendEntity;
+    protected final TrendEntity trendEntity;
 
-    protected Function<TrendEntity, Boolean> function;
+    protected final Function<TrendEntity, Boolean> function;
 
 
     public TrendBGRule(String name, TrendEntity entity, Function<TrendEntity, Boolean> fc) {

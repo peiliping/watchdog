@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class AbstractConsumer implements Runnable {
 
 
-    protected MsgChannel msgChannel = MsgChannel.getInstance();
+    protected final MsgChannel msgChannel = MsgChannel.getInstance();
 
 
     @Override public void run() {

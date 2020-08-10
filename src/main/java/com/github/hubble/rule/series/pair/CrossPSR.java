@@ -17,22 +17,22 @@ public abstract class CrossPSR extends PairSeriesRule<NumberET> {
     public CrossPSR(String name, Series<NumberET> first, Series<NumberET> second) {
 
         super(name, first, second);
-        super.continuousStep = 4;
+        super.continuousStep = 5;
     }
 
 
     @Override public boolean match(long id) {
 
-        NumberET e11 = super.first.get(id);
-        NumberET e12 = super.second.get(id);
-        if (this.f1.apply(e11.getData(), e12.getData())) {
-            NumberET e21 = super.first.getBefore(id, 1);
-            NumberET e22 = super.second.getBefore(id, 1);
-            NumberET e31 = super.first.getBefore(id, 2);
-            NumberET e32 = super.second.getBefore(id, 2);
+        NumberET e11 = super.first.getBefore(id, 0);
+        NumberET e12 = super.second.getBefore(id, 0);
+        NumberET e21 = super.first.getBefore(id, 1);
+        NumberET e22 = super.second.getBefore(id, 1);
+        if (this.f1.apply(e11.getData(), e12.getData()) && this.f1.apply(e21.getData(), e22.getData())) {
             NumberET e41 = super.first.getBefore(id, 3);
             NumberET e42 = super.second.getBefore(id, 3);
-            return this.f1.apply(e21.getData(), e22.getData()) && this.f1.apply(e31.getData(), e32.getData()) && this.f2.apply(e41.getData(), e42.getData());
+            NumberET e51 = super.first.getBefore(id, 4);
+            NumberET e52 = super.second.getBefore(id, 4);
+            return this.f2.apply(e41.getData(), e42.getData()) && this.f2.apply(e51.getData(), e52.getData());
         }
         return false;
     }

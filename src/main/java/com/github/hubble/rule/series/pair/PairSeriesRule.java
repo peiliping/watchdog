@@ -9,9 +9,9 @@ import com.github.hubble.series.Series;
 public abstract class PairSeriesRule<E extends Element> extends IRule {
 
 
-    protected Series<E> first;
+    protected final Series<E> first;
 
-    protected Series<E> second;
+    protected final Series<E> second;
 
     protected int continuousStep = 1;
 

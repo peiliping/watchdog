@@ -20,15 +20,15 @@ import java.util.Set;
 public abstract class AbstractHubble implements SignalCallBack {
 
 
-    protected String market;
+    protected final String market;
 
-    protected String name;
+    protected final String name;
 
-    protected CandleSeriesManager candleSeriesManager;
+    protected final CandleSeriesManager candleSeriesManager;
 
-    protected RulesManager rulesManager;
+    protected final RulesManager rulesManager;
 
-    protected TrendManager trendManager;
+    protected final TrendManager trendManager;
 
     protected BasePositionManager positionManager;
 

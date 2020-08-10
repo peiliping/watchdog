@@ -9,7 +9,7 @@ import com.github.hubble.series.Series;
 public class NumComparePSR extends PairSeriesRule<NumberET> {
 
 
-    private NumCompareFunction numCompareFunction;
+    private final NumCompareFunction numCompareFunction;
 
 
     public NumComparePSR(String name, Series<NumberET> first, Series<NumberET> second, NumCompareFunction numCompareFunction) {

@@ -21,7 +21,7 @@ import java.util.List;
 public abstract class IRule {
 
 
-    protected String name;
+    protected final String name;
 
     private boolean lastResultMatched = false;
 

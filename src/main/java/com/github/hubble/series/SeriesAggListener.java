@@ -8,7 +8,7 @@ import org.apache.commons.lang3.Validate;
 public class SeriesAggListener implements SeriesUpsertListener<CandleET> {
 
 
-    private CandleSeries candleSeries;
+    private final CandleSeries candleSeries;
 
     private CandleET candleET;
 

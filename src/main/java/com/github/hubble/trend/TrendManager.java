@@ -14,9 +14,9 @@ import java.util.Map;
 public class TrendManager {
 
 
-    private Map<CandleType, TrendEntity> candleTypeTrendEntityMap = Maps.newHashMap();
+    private final Map<CandleType, TrendEntity> candleTypeTrendEntityMap = Maps.newHashMap();
 
-    private Map<Period, TrendEntity> periodTrendEntityMap = Maps.newHashMap();
+    private final Map<Period, TrendEntity> periodTrendEntityMap = Maps.newHashMap();
 
 
     public void init(CandleType candleType, Period period, TrendRule trendRule, Map<TrendType, TrendRule> degreeRules) {

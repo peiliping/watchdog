@@ -9,7 +9,7 @@ import com.github.hubble.series.Series;
 public abstract class SeriesRule<E extends Element> extends IRule {
 
 
-    protected Series<E> series;
+    protected final Series<E> series;
 
     protected int continuousStep = 1;
 

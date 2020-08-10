@@ -15,9 +15,9 @@ import java.util.Set;
 public class RulesManager {
 
 
-    private Map<CandleType, List<Affinity>> rules = Maps.newHashMap();
+    private final Map<CandleType, List<Affinity>> rules = Maps.newHashMap();
 
-    private Set<IRule> ruleSet = Sets.newHashSet();
+    private final Set<IRule> ruleSet = Sets.newHashSet();
 
 
     private void checkRef(IRule rule) {

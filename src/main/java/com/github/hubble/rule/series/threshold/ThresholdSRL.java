@@ -10,9 +10,9 @@ import com.github.hubble.series.Series;
 public class ThresholdSRL extends SeriesRule<NumberET> {
 
 
-    private double threshold;
+    private final double threshold;
 
-    private NumCompareFunction numCompareFunction;
+    private final NumCompareFunction numCompareFunction;
 
 
     public ThresholdSRL(String name, Series<NumberET> series, double threshold, int step, NumCompareFunction ncFunction) {

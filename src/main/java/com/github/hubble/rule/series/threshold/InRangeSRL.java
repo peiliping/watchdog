@@ -10,13 +10,13 @@ import com.github.hubble.series.Series;
 public class InRangeSRL extends SeriesRule<NumberET> {
 
 
-    private double up;
+    private final double up;
 
-    private double down;
+    private final double down;
 
-    private NumCompareFunction upF;
+    private final NumCompareFunction upF;
 
-    private NumCompareFunction downF;
+    private final NumCompareFunction downF;
 
 
     public InRangeSRL(String name, Series<NumberET> series, double up, boolean includedUp, double down, boolean includedDown) {
