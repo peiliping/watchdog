@@ -3,7 +3,7 @@ BEGIN{
   f=1593532800
 }
 {
-  for(i=0;i<81;i++){
+  for(i=0;i<62;i++){
     k1=f+43200*i;
     k2=f+43200*(i+1);
     r=r"{\"req\":\"market.btcusdt.kline.1min\",\"symbol\":\"btcusdt\",\"period\":\"1min\",\"from\":"k1",\"to\":"k2"}$"
@@ -21,7 +21,6 @@ java -jar target/watchdog-1.0-SNAPSHOT.jar \
 	--ssl --host api.huobiasia.vip \
 	--market hb \
 	--heartBeat '{"pong":%s}' \
-	--subscribe $subs \
-	> /tmp/x.log
+	--subscribe $subs 
 
-## grep Binary x.log  | grep -v ping | awk '{print $13}' > history.log
+## grep Binary watchdog.log  | grep -v ping | awk '{print $11}' > /tmp/history.log
