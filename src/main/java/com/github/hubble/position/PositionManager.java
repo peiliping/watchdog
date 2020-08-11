@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class PositionManager extends BasePositionManager {
 
 
-    private final Map<String, Order> orderBooks = Maps.newHashMap();
+    private final Map<Long, Order> orderBooks = Maps.newHashMap();
 
     private final AtomicLong sequenceId = new AtomicLong(1);
 
@@ -27,7 +27,7 @@ public class PositionManager extends BasePositionManager {
 
     public PositionManager(String path) {
 
-        super(0.002d, 0.03d, 0.025d);
+        super(0.002d, 0.025d, 0.03d);
         super.statePath = path;
     }
 
@@ -47,10 +47,10 @@ public class PositionManager extends BasePositionManager {
                 buy(price, this.unit * 4, null, signal);
                 break;
             case FOLD:
-                stopProfitOrders(price, 0.01d);
+                stopProfitOrders(signal, price, 0.012d);
                 break;
             case MUCK:
-                stopProfitOrders(price, -this.stopLossRatio);
+                stopProfitOrders(signal, price, -this.stopLossRatio);
                 break;
         }
         saveState(price);
@@ -61,21 +61,21 @@ public class PositionManager extends BasePositionManager {
 
         boolean r = super.buy(price, vol);
         if (r) {
-            Order od = Order.builder().id(this.sequenceId.getAndIncrement()).timeSequence(clock.get()).price(price).volume(vol).signal(signal)
+            Order od = Order.builder().id(this.sequenceId.getAndIncrement()).timeSeq(clock.get()).inPrice(price).volume(vol).signal(signal)
                     .expectedProfitPrice(expectedProfitRate != null ? price * (1 + expectedProfitRate) : null).build();
-            this.orderBooks.put(od.getId().toString(), od);
+            this.orderBooks.put(od.getId(), od);
         }
         return r;
     }
 
 
-    protected boolean sell(double price, Order od) {
+    protected boolean sell(double price, Order od, Signal signal) {
 
-        if (this.orderBooks.containsKey(od.getId().toString())) {
+        if (this.orderBooks.containsKey(od.getId())) {
             boolean r = super.sell(price, od.getVolume());
             if (r) {
-                od.end(clock.get(), price);
-                this.orderBooks.remove(od.getId().toString());
+                od.end(clock.get(), price, signal);
+                this.orderBooks.remove(od.getId());
                 return true;
             }
         }
@@ -83,13 +83,13 @@ public class PositionManager extends BasePositionManager {
     }
 
 
-    @Override protected void stopProfitOrders(double price, double ratio) {
+    @Override protected void stopProfitOrders(Signal signal, double price, double ratio) {
 
         final List<Order> stopOrders = Lists.newArrayList();
         double limit = price / (1 + ratio);
-        for (Map.Entry<String, Order> entry : this.orderBooks.entrySet()) {
+        for (Map.Entry<Long, Order> entry : this.orderBooks.entrySet()) {
             Order od = entry.getValue();
-            if (od.getPrice() <= limit) {
+            if (od.getInPrice() <= limit) {
                 stopOrders.add(od);
             } else if (od.getExpectedProfitPrice() != null) {
                 if (od.getExpectedProfitPrice() <= price) {
@@ -98,23 +98,23 @@ public class PositionManager extends BasePositionManager {
             }
         }
         for (Order order : stopOrders) {
-            sell(price, order);
+            sell(price, order, signal);
         }
     }
 
 
-    @Override protected void stopLossOrders(double price, double ratio) {
+    @Override protected void stopLossOrders(Signal signal, double price, double ratio) {
 
         final List<Order> stopOrders = Lists.newArrayList();
         double limit = price / (1 - ratio);
-        for (Map.Entry<String, Order> entry : this.orderBooks.entrySet()) {
+        for (Map.Entry<Long, Order> entry : this.orderBooks.entrySet()) {
             Order od = entry.getValue();
-            if (od.getPrice() >= limit) {
+            if (od.getInPrice() >= limit) {
                 stopOrders.add(od);
             }
         }
         for (Order order : stopOrders) {
-            sell(price, order);
+            sell(price, order, signal);
         }
     }
 
@@ -127,7 +127,7 @@ public class PositionManager extends BasePositionManager {
         }
         this.sequenceId.set(jsonObject.getLong("sequenceId"));
         String orders = jsonObject.getString("orderBooks");
-        this.orderBooks.putAll(JSON.parseObject(orders, new TypeReference<Map<String, Order>>() {
+        this.orderBooks.putAll(JSON.parseObject(orders, new TypeReference<Map<Long, Order>>() {
 
 
         }));

@@ -2,6 +2,7 @@ package com.github.hubble.rule;
 
 
 import com.github.hubble.common.CandleType;
+import com.github.watchdog.common.Util;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -27,7 +28,7 @@ public class RuleResult {
     public void call(CandleType candleType, long id) {
 
         if (this.message != null) {
-            log.info(id + " " + this.message);
+            log.info(Util.timestamp2Date(id) + " " + this.message);
         }
     }
 }

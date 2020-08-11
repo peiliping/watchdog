@@ -16,6 +16,7 @@ public class Candles {
         candles.add(CandleType.MIN_1);
         candles.add(CandleType.MIN_15);
         candles.add(CandleType.MIN_30);
+        candles.add(CandleType.MIN_60);
     }
 
 }

@@ -2,6 +2,7 @@ package com.github.hubble.position;
 
 
 import com.github.hubble.signal.Signal;
+import com.github.watchdog.common.Util;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,11 +16,11 @@ import lombok.extern.slf4j.Slf4j;
 public class Order {
 
 
-    private Long id;
+    private long id;
 
-    private long timeSequence;
+    private long timeSeq;
 
-    private double price;
+    private double inPrice;
 
     private double volume;
 
@@ -28,8 +29,9 @@ public class Order {
     private Double expectedProfitPrice;
 
 
-    public void end(long endTime, double endPrice) {
+    public void end(long endTime, double endPrice, Signal endSignal) {
 
-        log.warn("id : {} , in-time : {} , in : {} ,out-time: {} , out : {} , vol : {} , signal : {}", id, timeSequence, price, endTime, endPrice, volume, signal);
+        log.warn("id:{},in-time:{},in-price:{},in-signal:{},out-time:{},out-price:{},out-signal:{},vol:{}",
+                 id, Util.timestamp2Date(timeSeq), inPrice, signal, Util.timestamp2Date(endTime), endPrice, endSignal, volume);
     }
 }

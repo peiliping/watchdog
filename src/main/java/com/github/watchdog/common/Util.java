@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -76,6 +78,13 @@ public class Util {
     public static long nowSec() {
 
         return System.currentTimeMillis() / 1000;
+    }
+
+
+    public static String timestamp2Date(long timeSeq) {
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm");
+        return simpleDateFormat.format(new Date(timeSeq * 1000));
     }
 
 

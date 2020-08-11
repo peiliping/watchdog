@@ -49,9 +49,6 @@ public abstract class BasePositionManager implements SeriesUpsertListener<Candle
     }
 
 
-    public abstract void handleSignal(Signal signal, double price);
-
-
     protected boolean buy(double price, double vol) {
 
         if (check4Buy(price, vol)) {
@@ -90,10 +87,13 @@ public abstract class BasePositionManager implements SeriesUpsertListener<Candle
     }
 
 
-    protected abstract void stopProfitOrders(double price, double ratio);
+    public abstract void handleSignal(Signal signal, double price);
 
 
-    protected abstract void stopLossOrders(double price, double ratio);
+    protected abstract void stopProfitOrders(Signal signal, double price, double ratio);
+
+
+    protected abstract void stopLossOrders(Signal signal, double price, double ratio);
 
 
     @Override public void onChange(long seq, CandleET ele, boolean updateOrInsert, Series<CandleET> series) {
@@ -102,8 +102,8 @@ public abstract class BasePositionManager implements SeriesUpsertListener<Candle
         if (!this.status.get()) {
             return;
         }
-        stopLossOrders(ele.getClose(), this.stopLossRatio);
-        stopProfitOrders(ele.getClose(), this.stopProfitRatio);
+        stopLossOrders(Signal.NONE, ele.getClose(), this.stopLossRatio);
+        stopProfitOrders(Signal.NONE, ele.getClose(), this.stopProfitRatio);
         if (!updateOrInsert) {
             saveState(ele.getClose());
         }

@@ -7,6 +7,7 @@ import com.github.hubble.AbstractHubble;
 import com.github.hubble.common.CandleType;
 import com.github.hubble.ele.CandleET;
 import com.github.hubble.series.CandleSeriesManager;
+import com.github.hubble.signal.Signal;
 import com.github.watchdog.task.hb.hubble.BTC;
 import com.google.common.collect.Maps;
 import com.google.common.io.Files;
@@ -75,6 +76,8 @@ public class BackTest {
                 }
             }
         }
+
+        btc.getPositionManager().handleSignal(Signal.MUCK, btc.getCandleSeriesManager().getLastCandleET(CandleType.MIN_1).getClose());
     }
 
 
