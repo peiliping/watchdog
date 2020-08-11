@@ -11,6 +11,7 @@ import com.github.hubble.signal.SignalCallBack;
 import com.github.hubble.trend.TrendManager;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 
 import java.util.List;
 import java.util.Set;
@@ -43,14 +44,17 @@ public abstract class AbstractHubble implements SignalCallBack {
     }
 
 
-    public abstract AbstractHubble init();
+    protected void initPositionManager(BasePositionManager positionManager) {
 
-
-    protected void bindPositionManager(CandleType candleType) {
-
-        CandleSeries candleSeries = this.candleSeriesManager.getCandleSeries(candleType);
+        this.positionManager = positionManager;
+        this.positionManager.recoveryState();
+        CandleSeries candleSeries = this.candleSeriesManager.getCandleSeries(CandleType.MIN_1);
+        Validate.notNull(candleSeries);
         candleSeries.bindUpsertListener(this.positionManager);
     }
+
+
+    public abstract AbstractHubble init();
 
 
     public void addCandleETs(CandleType candleType, List<CandleET> candleETList) {

@@ -4,7 +4,6 @@ package com.github.hubble.series;
 import com.github.hubble.common.CandleType;
 import com.github.hubble.ele.CandleET;
 import com.google.common.collect.Maps;
-import lombok.Getter;
 import org.apache.commons.lang3.Validate;
 
 import java.util.List;
@@ -12,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 
 
-@Getter
 public class CandleSeriesManager {
 
 
@@ -77,8 +75,12 @@ public class CandleSeriesManager {
 
     public SeriesAggListener candleSeriesBridge(CandleType sourceType, CandleType targetType) {
 
-        SeriesAggListener aggListener = new SeriesAggListener(this.candles.get(targetType));
-        this.candles.get(sourceType).bindUpsertListener(aggListener);
+        CandleSeries source = this.candles.get(sourceType);
+        CandleSeries target = this.candles.get(targetType);
+        Validate.notNull(source);
+        Validate.notNull(target);
+        SeriesAggListener aggListener = new SeriesAggListener(target);
+        source.bindUpsertListener(aggListener);
         return aggListener;
     }
 }

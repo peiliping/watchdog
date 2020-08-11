@@ -9,7 +9,6 @@ import com.github.hubble.series.Series;
 import com.github.hubble.series.SeriesUpsertListener;
 import com.github.hubble.signal.Signal;
 import com.github.watchdog.common.Util;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -21,7 +20,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public abstract class BasePositionManager implements SeriesUpsertListener<CandleET> {
 
 
-    @Getter
     protected final AtomicBoolean status = new AtomicBoolean(false);
 
     protected final DecimalFormat formatter = new DecimalFormat("0.00000000");
@@ -30,7 +28,7 @@ public abstract class BasePositionManager implements SeriesUpsertListener<Candle
 
     protected final double feeRatio;
 
-    protected double cash = 1000d;
+    protected double cash = 1500d;
 
     protected double invest = 0d;
 
@@ -46,6 +44,18 @@ public abstract class BasePositionManager implements SeriesUpsertListener<Candle
         this.feeRatio = feeRatio;
         this.stopLossRatio = stopLossRatio;
         this.stopProfitRatio = stopProfitRatio;
+    }
+
+
+    public void open() {
+
+        this.status.set(true);
+    }
+
+
+    public void close() {
+
+        this.status.set(false);
     }
 
 

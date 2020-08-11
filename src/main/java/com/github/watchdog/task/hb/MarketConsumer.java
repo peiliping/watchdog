@@ -23,7 +23,7 @@ public class MarketConsumer extends AbstractMarketConsumer {
 
     private final Map<CandleType, List<CandleET>> buffer = Maps.newHashMap();
 
-    private final Map<CandleType, Boolean> getHistoryData = Maps.newHashMap();
+    private final Map<CandleType, Boolean> hasHistoryData = Maps.newHashMap();
 
     private boolean increment = false;
 
@@ -34,21 +34,21 @@ public class MarketConsumer extends AbstractMarketConsumer {
         super.marketName = "Huobi";
         super.hubble = new BTC(super.marketName, "btcusdt", "/root/watchdog2/state");
         super.hubble.init();
-        initCandleType();
+        initHistoryDataMap();
     }
 
 
-    private void initCandleType() {
+    private void initHistoryDataMap() {
 
         for (CandleType candleType : Candles.candles) {
-            this.getHistoryData.put(candleType, false);
+            this.hasHistoryData.put(candleType, false);
         }
     }
 
 
     private void checkOpenIncrement() {
 
-        for (Map.Entry<CandleType, Boolean> entry : this.getHistoryData.entrySet()) {
+        for (Map.Entry<CandleType, Boolean> entry : this.hasHistoryData.entrySet()) {
             if (!entry.getValue()) {
                 return;
             }
@@ -60,16 +60,16 @@ public class MarketConsumer extends AbstractMarketConsumer {
             this.buffer.clear();
         }
         this.increment = true;
-        super.hubble.getPositionManager().getStatus().set(true);
+        super.hubble.getPositionManager().open();
     }
 
 
     @Override protected void handle(String msg) {
 
         if (MsgChannel.CMD_RESTART.equals(msg)) {
-            initCandleType();
+            initHistoryDataMap();
             this.increment = false;
-            super.hubble.getPositionManager().getStatus().set(false);
+            super.hubble.getPositionManager().close();
             return;
         }
 
@@ -97,7 +97,7 @@ public class MarketConsumer extends AbstractMarketConsumer {
             return;
         }
         CandleType candleType = CandleType.of(step);
-        if (candleType == null || !this.getHistoryData.containsKey(candleType)) {
+        if (candleType == null || !this.hasHistoryData.containsKey(candleType)) {
             return;
         }
 
@@ -109,7 +109,7 @@ public class MarketConsumer extends AbstractMarketConsumer {
                 candleETList.add(candleET);
             }
             super.hubble.addCandleETs(candleType, candleETList);
-            this.getHistoryData.put(candleType, true);
+            this.hasHistoryData.put(candleType, true);
             checkOpenIncrement();
         } else {
             CandleET candleET = convert(JSON.parseObject(pushMsg.getTick()));
