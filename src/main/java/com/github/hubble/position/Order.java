@@ -18,20 +18,49 @@ public class Order {
 
     private long id;
 
-    private long timeSeq;
+    private long inTime;
 
     private double inPrice;
 
+    private Signal inSignal;
+
     private double volume;
 
-    private Signal signal;
+    private Double targetPrice;
 
-    private Double expectedProfitPrice;
+    private Double stopLossPrice;
+
+    private Double maxPriceAfterPlace;
+
+    private Double dynamicTrailingStopRatio;
 
 
-    public void end(long endTime, double endPrice, Signal endSignal) {
+    public boolean tracing(double price) {
+
+        this.maxPriceAfterPlace = Math.max(this.maxPriceAfterPlace, price);
+
+        if (this.targetPrice != null) {
+            if (price >= this.targetPrice) {
+                return true;
+            }
+        }
+        if (this.stopLossPrice != null) {
+            if (price <= this.stopLossPrice) {
+                return true;
+            }
+        }
+        if (this.dynamicTrailingStopRatio != null && this.maxPriceAfterPlace / this.inPrice >= (1 + this.dynamicTrailingStopRatio)) {
+            if (price <= this.maxPriceAfterPlace * (1 - this.dynamicTrailingStopRatio)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public void completed(long outTime, double outPrice, Signal outSignal) {
 
         log.warn("id:{},in-time:{},in-price:{},in-signal:{},out-time:{},out-price:{},out-signal:{},vol:{}",
-                 id, Util.timestamp2Date(timeSeq), inPrice, signal, Util.timestamp2Date(endTime), endPrice, endSignal, volume);
+                 id, Util.timestamp2Date(inTime), inPrice, inSignal, Util.timestamp2Date(outTime), outPrice, outSignal, volume);
     }
 }

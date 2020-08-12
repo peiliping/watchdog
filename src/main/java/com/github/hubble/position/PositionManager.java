@@ -18,17 +18,20 @@ import java.util.concurrent.atomic.AtomicLong;
 public class PositionManager extends BasePositionManager {
 
 
-    private final Map<Long, Order> orderBooks = Maps.newHashMap();
-
     private final AtomicLong sequenceId = new AtomicLong(1);
 
+    private final Map<Long, Order> orderBooks = Maps.newHashMap();
+
     private final double unit = 0.005d;
+
+    private final double stopProfitRatio = 0.01d;
+
+    private final double stopLossRatio = 0.025d;
 
 
     public PositionManager(String path) {
 
-        super(0.002d, 0.025d, 0.03d);
-        super.statePath = path;
+        super(1000d, 0d, 0.002d, path);
     }
 
 
@@ -37,44 +40,81 @@ public class PositionManager extends BasePositionManager {
 
         switch (signal) {
             case BLIND:
-                buy(price, this.unit, null, signal);
-                buy(price, this.unit, 0.01d, signal);
+                buy(Order.builder().id(this.sequenceId.getAndIncrement())
+                            .inTime(this.clock.get())
+                            .inPrice(price)
+                            .inSignal(signal)
+                            .volume(this.unit)
+                            .stopLossPrice(price * (1 - this.stopLossRatio))
+                            .maxPriceAfterPlace(price)
+                            .dynamicTrailingStopRatio(0.025d)
+                            .build());
+                buy(Order.builder().id(this.sequenceId.getAndIncrement())
+                            .inTime(this.clock.get())
+                            .inPrice(price)
+                            .inSignal(signal)
+                            .volume(this.unit)
+                            .targetPrice(price * (1 + this.stopProfitRatio))
+                            .stopLossPrice(price * (1 - this.stopLossRatio))
+                            .maxPriceAfterPlace(price)
+                            .build());
                 break;
             case CALL:
-                buy(price, this.unit, 0.01d, signal);
+                buy(Order.builder().id(this.sequenceId.getAndIncrement())
+                            .inTime(this.clock.get())
+                            .inPrice(price)
+                            .inSignal(signal)
+                            .volume(this.unit)
+                            .targetPrice(price * (1 + this.stopProfitRatio))
+                            .stopLossPrice(price * (1 - this.stopLossRatio))
+                            .maxPriceAfterPlace(price)
+                            .build());
                 break;
             case SHOW_HAND:
-                buy(price, this.unit * 4, null, signal);
+                //TODO
                 break;
             case FOLD:
-                stopProfitOrders(signal, price, 0.012d);
+                //TODO
                 break;
             case MUCK:
-                stopProfitOrders(signal, price, -this.stopLossRatio);
+                stopProfitOrders(Signal.MUCK, price, -this.stopLossRatio);
                 break;
         }
         saveState(price);
     }
 
 
-    protected boolean buy(double price, double vol, Double expectedProfitRate, Signal signal) {
+    @Override protected void tracing(double price) {
 
-        boolean r = super.buy(price, vol);
+        final List<Order> stopOrders = Lists.newArrayList();
+        for (Map.Entry<Long, Order> entry : this.orderBooks.entrySet()) {
+            Order od = entry.getValue();
+            if (od.tracing(price)) {
+                stopOrders.add(od);
+            }
+        }
+        for (Order order : stopOrders) {
+            sell(Signal.NONE, price, order);
+        }
+    }
+
+
+    private boolean buy(Order od) {
+
+        boolean r = super.buy(od.getInPrice(), od.getVolume());
         if (r) {
-            Order od = Order.builder().id(this.sequenceId.getAndIncrement()).timeSeq(clock.get()).inPrice(price).volume(vol).signal(signal)
-                    .expectedProfitPrice(expectedProfitRate != null ? price * (1 + expectedProfitRate) : null).build();
             this.orderBooks.put(od.getId(), od);
         }
         return r;
     }
 
 
-    protected boolean sell(double price, Order od, Signal signal) {
+    private boolean sell(Signal signal, double price, Order od) {
 
         if (this.orderBooks.containsKey(od.getId())) {
             boolean r = super.sell(price, od.getVolume());
             if (r) {
-                od.end(clock.get(), price, signal);
+                od.completed(clock.get(), price, signal);
                 this.orderBooks.remove(od.getId());
                 return true;
             }
@@ -83,27 +123,15 @@ public class PositionManager extends BasePositionManager {
     }
 
 
-    @Override protected void stopProfitOrders(Signal signal, double price, double ratio) {
+    private void sell(Signal signal, double price, List<Order> orders) {
 
-        final List<Order> stopOrders = Lists.newArrayList();
-        double limit = price / (1 + ratio);
-        for (Map.Entry<Long, Order> entry : this.orderBooks.entrySet()) {
-            Order od = entry.getValue();
-            if (od.getInPrice() <= limit) {
-                stopOrders.add(od);
-            } else if (od.getExpectedProfitPrice() != null) {
-                if (od.getExpectedProfitPrice() <= price) {
-                    stopOrders.add(od);
-                }
-            }
-        }
-        for (Order order : stopOrders) {
-            sell(price, order, signal);
+        for (Order order : orders) {
+            sell(signal, price, order);
         }
     }
 
 
-    @Override protected void stopLossOrders(Signal signal, double price, double ratio) {
+    private void stopLossOrders(Signal signal, double price, double ratio) {
 
         final List<Order> stopOrders = Lists.newArrayList();
         double limit = price / (1 - ratio);
@@ -113,9 +141,21 @@ public class PositionManager extends BasePositionManager {
                 stopOrders.add(od);
             }
         }
-        for (Order order : stopOrders) {
-            sell(price, order, signal);
+        sell(signal, price, stopOrders);
+    }
+
+
+    private void stopProfitOrders(Signal signal, double price, double ratio) {
+
+        final List<Order> stopOrders = Lists.newArrayList();
+        double limit = price / (1 + ratio);
+        for (Map.Entry<Long, Order> entry : this.orderBooks.entrySet()) {
+            Order od = entry.getValue();
+            if (od.getInPrice() <= limit) {
+                stopOrders.add(od);
+            }
         }
+        sell(signal, price, stopOrders);
     }
 
 

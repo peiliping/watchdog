@@ -28,22 +28,19 @@ public abstract class BasePositionManager implements SeriesUpsertListener<Candle
 
     protected final double feeRatio;
 
-    protected double cash = 1500d;
+    protected final String statePath;
 
-    protected double invest = 0d;
+    protected double cash;
 
-    protected double stopLossRatio;
-
-    protected double stopProfitRatio;
-
-    protected String statePath;
+    protected double invest;
 
 
-    public BasePositionManager(double feeRatio, double stopLossRatio, double stopProfitRatio) {
+    public BasePositionManager(double cash, double invest, double feeRatio, String statePath) {
 
         this.feeRatio = feeRatio;
-        this.stopLossRatio = stopLossRatio;
-        this.stopProfitRatio = stopProfitRatio;
+        this.cash = cash;
+        this.invest = invest;
+        this.statePath = statePath;
     }
 
 
@@ -99,11 +96,7 @@ public abstract class BasePositionManager implements SeriesUpsertListener<Candle
 
     public abstract void handleSignal(Signal signal, double price);
 
-
-    protected abstract void stopProfitOrders(Signal signal, double price, double ratio);
-
-
-    protected abstract void stopLossOrders(Signal signal, double price, double ratio);
+    protected abstract void tracing(double price);
 
 
     @Override public void onChange(long seq, CandleET ele, boolean updateOrInsert, Series<CandleET> series) {
@@ -112,8 +105,7 @@ public abstract class BasePositionManager implements SeriesUpsertListener<Candle
         if (!this.status.get()) {
             return;
         }
-        stopLossOrders(Signal.NONE, ele.getClose(), this.stopLossRatio);
-        stopProfitOrders(Signal.NONE, ele.getClose(), this.stopProfitRatio);
+        tracing(ele.getClose());
         if (!updateOrInsert) {
             saveState(ele.getClose());
         }
