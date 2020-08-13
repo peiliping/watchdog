@@ -36,9 +36,6 @@ public class BTC_UP extends AbstractHubbleWithCommonRL {
     @Override public AbstractHubble init() {
 
         initShockRL(CandleType.MIN_1, 5, 1d);
-        //initShortTermRules(CandleType.MIN_30);
-        //initMediumTermRules(CandleType.MIN_60);
-        //initLongTermRules(CandleType.HOUR_4);
         {
             CandleType candleType = CandleType.MIN_15;
             CandleSeries candleSeries = super.candleSeriesManager.getCandleSeries(candleType);
@@ -48,20 +45,15 @@ public class BTC_UP extends AbstractHubbleWithCommonRL {
             IRule bollingDownSupport = new BollingDownSupportPSR(buildName(candleType, "Bolling_Down_Support"), polarIS, bollingPIS).overTurn(true).period();
             super.rulesManager.addRule(candleType, new Affinity(bollingDownSupport, new SignalRuleResult("Bolling下轨支撑", Signal.BLIND, this)));
 
-            //IRule bollingMidSupport = new BollingMidSupportPSR(buildName(candleType, "Bolling_Middle_Support"), polarIS, bollingPIS).overTurn(true).period();
-            //super.rulesManager.addRule(candleType, new Affinity(bollingMidSupport, new SignalRuleResult("Bolling中轨支撑", Signal.CALL, this)));
-
             RSIPIS rsiPIS = IndicatorHelper.create_RSI_PIS(candleSeries, 10);
             ToNumIS<CandleET> lowIS = IndicatorHelper.create_LOWEST_IS(candleSeries);
             DeltaIS deltaIS = IndicatorHelper.create_Delta_IS(lowIS);
             IRule newLowest = new ThresholdSRL(buildName(candleType, "New_Lowest"), deltaIS, -30, NumCompareFunction.LTE);
-            IRule rsiOverFalling = new ThresholdSRL(buildName(candleType, "RSI_OverFalling"), rsiPIS, 25, NumCompareFunction.LTE).and(newLowest).overTurn(true).period();
+            IRule rsiOverFalling = new ThresholdSRL(buildName(candleType, "RSI_OverFalling"), rsiPIS, 28, NumCompareFunction.LTE).and(newLowest).overTurn(true).period();
             super.rulesManager.addRule(candleType, new Affinity(rsiOverFalling, new SignalRuleResult("RSI下跌过度", Signal.CALL, this)));
 
-            IRule rsiMoreRising = new ThresholdSRL(buildName(candleType, "RSI_MoreRising"), rsiPIS, 75, NumCompareFunction.GTE).overTurn(true).period();
-            IRule rsiOverRising = new ThresholdSRL(buildName(candleType, "RSI_OverRising"), rsiPIS, 85, NumCompareFunction.GTE).overTurn(true).period();
+            IRule rsiMoreRising = new ThresholdSRL(buildName(candleType, "RSI_MoreRising"), rsiPIS, 72, NumCompareFunction.GTE).overTurn(true).period();
             super.rulesManager.addRule(candleType, new Affinity(rsiMoreRising, new SignalRuleResult("RSI拉升较多", Signal.FOLD, this)));
-            super.rulesManager.addRule(candleType, new Affinity(rsiOverRising, new SignalRuleResult("RSI拉升过度", Signal.MUCK, this)));
         }
         return this;
     }

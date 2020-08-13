@@ -9,7 +9,7 @@ import com.github.hubble.ele.CandleET;
 import com.github.hubble.series.CandleSeriesManager;
 import com.github.hubble.signal.Signal;
 import com.github.watchdog.common.Util;
-import com.github.watchdog.task.hb.hubble.BTC_UP;
+import com.github.watchdog.task.hb.hubble.BTC_SHOCK;
 import com.google.common.collect.Maps;
 import com.google.common.io.Files;
 import org.apache.commons.lang3.StringUtils;
@@ -36,7 +36,7 @@ public class BackTest_SHOCK {
         stateFile.delete();
 
         //初始化
-        AbstractHubble btc = new BTC_UP("Huobi", "btcusdt", statePath).init();
+        AbstractHubble btc = new BTC_SHOCK("Huobi", "btcusdt", statePath).init();
 
         //k线建立桥接关系
         CandleSeriesManager csm = btc.getCandleSeriesManager();

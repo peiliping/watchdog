@@ -63,7 +63,7 @@ public class Order {
 
     public void completed(long outTime, double outPrice, Signal outSignal) {
 
-        log.warn("id:{},in-time:{},in-price:{},in-signal:{},out-time:{},out-price:{},out-signal:{},vol:{}",
-                 id, Util.timestamp2Date(inTime), inPrice, inSignal, Util.timestamp2Date(outTime), outPrice, outSignal, volume);
+        log.warn("id:{},in-time:{},in-price:{},in-signal:{},out-time:{},out-price:{},out-signal:{},vol:{},max-price:{}",
+                 id, Util.timestamp2Date(inTime), inPrice, inSignal, Util.timestamp2Date(outTime), outPrice, outSignal, volume, maxPriceAfterPlace);
     }
 }

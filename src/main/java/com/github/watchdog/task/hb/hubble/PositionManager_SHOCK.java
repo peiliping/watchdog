@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 
 @Slf4j
-public class PositionManager_UP extends BasePositionManager {
+public class PositionManager_SHOCK extends BasePositionManager {
 
 
     private final AtomicLong sequenceId = new AtomicLong(1);
@@ -28,12 +28,12 @@ public class PositionManager_UP extends BasePositionManager {
 
     private final double maxStopProfitRatio = 0.05d;
 
-    private final double dynamicTrailingStopRatio = 0.025d;
+    private final double dynamicTrailingStopRatio = 0.02d;
 
     private final double maxStopLossRatio = 0.025d;
 
 
-    public PositionManager_UP(String path) {
+    public PositionManager_SHOCK(String path) {
 
         super(1000d, 0d, 0.002d, path);
     }
@@ -59,7 +59,7 @@ public class PositionManager_UP extends BasePositionManager {
                             .inTime(this.clock.get())
                             .inPrice(price)
                             .inSignal(signal)
-                            .volume(this.unit * 2)
+                            .volume(this.unit)
                             .targetPrice(price * 1.015d)
                             .stopLossPrice(price * (1 - this.maxStopLossRatio))
                             .maxPriceAfterPlace(price)

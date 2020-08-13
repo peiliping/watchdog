@@ -29,7 +29,7 @@ public class BTC_SHOCK extends AbstractHubbleWithCommonRL {
     public BTC_SHOCK(String market, String name, String path) {
 
         super(market, name, Candles.candles);
-        initPositionManager(new PositionManager_UP(path));
+        initPositionManager(new PositionManager_SHOCK(path));
     }
 
 
