@@ -8,7 +8,7 @@ import com.github.hubble.common.CandleType;
 import com.github.hubble.ele.CandleET;
 import com.github.watchdog.stream.AbstractMarketConsumer;
 import com.github.watchdog.stream.MsgChannel;
-import com.github.watchdog.task.hb.hubble.BTC;
+import com.github.watchdog.task.hb.hubble.BTC_UP;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +32,7 @@ public class MarketConsumer extends AbstractMarketConsumer {
 
         super(config);
         super.marketName = "Huobi";
-        super.hubble = new BTC(super.marketName, "btcusdt", "/root/watchdog2/state");
+        super.hubble = new BTC_UP(super.marketName, "btcusdt", "/root/watchdog2/state");
         super.hubble.init();
         initHistoryDataMap();
     }

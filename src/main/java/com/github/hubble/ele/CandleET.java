@@ -57,13 +57,16 @@ public class CandleET extends Element {
     public List<CandleET> split4BackTest() {
 
         List<CandleET> olhc = Lists.newArrayList();
-        olhc.add(new CandleET(this.getId(), this.getOpen(), this.getOpen(), this.getOpen(), this.getOpen(), this.getAmount(), this.getVolume(), this.getCount()));
-        if (this.getClose() > this.getOpen()) {
-            olhc.add(new CandleET(this.getId(), this.getOpen(), this.getLow(), this.getOpen(), this.getLow(), this.getAmount(), this.getVolume(), this.getCount()));
-            olhc.add(new CandleET(this.getId(), this.getOpen(), this.getLow(), this.getHigh(), this.getHigh(), this.getAmount(), this.getVolume(), this.getCount()));
+        olhc.add(new CandleET(this.id, this.open, this.open, this.open, this.open, this.amount, this.volume, this.count));
+        double t = (this.low + this.high) / 2;
+        if (this.close > this.open) {
+            olhc.add(new CandleET(this.id, this.open, this.low, this.open, this.low, this.amount, this.volume, this.count));
+            olhc.add(new CandleET(this.id, this.open, this.low, Math.max(this.open, t), t, this.amount, this.volume, this.count));
+            olhc.add(new CandleET(this.id, this.open, this.low, this.high, this.high, this.amount, this.volume, this.count));
         } else {
-            olhc.add(new CandleET(this.getId(), this.getOpen(), this.getOpen(), this.getHigh(), this.getHigh(), this.getAmount(), this.getVolume(), this.getCount()));
-            olhc.add(new CandleET(this.getId(), this.getOpen(), this.getLow(), this.getHigh(), this.getLow(), this.getAmount(), this.getVolume(), this.getCount()));
+            olhc.add(new CandleET(this.id, this.open, this.open, this.high, this.high, this.amount, this.volume, this.count));
+            olhc.add(new CandleET(this.id, this.open, this.low, this.high, t, this.amount, this.volume, this.count));
+            olhc.add(new CandleET(this.id, this.open, this.low, this.high, this.low, this.amount, this.volume, this.count));
         }
         olhc.add(this);
         return olhc;

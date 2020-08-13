@@ -9,7 +9,7 @@ import com.github.hubble.ele.CandleET;
 import com.github.hubble.series.CandleSeriesManager;
 import com.github.hubble.signal.Signal;
 import com.github.watchdog.common.Util;
-import com.github.watchdog.task.hb.hubble.BTC;
+import com.github.watchdog.task.hb.hubble.BTC_UP;
 import com.google.common.collect.Maps;
 import com.google.common.io.Files;
 import org.apache.commons.lang3.StringUtils;
@@ -25,7 +25,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 
-public class BackTest {
+public class BackTest_SHOCK {
 
 
     public static void main(String[] args) throws IOException, ParseException {
@@ -36,7 +36,7 @@ public class BackTest {
         stateFile.delete();
 
         //初始化
-        AbstractHubble btc = new BTC("Huobi", "btcusdt", statePath).init();
+        AbstractHubble btc = new BTC_UP("Huobi", "btcusdt", statePath).init();
 
         //k线建立桥接关系
         CandleSeriesManager csm = btc.getCandleSeriesManager();
@@ -59,7 +59,7 @@ public class BackTest {
         }
 
         //先加载一些数据预热,预热截止到splitTime
-        long splitTime = Util.date2timestamp("2020-07-19 18:00:00");
+        long splitTime = Util.date2timestamp("2020-07-02 00:00:00");
         SortedMap<Long, CandleET> first = candleETTreeMap.headMap(splitTime);
         for (Map.Entry<Long, CandleET> entry : first.entrySet()) {
             btc.addCandleET(CandleType.MIN_1, entry.getValue(), false);
@@ -69,7 +69,7 @@ public class BackTest {
         btc.getPositionManager().open();
 
         //模拟k线数据增量获取 截止到endTime
-        long endTime = Util.date2timestamp("2020-08-01 00:00:00");
+        long endTime = Util.date2timestamp("2020-07-20 00:00:00");
         SortedMap<Long, CandleET> second = candleETTreeMap.tailMap(splitTime);
         for (Map.Entry<Long, CandleET> entry : second.entrySet()) {
             if (entry.getKey() >= endTime) {

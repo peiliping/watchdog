@@ -35,7 +35,7 @@ public class Order {
     private Double dynamicTrailingStopRatio;
 
 
-    public boolean tracing(double price) {
+    public boolean tracing(double price, double maxProfitRatio) {
 
         this.maxPriceAfterPlace = Math.max(this.maxPriceAfterPlace, price);
 
@@ -53,6 +53,9 @@ public class Order {
             if (price <= this.maxPriceAfterPlace * (1 - this.dynamicTrailingStopRatio)) {
                 return true;
             }
+        }
+        if (price > this.inPrice * (1 + maxProfitRatio)) {
+            return true;
         }
         return false;
     }

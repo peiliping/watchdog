@@ -1,9 +1,11 @@
-package com.github.hubble.position;
+package com.github.watchdog.task.hb.hubble;
 
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.github.hubble.position.BasePositionManager;
+import com.github.hubble.position.Order;
 import com.github.hubble.signal.Signal;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -15,21 +17,23 @@ import java.util.concurrent.atomic.AtomicLong;
 
 
 @Slf4j
-public class PositionManager extends BasePositionManager {
+public class PositionManager_UP extends BasePositionManager {
 
 
     private final AtomicLong sequenceId = new AtomicLong(1);
 
     private final Map<Long, Order> orderBooks = Maps.newHashMap();
 
-    private final double unit = 0.005d;
+    private final double unit = 0.01d;
 
-    private final double stopProfitRatio = 0.01d;
+    private final double maxStopProfitRatio = 0.05d;
 
-    private final double stopLossRatio = 0.025d;
+    private final double dynamicTrailingStopRatio = 0.02d;
+
+    private final double maxStopLossRatio = 0.025d;
 
 
-    public PositionManager(String path) {
+    public PositionManager_UP(String path) {
 
         super(1000d, 0d, 0.002d, path);
     }
@@ -45,18 +49,9 @@ public class PositionManager extends BasePositionManager {
                             .inPrice(price)
                             .inSignal(signal)
                             .volume(this.unit)
-                            .stopLossPrice(price * (1 - this.stopLossRatio))
+                            .stopLossPrice(price * (1 - this.maxStopLossRatio))
                             .maxPriceAfterPlace(price)
-                            .dynamicTrailingStopRatio(0.025d)
-                            .build());
-                buy(Order.builder().id(this.sequenceId.getAndIncrement())
-                            .inTime(this.clock.get())
-                            .inPrice(price)
-                            .inSignal(signal)
-                            .volume(this.unit)
-                            .targetPrice(price * (1 + this.stopProfitRatio))
-                            .stopLossPrice(price * (1 - this.stopLossRatio))
-                            .maxPriceAfterPlace(price)
+                            .dynamicTrailingStopRatio(this.dynamicTrailingStopRatio)
                             .build());
                 break;
             case CALL:
@@ -65,8 +60,8 @@ public class PositionManager extends BasePositionManager {
                             .inPrice(price)
                             .inSignal(signal)
                             .volume(this.unit)
-                            .targetPrice(price * (1 + this.stopProfitRatio))
-                            .stopLossPrice(price * (1 - this.stopLossRatio))
+                            .targetPrice(price * 1.015d)
+                            .stopLossPrice(price * (1 - this.maxStopLossRatio))
                             .maxPriceAfterPlace(price)
                             .build());
                 break;
@@ -74,10 +69,10 @@ public class PositionManager extends BasePositionManager {
                 //TODO
                 break;
             case FOLD:
-                //TODO
+                stopProfitOrders(Signal.FOLD, price, this.maxStopLossRatio);
                 break;
             case MUCK:
-                stopProfitOrders(Signal.MUCK, price, -this.stopLossRatio);
+                stopProfitOrders(Signal.MUCK, price, -this.maxStopLossRatio);
                 break;
         }
         saveState(price);
@@ -89,7 +84,7 @@ public class PositionManager extends BasePositionManager {
         final List<Order> stopOrders = Lists.newArrayList();
         for (Map.Entry<Long, Order> entry : this.orderBooks.entrySet()) {
             Order od = entry.getValue();
-            if (od.tracing(price)) {
+            if (od.tracing(price, this.maxStopProfitRatio)) {
                 stopOrders.add(od);
             }
         }
