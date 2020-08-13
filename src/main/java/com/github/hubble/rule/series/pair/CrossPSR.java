@@ -27,7 +27,9 @@ public abstract class CrossPSR extends PairSeriesRule<NumberET> {
         NumberET e12 = super.second.getBefore(id, 0);
         NumberET e21 = super.first.getBefore(id, 1);
         NumberET e22 = super.second.getBefore(id, 1);
-        if (this.f1.apply(e11.getData(), e12.getData()) && this.f1.apply(e21.getData(), e22.getData())) {
+        NumberET e31 = super.first.getBefore(id, 2);
+        NumberET e32 = super.second.getBefore(id, 2);
+        if (this.f1.apply(e11.getData(), e12.getData()) && this.f1.apply(e21.getData(), e22.getData()) && this.f1.apply(e31.getData(), e32.getData())) {
             NumberET e41 = super.first.getBefore(id, 3);
             NumberET e42 = super.second.getBefore(id, 3);
             NumberET e51 = super.first.getBefore(id, 4);

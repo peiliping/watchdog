@@ -114,8 +114,8 @@ public abstract class BasePositionManager implements SeriesUpsertListener<Candle
 
     protected void saveState(double price) {
 
-        log.warn("cash : {} , invest : {} , total : {}", this.formatter.format(this.cash), this.formatter.format(this.invest),
-                 this.formatter.format(this.cash + this.invest * price));
+        log.warn("time : {} , cash : {} , invest : {} , total : {}", this.clock.get(), this.formatter.format(this.cash),
+                 this.formatter.format(this.invest), this.formatter.format(this.cash + this.invest * price));
         Util.writeFile(this.statePath, snapshotState().toJSONString().getBytes());
     }
 

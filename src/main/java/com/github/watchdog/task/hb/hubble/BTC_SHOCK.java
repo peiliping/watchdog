@@ -5,14 +5,16 @@ import com.github.hubble.AbstractHubble;
 import com.github.hubble.common.CandleType;
 import com.github.hubble.common.NumCompareFunction;
 import com.github.hubble.ele.CandleET;
+import com.github.hubble.ele.TernaryNumberET;
 import com.github.hubble.indicator.IndicatorHelper;
-import com.github.hubble.indicator.general.DeltaIS;
-import com.github.hubble.indicator.general.PolarIS;
+import com.github.hubble.indicator.function.PISFuncs;
+import com.github.hubble.indicator.general.CalculatePIS;
+import com.github.hubble.indicator.general.MAIS;
 import com.github.hubble.indicator.general.ToNumIS;
 import com.github.hubble.indicator.specific.BollingPIS;
-import com.github.hubble.indicator.specific.RSIPIS;
 import com.github.hubble.rule.Affinity;
 import com.github.hubble.rule.IRule;
+import com.github.hubble.rule.series.pair.CrossPSR;
 import com.github.hubble.rule.series.threshold.ThresholdSRL;
 import com.github.hubble.series.CandleSeries;
 import com.github.hubble.signal.Signal;
@@ -36,32 +38,26 @@ public class BTC_SHOCK extends AbstractHubbleWithCommonRL {
     @Override public AbstractHubble init() {
 
         initShockRL(CandleType.MIN_1, 5, 1d);
-        //initShortTermRules(CandleType.MIN_30);
-        //initMediumTermRules(CandleType.MIN_60);
-        //initLongTermRules(CandleType.HOUR_4);
         {
-            CandleType candleType = CandleType.MIN_15;
+            CandleType candleType = CandleType.MIN_30;
             CandleSeries candleSeries = super.candleSeriesManager.getCandleSeries(candleType);
-            PolarIS polarIS = IndicatorHelper.create_POLAR_IS(candleSeries, 1);
+            ToNumIS<CandleET> closeIs = IndicatorHelper.create_CLOSE_IS(candleSeries);
+            MAIS ma45 = IndicatorHelper.create_MA_IS(closeIs, 45);
+
             BollingPIS bollingPIS = IndicatorHelper.create_Bolling_PIS(candleSeries, 20);
+            ToNumIS<TernaryNumberET> bollingUp = IndicatorHelper.create_Bolling_Up_IS(bollingPIS);
+            ToNumIS<TernaryNumberET> bollingDown = IndicatorHelper.create_Bolling_Down_IS(bollingPIS);
 
-            IRule bollingDownSupport = new BollingDownSupportPSR(buildName(candleType, "Bolling_Down_Support"), polarIS, bollingPIS).overTurn(true).period();
-            super.rulesManager.addRule(candleType, new Affinity(bollingDownSupport, new SignalRuleResult("Bolling下轨支撑", Signal.BLIND, this)));
+            CalculatePIS underBolling = IndicatorHelper.create_CAL_PIS("UnderBolling", closeIs, bollingDown, PISFuncs.PERCENT);
+            IRule overFalling = new ThresholdSRL(buildName(candleType, "Bolling_OverFalling"), underBolling, 99.4, NumCompareFunction.LTE).overTurn(true).period();
+            super.rulesManager.addRule(candleType, new Affinity(overFalling, new SignalRuleResult("下跌过度", Signal.CALL, this)));
 
-            //IRule bollingMidSupport = new BollingMidSupportPSR(buildName(candleType, "Bolling_Middle_Support"), polarIS, bollingPIS).overTurn(true).period();
-            //super.rulesManager.addRule(candleType, new Affinity(bollingMidSupport, new SignalRuleResult("Bolling中轨支撑", Signal.CALL, this)));
+            IRule outRule = new CrossPSR.RisingCrossPSR(buildName(candleType, "BOLLING_DOWN_VS_MA"), bollingDown, ma45).overTurn(true).period();
+            super.rulesManager.addRule(candleType, new Affinity(outRule, new SignalRuleResult("卖出信号", Signal.MUCK, this)));
 
-            RSIPIS rsiPIS = IndicatorHelper.create_RSI_PIS(candleSeries, 10);
-            ToNumIS<CandleET> lowIS = IndicatorHelper.create_LOWEST_IS(candleSeries);
-            DeltaIS deltaIS = IndicatorHelper.create_Delta_IS(lowIS);
-            IRule newLowest = new ThresholdSRL(buildName(candleType, "New_Lowest"), deltaIS, -30, NumCompareFunction.LTE);
-            IRule rsiOverFalling = new ThresholdSRL(buildName(candleType, "RSI_OverFalling"), rsiPIS, 25, NumCompareFunction.LTE).and(newLowest).overTurn(true).period();
-            super.rulesManager.addRule(candleType, new Affinity(rsiOverFalling, new SignalRuleResult("RSI下跌过度", Signal.CALL, this)));
+            IRule inRule = new CrossPSR.FallingCrossPSR(buildName(candleType, "BOLLING_UP_VS_MA"), bollingUp, ma45).overTurn(true).period();
+            super.rulesManager.addRule(candleType, new Affinity(inRule, new SignalRuleResult("买入信号", Signal.BLIND, this)));
 
-            IRule rsiMoreRising = new ThresholdSRL(buildName(candleType, "RSI_MoreRising"), rsiPIS, 75, NumCompareFunction.GTE).overTurn(true).period();
-            IRule rsiOverRising = new ThresholdSRL(buildName(candleType, "RSI_OverRising"), rsiPIS, 85, NumCompareFunction.GTE).overTurn(true).period();
-            super.rulesManager.addRule(candleType, new Affinity(rsiMoreRising, new SignalRuleResult("RSI拉升较多", Signal.FOLD, this)));
-            super.rulesManager.addRule(candleType, new Affinity(rsiOverRising, new SignalRuleResult("RSI拉升过度", Signal.MUCK, this)));
         }
         return this;
     }

@@ -24,13 +24,11 @@ public class PositionManager_SHOCK extends BasePositionManager {
 
     private final Map<Long, Order> orderBooks = Maps.newHashMap();
 
-    private final double unit = 0.01d;
+    private final double unit = 0.005d;
 
-    private final double maxStopProfitRatio = 0.05d;
+    private final double maxStopProfitRatio = 0.02d;
 
-    private final double dynamicTrailingStopRatio = 0.02d;
-
-    private final double maxStopLossRatio = 0.025d;
+    private final double maxStopLossRatio = 0.02d;
 
 
     public PositionManager_SHOCK(String path) {
@@ -49,18 +47,17 @@ public class PositionManager_SHOCK extends BasePositionManager {
                             .inPrice(price)
                             .inSignal(signal)
                             .volume(this.unit)
+                            .targetPrice(price * (1 + this.maxStopProfitRatio))
                             .stopLossPrice(price * (1 - this.maxStopLossRatio))
                             .maxPriceAfterPlace(price)
-                            .dynamicTrailingStopRatio(this.dynamicTrailingStopRatio)
                             .build());
-                break;
             case CALL:
                 buy(Order.builder().id(this.sequenceId.getAndIncrement())
                             .inTime(this.clock.get())
                             .inPrice(price)
                             .inSignal(signal)
                             .volume(this.unit)
-                            .targetPrice(price * 1.015d)
+                            .targetPrice(price * 1.01d)
                             .stopLossPrice(price * (1 - this.maxStopLossRatio))
                             .maxPriceAfterPlace(price)
                             .build());
@@ -69,7 +66,7 @@ public class PositionManager_SHOCK extends BasePositionManager {
                 //TODO
                 break;
             case FOLD:
-                stopProfitOrders(Signal.FOLD, price, this.maxStopLossRatio);
+                //TODO
                 break;
             case MUCK:
                 stopProfitOrders(Signal.MUCK, price, -this.maxStopLossRatio);

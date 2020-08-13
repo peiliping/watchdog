@@ -13,6 +13,7 @@ import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
+import java.util.function.ToDoubleBiFunction;
 import java.util.function.ToDoubleFunction;
 
 
@@ -61,6 +62,13 @@ public class IndicatorHelper {
             polarIS.after(candleSeries);
         }
         return polarIS;
+    }
+
+
+    public static CalculatePIS create_CAL_PIS(String name, IndicatorSeries first, IndicatorSeries second, ToDoubleBiFunction<NumberET, NumberET> function) {
+
+        SeriesParams params = SeriesParams.builder().name(name).candleType(first.getCandleType()).size(first.getSize()).build();
+        return new CalculatePIS(params, first, second, function);
     }
 
 
