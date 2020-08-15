@@ -61,7 +61,7 @@ public abstract class BasePositionManager implements SeriesUpsertListener<Candle
         if (check4Buy(price, vol)) {
             this.invest += vol;
             this.cash -= price * vol * (1 + this.feeRatio);
-            log.info("buy in : {} , {} ", price, vol);
+            log.info("{} buy in : {} , {} ", this.clock.get(), price, vol);
             return true;
         }
         return false;
@@ -81,7 +81,7 @@ public abstract class BasePositionManager implements SeriesUpsertListener<Candle
             this.invest -= vol;
             this.invest = Double.valueOf(this.formatter.format(this.invest));
             this.cash += price * vol * (1 - this.feeRatio);
-            log.info("sell out : {} , {} ", price, vol);
+            log.info("{} sell out : {} , {} ", this.clock.get(), price, vol);
             return true;
         }
         return false;

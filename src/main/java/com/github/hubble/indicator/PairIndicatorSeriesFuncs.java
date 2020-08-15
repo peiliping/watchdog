@@ -1,4 +1,4 @@
-package com.github.hubble.indicator.function;
+package com.github.hubble.indicator;
 
 
 import com.github.hubble.ele.NumberET;
@@ -6,7 +6,7 @@ import com.github.hubble.ele.NumberET;
 import java.util.function.ToDoubleBiFunction;
 
 
-public class PISFuncs {
+public class PairIndicatorSeriesFuncs {
 
 
     public static final ToDoubleBiFunction<NumberET, NumberET> PLUS = (num1, num2) -> num1.getData() + num2.getData();

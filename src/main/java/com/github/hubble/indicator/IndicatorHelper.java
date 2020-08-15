@@ -4,7 +4,6 @@ package com.github.hubble.indicator;
 import com.github.hubble.ele.CandleET;
 import com.github.hubble.ele.NumberET;
 import com.github.hubble.ele.TernaryNumberET;
-import com.github.hubble.indicator.function.PISFuncs;
 import com.github.hubble.indicator.general.*;
 import com.github.hubble.indicator.specific.*;
 import com.github.hubble.series.CandleSeries;
@@ -65,13 +64,6 @@ public class IndicatorHelper {
     }
 
 
-    public static CalculatePIS create_CAL_PIS(String name, IndicatorSeries first, IndicatorSeries second, ToDoubleBiFunction<NumberET, NumberET> function) {
-
-        SeriesParams params = SeriesParams.builder().name(name).candleType(first.getCandleType()).size(first.getSize()).build();
-        return new CalculatePIS(params, first, second, function);
-    }
-
-
     public static MAIS create_MA_IS(IndicatorSeries<?, NumberET> indicatorSeries, int step) {
 
         String name = String.format("MA(%s)", step);
@@ -95,6 +87,22 @@ public class IndicatorHelper {
         EMAIS ema = new EMAIS(params, step, multiplier);
         ema.after(indicatorSeries);
         return ema;
+    }
+
+
+    public static CalculatePIS create_Cal_PIS(String name, IndicatorSeries first, IndicatorSeries second, ToDoubleBiFunction<NumberET, NumberET> function) {
+
+        SeriesParams params = SeriesParams.builder().name(name).candleType(first.getCandleType()).size(first.getSize()).build();
+        return new CalculatePIS(params, first, second, function);
+    }
+
+
+    public static DeltaIS create_Delta_IS(IndicatorSeries<?, NumberET> indicatorSeries) {
+
+        SeriesParams params = SeriesParams.builder().name("Delta").candleType(indicatorSeries.getCandleType()).size(indicatorSeries.getSize()).build();
+        DeltaIS delta = new DeltaIS(params);
+        delta.after(indicatorSeries);
+        return delta;
     }
 
 
@@ -158,15 +166,6 @@ public class IndicatorHelper {
     }
 
 
-    public static DeltaIS create_Delta_IS(IndicatorSeries<?, NumberET> indicatorSeries) {
-
-        SeriesParams params = SeriesParams.builder().name("Delta").candleType(indicatorSeries.getCandleType()).size(indicatorSeries.getSize()).build();
-        DeltaIS delta = new DeltaIS(params);
-        delta.after(indicatorSeries);
-        return delta;
-    }
-
-
     public static RSIPIS create_RSI_PIS(CandleSeries candleSeries, int step) {
 
         ToNumIS<CandleET> closeIS = create_CLOSE_IS(candleSeries);
@@ -192,7 +191,7 @@ public class IndicatorHelper {
         EMAIS longEma = create_EMA_IS(closeIS, 26);
 
         SeriesParams difParams = SeriesParams.builder().name("DIF").candleType(closeIS.getCandleType()).size(closeIS.getSize()).build();
-        CalculatePIS dif = new CalculatePIS(difParams, shortEma, longEma, PISFuncs.MINUS);
+        CalculatePIS dif = new CalculatePIS(difParams, shortEma, longEma, PairIndicatorSeriesFuncs.MINUS);
         EMAIS dea = create_EMA_IS(dif, 9);
 
         SeriesParams params = SeriesParams.builder().name("MACD").candleType(closeIS.getCandleType()).size(closeIS.getSize()).build();

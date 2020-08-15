@@ -7,7 +7,7 @@ import com.github.hubble.common.NumCompareFunction;
 import com.github.hubble.ele.CandleET;
 import com.github.hubble.ele.TernaryNumberET;
 import com.github.hubble.indicator.IndicatorHelper;
-import com.github.hubble.indicator.function.PISFuncs;
+import com.github.hubble.indicator.PairIndicatorSeriesFuncs;
 import com.github.hubble.indicator.general.CalculatePIS;
 import com.github.hubble.indicator.general.MAIS;
 import com.github.hubble.indicator.general.ToNumIS;
@@ -48,7 +48,7 @@ public class BTC_SHOCK extends AbstractHubbleWithCommonRL {
             ToNumIS<TernaryNumberET> bollingUp = IndicatorHelper.create_Bolling_Up_IS(bollingPIS);
             ToNumIS<TernaryNumberET> bollingDown = IndicatorHelper.create_Bolling_Down_IS(bollingPIS);
 
-            CalculatePIS underBolling = IndicatorHelper.create_CAL_PIS("UnderBolling", closeIs, bollingDown, PISFuncs.PERCENT);
+            CalculatePIS underBolling = IndicatorHelper.create_Cal_PIS("UnderBolling", closeIs, bollingDown, PairIndicatorSeriesFuncs.PERCENT);
             IRule overFalling = new ThresholdSRL(buildName(candleType, "Bolling_OverFalling"), underBolling, 99.4, NumCompareFunction.LTE).overTurn(true).period();
             super.rulesManager.addRule(candleType, new Affinity(overFalling, new SignalRuleResult("下跌过度", Signal.CALL, this)));
 

@@ -59,7 +59,7 @@ public class BackTest_SHOCK {
         }
 
         //先加载一些数据预热,预热截止到splitTime
-        long splitTime = Util.date2timestamp("2020-07-02 00:00:00");
+        long splitTime = Util.date2timestamp("2020-05-02 00:00:00");
         SortedMap<Long, CandleET> first = candleETTreeMap.headMap(splitTime);
         for (Map.Entry<Long, CandleET> entry : first.entrySet()) {
             btc.addCandleET(CandleType.MIN_1, entry.getValue(), false);
