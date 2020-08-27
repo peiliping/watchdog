@@ -137,6 +137,15 @@ public class IndicatorHelper {
     }
 
 
+    public static ToNumIS<TernaryNumberET> create_Bolling_Middler_IS(BollingPIS bollingPIS) {
+
+        SeriesParams params = SeriesParams.builder().name("BollingMiddle").candleType(bollingPIS.getCandleType()).size(bollingPIS.getSize()).build();
+        ToNumIS<TernaryNumberET> bollingMiddle = new ToNumIS<>(params, value -> value.getSecond());
+        bollingMiddle.after(bollingPIS);
+        return bollingMiddle;
+    }
+
+
     public static ToNumIS<TernaryNumberET> create_Bolling_Down_IS(BollingPIS bollingPIS) {
 
         SeriesParams params = SeriesParams.builder().name("BollingDown").candleType(bollingPIS.getCandleType()).size(bollingPIS.getSize()).build();
