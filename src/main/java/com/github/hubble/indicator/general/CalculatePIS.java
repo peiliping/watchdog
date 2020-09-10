@@ -13,6 +13,16 @@ import java.util.function.ToDoubleBiFunction;
 public class CalculatePIS extends PairIndicatorSeries<IndicatorSeries<? extends Element, NumberET>, IndicatorSeries<? extends Element, NumberET>, NumberET> {
 
 
+    public static final ToDoubleBiFunction<NumberET, NumberET> PLUS = (num1, num2) -> num1.getData() + num2.getData();
+
+    public static final ToDoubleBiFunction<NumberET, NumberET> MINUS = (num1, num2) -> num1.getData() - num2.getData();
+
+    public static final ToDoubleBiFunction<NumberET, NumberET> MULTI = (num1, num2) -> num1.getData() * num2.getData();
+
+    public static final ToDoubleBiFunction<NumberET, NumberET> DIVIDE = (num1, num2) -> num1.getData() / num2.getData();
+
+    public static final ToDoubleBiFunction<NumberET, NumberET> PERCENT = (num1, num2) -> num1.getData() / num2.getData() * 100;
+
     protected final ToDoubleBiFunction<NumberET, NumberET> function;
 
 

@@ -129,12 +129,6 @@ public class Series<E extends Element> {
     }
 
 
-    public E getAfter(long id) {
-
-        return get(id + this.candleType.interval);
-    }
-
-
     public void bindUpsertListener(SeriesUpsertListener<E>... listeners) {
 
         for (SeriesUpsertListener<E> listener : listeners) {

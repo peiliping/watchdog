@@ -14,9 +14,12 @@ public class Candles {
 
     static {
         candles.add(CandleType.MIN_1);
+        candles.add(CandleType.MIN_5);
         candles.add(CandleType.MIN_15);
         candles.add(CandleType.MIN_30);
+        candles.add(CandleType.MIN_60);
         candles.add(CandleType.HOUR_4);
+        candles.add(CandleType.DAY);
     }
 
 }

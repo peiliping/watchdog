@@ -168,7 +168,7 @@ public class IndicatorHelper {
 
         PolarIS polarIS = create_POLAR_IS(candleSeries, step);
         String name = String.format("WR(%s)", step);
-        SeriesParams params = SeriesParams.builder().name(name).candleType(polarIS.getCandleType()).size(polarIS.getSize()).build();
+        SeriesParams params = SeriesParams.builder().name(name).candleType(candleSeries.getCandleType()).size(candleSeries.getSize()).build();
         WRIS wr = new WRIS(params);
         wr.after(polarIS);
         return wr;
@@ -178,7 +178,7 @@ public class IndicatorHelper {
     public static RSIPIS create_RSI_PIS(CandleSeries candleSeries, int step) {
 
         ToNumIS<CandleET> closeIS = create_CLOSE_IS(candleSeries);
-        SeriesParams base = SeriesParams.builder().candleType(closeIS.getCandleType()).size(closeIS.getSize()).build();
+        SeriesParams base = SeriesParams.builder().candleType(candleSeries.getCandleType()).size(candleSeries.getSize()).build();
         DeltaIS deltaIS = create_Delta_IS(closeIS);
 
         ToNumIS<NumberET> up = new ToNumIS<>(base.createNew("Positive"), numberET -> Math.max(numberET.getData(), 0));
@@ -194,13 +194,14 @@ public class IndicatorHelper {
     }
 
 
-    public static MACDPIS create_MACD_PIS(ToNumIS<CandleET> closeIS) {
+    public static MACDPIS create_MACD_PIS(CandleSeries candleSeries) {
 
+        ToNumIS<CandleET> closeIS = create_CLOSE_IS(candleSeries);
         EMAIS shortEma = create_EMA_IS(closeIS, 12);
         EMAIS longEma = create_EMA_IS(closeIS, 26);
 
         SeriesParams difParams = SeriesParams.builder().name("DIF").candleType(closeIS.getCandleType()).size(closeIS.getSize()).build();
-        CalculatePIS dif = new CalculatePIS(difParams, shortEma, longEma, PairIndicatorSeriesFuncs.MINUS);
+        CalculatePIS dif = new CalculatePIS(difParams, shortEma, longEma, CalculatePIS.MINUS);
         EMAIS dea = create_EMA_IS(dif, 9);
 
         SeriesParams params = SeriesParams.builder().name("MACD").candleType(closeIS.getCandleType()).size(closeIS.getSize()).build();
@@ -211,7 +212,7 @@ public class IndicatorHelper {
     public static KDJPIS create_KDJ_PIS(CandleSeries candleSeries, int step) {
 
         PolarIS polarIS = create_POLAR_IS(candleSeries, step);
-        SeriesParams base = SeriesParams.builder().candleType(polarIS.getCandleType()).size(polarIS.getSize()).build();
+        SeriesParams base = SeriesParams.builder().candleType(candleSeries.getCandleType()).size(candleSeries.getSize()).build();
         ToNumIS<TernaryNumberET> rsvIS = new ToNumIS<>(base.createNew("RSV"), ele -> (ele.getSecond() - ele.getThird()) / (ele.getFirst() - ele.getThird()) * 100);
         rsvIS.after(polarIS);
 

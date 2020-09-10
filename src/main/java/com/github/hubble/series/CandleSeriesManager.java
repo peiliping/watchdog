@@ -44,25 +44,25 @@ public class CandleSeriesManager {
 
     public CandleSeries getCandleSeries(CandleType candleType) {
 
-        return this.candles.get(candleType);
-    }
-
-
-    public void addCandleETList(CandleType candleType, List<CandleET> candleETList) {
-
-        CandleSeries series = this.candles.get(candleType);
-        Validate.notNull(series);
-        for (CandleET candleET : candleETList) {
-            series.add(candleET);
-        }
+        CandleSeries result = this.candles.get(candleType);
+        Validate.notNull(result);
+        return result;
     }
 
 
     public void addCandleET(CandleType candleType, CandleET candleET) {
 
-        Series<CandleET> series = this.candles.get(candleType);
-        Validate.notNull(series);
+        CandleSeries series = getCandleSeries(candleType);
         series.add(candleET);
+    }
+
+
+    public void addCandleETList(CandleType candleType, List<CandleET> candleETList) {
+
+        CandleSeries series = getCandleSeries(candleType);
+        for (CandleET candleET : candleETList) {
+            series.add(candleET);
+        }
     }
 
 
@@ -73,14 +73,10 @@ public class CandleSeriesManager {
     }
 
 
-    public SeriesAggListener candleSeriesBridge(CandleType sourceType, CandleType targetType) {
+    public void candleSeriesBridge(CandleType sourceType, CandleType targetType) {
 
-        CandleSeries source = this.candles.get(sourceType);
-        CandleSeries target = this.candles.get(targetType);
-        Validate.notNull(source);
-        Validate.notNull(target);
-        SeriesAggListener aggListener = new SeriesAggListener(target);
-        source.bindUpsertListener(aggListener);
-        return aggListener;
+        CandleSeries source = getCandleSeries(sourceType);
+        CandleSeries target = getCandleSeries(targetType);
+        source.bindUpsertListener(new SeriesAggListener(target));
     }
 }
