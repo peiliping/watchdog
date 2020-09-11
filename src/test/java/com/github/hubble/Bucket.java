@@ -13,11 +13,14 @@ public class Bucket<E> {
 
     private FixedList<E> list;
 
+    private long createTime;
+
 
     public Bucket(int size) {
 
         this.maxSize = size;
         this.list = new FixedList<>(size);
+        this.createTime = System.currentTimeMillis();
     }
 
 
@@ -35,5 +38,11 @@ public class Bucket<E> {
     public boolean isFull() {
 
         return this.point.get() >= this.maxSize;
+    }
+
+
+    public boolean isExpired() {
+
+        return System.currentTimeMillis() - this.createTime >= 1000L;
     }
 }

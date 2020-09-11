@@ -25,14 +25,14 @@ public class Container<E> {
             return;
         }
         do {
-            updateBucket();
+            updateBucket(false);
         } while (!this.current.add(e));
     }
 
 
-    private synchronized void updateBucket() {
+    private synchronized void updateBucket(boolean force) {
 
-        if (this.current.isFull()) {
+        if (force || this.current.isFull()) {
             if (this.history.size() >= MAX_HISTORY_SIZE) {
                 this.history.pollFirst();
             }
@@ -43,6 +43,10 @@ public class Container<E> {
 
 
     public synchronized List<Bucket<E>> archiveHistory() {
+
+        if (this.current.isExpired()) {
+            updateBucket(true);
+        }
 
         List<Bucket<E>> result = Lists.newArrayList();
         while (this.history.peekFirst() != null) {
