@@ -41,6 +41,12 @@ public class Bucket<E> {
     }
 
 
+    public boolean isEmpty() {
+
+        return this.point.get() == 0;
+    }
+
+
     public boolean isExpired() {
 
         return System.currentTimeMillis() - this.createTime >= 1000L;

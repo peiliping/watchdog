@@ -36,8 +36,12 @@ public class Container<E> {
             if (this.history.size() >= MAX_HISTORY_SIZE) {
                 this.history.pollFirst();
             }
-            this.history.add(this.current);
+
+            Bucket<E> tmp = this.current;
             this.current = new Bucket<>(BUCKET_SIZE);
+            if (!tmp.isEmpty()) {
+                this.history.add(tmp);
+            }
         }
     }
 
