@@ -9,9 +9,25 @@
             <MaxHistory>7</MaxHistory>
         </rollingPolicy>
         <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%d{HH:mm:ss.SSS} %class %-5level %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} %msg%n</pattern>
         </layout>
     </appender>
+
+    <appender name="data" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <Encoding>UTF-8</Encoding>
+        <file>${LOG_HOME}/watchdog-data.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${LOG_HOME}/watchdog-data.log-%d{yyyy-MM-dd}</FileNamePattern>
+            <MaxHistory>7</MaxHistory>
+        </rollingPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{HH:mm:ss.SSS} %msg%n</pattern>
+        </layout>
+    </appender>
+
+    <logger name="watchdog-data" level="INFO" additivity="false">
+        <appender-ref ref="data"/>
+    </logger>
 
     <root level="INFO">
         <appender-ref ref="main"/>
